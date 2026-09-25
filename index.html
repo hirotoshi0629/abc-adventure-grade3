@@ -12,7 +12,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px}.l
 .screen{display:none;background:rgba(255,253,243,.96);border:5px solid rgba(255,255,255,.85);border-radius:24px;padding:20px;min-height:70vh;box-shadow:0 6px 0 rgba(105,74,38,.22)}.screen.active{display:block}.home.hidden{display:none}.back{border:3px solid #9b642a;background:#ffd34f;border-radius:14px;padding:10px 16px;font-weight:900;min-height:48px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.card{aspect-ratio:1;border:4px solid #69a8d8;border-radius:20px;background:white;font-family:NH,sans-serif;font-size:clamp(42px,9vw,92px);font-weight:700}.message{text-align:center;font-size:24px;font-weight:900;margin:18px}
 .player-select{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.player-btn{border:3px solid #9b642a;background:#ffe77a;border-radius:18px;padding:18px 26px;font-size:24px;font-weight:1000}.karuta-note{text-align:center;font-weight:800}.karuta-top,.score-row{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px}.sound-btn{border:0;border-radius:14px;background:#8edcff;padding:10px 16px;font-weight:900}.score-row span{padding:8px 13px;border-radius:14px;font-weight:1000;background:#eee}.p1{background:#bfe2ff!important}.p2{background:#ffc7d1!important}.p3{background:#c8f2b2!important}.p4{background:#fff0a4!important}.karuta-board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:820px;margin:14px auto}.karuta-card{aspect-ratio:1.25;background:#fff;border:4px solid #e2b65d;border-radius:18px;font-family:NH,sans-serif;font-size:clamp(46px,8vw,82px);box-shadow:0 5px 0 #b67a31}.karuta-card.hit{background:#fff09a;transform:scale(.96)}.karuta-card.wrong{animation:shake .25s}.claim-row{display:flex;justify-content:center;gap:10px;margin-top:12px}.claim{border:0;border-radius:15px;padding:13px 22px;font-weight:1000}.finish-box{text-align:center;padding:30px;font-size:22px;font-weight:900}.big-star{font-size:80px;color:#f5b400}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .memory-head{text-align:center}.memory-board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:760px;margin:18px auto}.memory-card{position:relative;aspect-ratio:.82;border:4px solid #b876c8;border-radius:18px;background:#8752a0;box-shadow:0 5px 0 #60396f;font-family:NH,sans-serif;font-size:clamp(42px,7vw,72px);font-weight:700;overflow:hidden}.memory-card .memory-front{display:none}.memory-card .memory-back{display:block;color:#fff;font-family:inherit}.memory-card.open,.memory-card.matched{background:#fff9d6;border-color:#e3ad45;transform:translateY(3px);box-shadow:0 2px 0 #a8752e}.memory-card.open .memory-front,.memory-card.matched .memory-front{display:block}.memory-card.open .memory-back,.memory-card.matched .memory-back{display:none}.memory-card.matched{background:#d8f5b4}.memory-celebrate{font-family:NH,sans-serif;font-size:64px;letter-spacing:15px;color:#8752a0}
-.listen-setup{text-align:center;max-width:760px;margin:auto}.choice-row,.level-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.mode-btn,.level-btn{border:4px solid #9bc5dc;background:#fff;border-radius:18px;padding:14px 24px;font-weight:1000;min-width:130px}.mode-btn.selected,.level-btn.selected{background:#bdeeff;border-color:#3b91c4;transform:translateY(-2px)}.level-btn small{font-weight:700}.start-btn{margin:26px auto;border:0;border-radius:22px;background:#ffcf3f;box-shadow:0 5px 0 #b77a21;padding:16px 42px;font-size:26px;font-weight:1000}.listen-status{display:flex;justify-content:center;gap:30px;font-size:20px;font-weight:900}.listen-cards{display:grid;gap:14px;max-width:820px;margin:16px auto}.listen-cards.four{grid-template-columns:repeat(4,1fr)}.listen-cards.six{grid-template-columns:repeat(3,1fr)}.listen-card{aspect-ratio:1;background:#fff;border:4px solid #58acd0;border-radius:22px;font-family:NH,sans-serif;font-size:clamp(54px,9vw,96px);box-shadow:0 6px 0 #367fa1}.listen-card.correct{background:#d9f6ad;border-color:#72b83e;transform:translateY(4px);box-shadow:0 2px 0 #4d8d2c}.listen-card.listen-wrong{animation:shake .25s;background:#ffe0df}button:disabled{cursor:default}.listen-result{font-family:NH,sans-serif;font-size:72px;color:#3189b3;font-weight:900}
+.listen-setup{text-align:center;max-width:760px;margin:auto}.choice-row,.level-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.mode-btn,.level-btn{border:4px solid #9bc5dc;background:#fff;border-radius:18px;padding:14px 24px;font-weight:1000;min-width:130px}.mode-btn.selected,.level-btn.selected{background:#bdeeff;border-color:#3b91c4;transform:translateY(-2px)}.level-btn small{font-weight:700}.start-btn{margin:26px auto;border:0;border-radius:22px;background:#ffcf3f;box-shadow:0 5px 0 #b77a21;padding:16px 42px;font-size:26px;font-weight:1000}.listen-status{display:flex;justify-content:center;gap:30px;font-size:20px;font-weight:900}.listen-cards{display:grid;gap:14px;max-width:820px;margin:16px auto}.listen-cards.four{grid-template-columns:repeat(4,1fr)}.listen-cards.six{grid-template-columns:repeat(3,1fr)}.listen-card{aspect-ratio:1;background:#fff;border:4px solid #58acd0;border-radius:22px;font-family:NH,sans-serif;font-size:clamp(54px,9vw,96px);box-shadow:0 6px 0 #367fa1}.listen-card.correct{background:#d9f6ad;border-color:#72b83e;transform:translateY(4px);box-shadow:0 2px 0 #4d8d2c}.listen-card.listen-wrong{animation:shake .25s;background:#ffe0df}button:disabled{cursor:default;opacity:.58;filter:saturate(.65)}.listen-result{font-family:NH,sans-serif;font-size:72px;color:#3189b3;font-weight:900}
 .rocket-game{display:grid;grid-template-columns:minmax(260px,.85fr) 1.15fr;gap:18px}.rocket-sky{position:relative;min-height:520px;overflow:hidden;border-radius:25px;background:linear-gradient(#172a69 0%,#477fc4 38%,#9cddf4 68%,#e7f7ff 100%);border:4px solid #fff;box-shadow:0 5px 0 #6686a0}.rocket-stars{position:absolute;top:20px;width:100%;text-align:center;color:#fff7b0;font-family:NH,sans-serif;font-size:20px;letter-spacing:10px}.rocket-orbit{position:absolute;right:16px;top:70px;width:115px;height:115px;border-radius:50%;background:#ffe48a;border:7px solid #f6bc52;display:grid;place-items:center;text-align:center;font-family:NH,sans-serif;font-weight:900;color:#8b5a2b}.rocket-craft{position:absolute;left:50%;transform:translateX(-50%);width:78px;height:135px;background:#fff7e5;border:5px solid #536d86;border-radius:50% 50% 22% 22%;transition:bottom .6s ease;z-index:3}.rocket-craft:before,.rocket-craft:after{content:"";position:absolute;bottom:14px;width:30px;height:52px;background:#e85b4d;border:4px solid #7d3c38}.rocket-craft:before{left:-27px;border-radius:50% 10% 10% 50%}.rocket-craft:after{right:-27px;border-radius:10% 50% 50% 10%}.rocket-window{position:absolute;width:32px;height:32px;border-radius:50%;background:#8dddf1;border:5px solid #536d86;left:18px;top:34px}.rocket-flame{position:absolute;left:22px;bottom:-38px;width:25px;height:38px;background:#ffd14d;border-radius:10% 10% 60% 60%;animation:flame .22s infinite alternate}.rocket-ground{position:absolute;bottom:0;width:100%;height:8%;background:#7ebc5b}.rocket-cloud{position:absolute;width:90px;height:30px;border-radius:30px;background:rgba(255,255,255,.8)}.rocket-cloud:before,.rocket-cloud:after{content:"";position:absolute;background:inherit;border-radius:50%}.rocket-cloud:before{width:42px;height:42px;left:15px;top:-20px}.rocket-cloud:after{width:50px;height:50px;right:8px;top:-27px}.c1{left:8%;bottom:30%}.c2{right:8%;bottom:52%}.rocket-panel{align-self:center}.rocket-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:520px;margin:auto}.rocket-letter{aspect-ratio:1.7;border:4px solid #5a8fc2;border-radius:20px;background:#fff;font-family:NH,sans-serif;font-size:64px;box-shadow:0 5px 0 #416b91}.rocket-letter.correct{background:#d9f6ad;transform:translateY(4px);box-shadow:0 1px 0 #416b91}.rocket-letter.listen-wrong{animation:shake .25s;background:#ffe0df}.planet-big{margin:auto;width:170px;height:170px;border-radius:50%;display:grid;place-items:center;background:#ffe58e;border:10px solid #efb74c;font-family:NH,sans-serif;font-size:50px;color:#825a25}.rocket-finish{background:linear-gradient(#d8edff,#fff6c5);border-radius:25px}@keyframes flame{from{height:28px;opacity:.8}to{height:42px;opacity:1}}
 .monster-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}.battle-stage{position:relative;min-height:520px;border-radius:25px;padding:18px;background:linear-gradient(#624b9a,#8d78bd 48%,#c6b4dc);border:4px solid #fff;box-shadow:0 5px 0 #5a4678;color:#fff}.battle-top,.hero-status{display:flex;justify-content:space-between;gap:10px;font-weight:1000}.monster-name{text-align:center;margin-top:28px;font-weight:1000;letter-spacing:2px}.monster-body{position:relative;width:210px;height:220px;margin:24px auto 16px;border:6px solid #5b425f;border-radius:48% 48% 40% 40%;background:#9fdb73;box-shadow:inset 0 -18px rgba(0,0,0,.08)}.mtype2{background:#79cce1}.mtype3{background:#f0a274}.mtype4{background:#d695d2}.monster-horns:before,.monster-horns:after{content:"";position:absolute;top:-35px;width:42px;height:65px;background:#f8e6a0;border:5px solid #5b425f}.monster-horns:before{left:24px;transform:rotate(-25deg);border-radius:80% 10%}.monster-horns:after{right:24px;transform:rotate(25deg);border-radius:10% 80%}.monster-eyes{display:flex;justify-content:center;gap:35px;margin-top:52px}.monster-eyes i{width:30px;height:36px;background:#fff;border:5px solid #4b3a50;border-radius:50%;position:relative}.monster-eyes i:after{content:"";position:absolute;width:9px;height:12px;background:#33283a;border-radius:50%;left:7px;top:8px}.monster-mouth{width:75px;height:35px;border:6px solid #5b425f;border-top:0;border-radius:0 0 50px 50px;margin:25px auto 0}.monster-mark{position:absolute;right:14px;bottom:10px;font-family:NH,sans-serif;font-size:38px;font-weight:900;color:#5b425f}.monster-hp{font-weight:900}.hpbar{height:18px;background:#fff;border-radius:20px;overflow:hidden;margin-top:5px}.hpbar i{display:block;height:100%;background:#ffd04e;transition:.4s}.hero-status{margin-top:18px;background:rgba(255,255,255,.2);padding:10px;border-radius:12px}.battle-panel{align-self:center}.monster-choices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:520px;margin:auto}.monster-letter{aspect-ratio:1.6;border:4px solid #7c62a5;border-radius:20px;background:#fff;font-family:NH,sans-serif;font-size:64px;box-shadow:0 5px 0 #584575}.monster-letter.correct{background:#d9f6ad;transform:translateY(4px);box-shadow:0 1px 0 #584575}.monster-letter.listen-wrong{animation:shake .25s;background:#ffe0df}.special-hit{animation:special .18s 4}.monster-medal{width:150px;height:150px;border-radius:50%;margin:auto;display:grid;place-items:center;background:#ffe275;border:10px double #c48b23;font-family:NH,sans-serif;font-size:45px;font-weight:900}.monster-clear{background:linear-gradient(#e5dcff,#fff5bd);border-radius:24px}@keyframes special{from{filter:brightness(1);transform:scale(1)}to{filter:brightness(1.8);transform:scale(.94)}}
 .treasure-wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.treasure-map{position:relative;min-height:540px;overflow:hidden;border:6px solid #9a6b35;border-radius:25px;background:#80d8e9;box-shadow:inset 0 0 0 8px #f5dca1,0 5px 0 #72502d}.map-sea{position:absolute;inset:0;background:repeating-radial-gradient(ellipse at 15% 20%,transparent 0 22px,rgba(255,255,255,.18) 24px 27px,transparent 29px 48px)}.island{position:absolute;background:#a8d66d;border:18px solid #f1d788;border-radius:45% 55% 48% 52%;box-shadow:inset 0 0 0 4px rgba(85,139,62,.25)}.island-a{left:8%;top:10%;width:70%;height:68%;transform:rotate(-5deg)}.island-b{right:3%;bottom:4%;width:30%;height:30%}.mountain{position:absolute;left:43%;top:24%;width:0;height:0;border-left:65px solid transparent;border-right:65px solid transparent;border-bottom:120px solid #8a8c72;filter:drop-shadow(0 5px #686a57)}.mountain:after{content:"";position:absolute;left:-25px;top:48px;border-left:25px solid transparent;border-right:25px solid transparent;border-bottom:46px solid #f8f4df;transform:rotate(180deg)}.river{position:absolute;left:49%;top:46%;width:18px;height:190px;background:#72c9e5;border-radius:50%;transform:rotate(24deg)}.path-dots{position:absolute;left:17%;top:39%;font-size:36px;color:#9b6b3b;transform:rotate(18deg);letter-spacing:7px}.chest{position:absolute;right:12%;bottom:12%;width:70px;height:48px;background:#9b5d2b;border:5px solid #613c24;border-radius:8px}.chest:before{content:"";position:absolute;left:-5px;top:-31px;width:70px;height:31px;background:#b97735;border:5px solid #613c24;border-radius:35px 35px 3px 3px}.chest:after{content:"";position:absolute;left:27px;top:8px;width:12px;height:18px;background:#ffd45e;border-radius:3px}.palm{position:absolute;width:12px;height:70px;background:#9a6b3c;border-radius:8px;z-index:2}.palm i{position:absolute;top:-8px;left:-22px;width:55px;height:18px;background:#4d9c55;border-radius:100% 0 100% 0;transform-origin:center}.palm i:nth-child(2){transform:rotate(120deg)}.palm i:nth-child(3){transform:rotate(240deg)}.p1tree{left:20%;top:22%}.p2tree{right:22%;top:54%}.hidden-letter{position:absolute;z-index:5;width:58px;height:58px;border:3px solid rgba(105,72,35,.45);border-radius:50%;background:rgba(255,250,213,.88);font-family:NH,sans-serif;font-size:34px;font-weight:900;color:#65482e;box-shadow:0 3px 0 rgba(91,61,32,.35)}.hidden-letter.treasure-found{background:#ffe56f;transform:scale(1.25);border-color:#d49727}.hidden-letter.treasure-miss{animation:shake .25s;background:#ffd9d3}.treasure-panel{align-self:center}.treasure-scroll{background:#fff1bd;border:5px solid #b98548;border-radius:12px;padding:18px;text-align:center;box-shadow:inset 0 0 20px rgba(157,104,48,.16)}.treasure-scroll>p{font-weight:1000;color:#855629}.big-sound{font-size:20px;padding:14px 24px}.treasure-clear{background:linear-gradient(#c6f0ff,#fff0af);border-radius:24px}.big-chest{position:relative;margin:55px auto 20px;width:180px;height:105px;background:#a9672e;border:9px solid #633d23;border-radius:10px;display:grid;place-items:center}.big-chest:before{content:"";position:absolute;left:-9px;top:-70px;width:180px;height:70px;background:#c78138;border:9px solid #633d23;border-radius:90px 90px 5px 5px}.big-chest span{position:relative;z-index:2;background:#ffd95b;padding:8px 15px;border-radius:8px;font-family:NH,sans-serif;font-size:30px;font-weight:900}
@@ -68,17 +68,18 @@ const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(lo
 function render(){document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));stars.textContent=save.stars;coins.textContent=save.coins;worldLv.textContent=save.worldLv}
 function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
+let sessionToken=0;function newSession(){sessionToken++;return sessionToken}function later(fn,ms){const t=sessionToken;return setTimeout(()=>{if(t===sessionToken)fn()},ms)}
 const finishLocks={};function beginFinishGuard(id){if(finishLocks[id])return false;finishLocks[id]=true;return true}function resetFinishGuard(id){finishLocks[id]=false}
 function markClear(id){save.clears=save.clears||{};save.clears[id]=(save.clears[id]||0)+1;persist()}
-function openGame(id){save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
-function goHome(){game.classList.remove("active");home.classList.remove("hidden")}
-function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u);return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.75;speechSynthesis.speak(u)}
+function openGame(id){newSession();save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");render()}
+function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
 function sample(n){return [...ABC].sort(()=>Math.random()-.5).slice(0,n)}
 let target="";
 let listen={count:4,level:"normal",round:0,correct:0,maxRounds:10,target:""};
 const similarGroups=[["B","D","P","T"],["C","G","O","Q"],["E","F","L","I"],["M","N","W","V"],["A","H","K","R"],["S","X","Z","Y"]];
 function startListen(){gameTitle.textContent="聞いてタッチ！";
- gameBody.innerHTML='<div class="listen-setup"><div class="message">カードの まいすう</div><div class="choice-row"><button class="mode-btn selected" id="c4" onclick="setListenCount(4)">4まい</button><button class="mode-btn" id="c6" onclick="setListenCount(6)">6まい</button></div><div class="message">レベルを えらぼう</div><div class="level-row"><button class="level-btn selected" id="lnormal" onclick="setListenLevel(\'normal\')">ふつう<br><small>いろいろな文字</small></button><button class="level-btn" id="lfast" onclick="setListenLevel(\'fast\')">スピード<br><small>テンポよく10問</small></button><button class="level-btn" id="lsimilar" onclick="setListenLevel(\'similar\')">そっくり<br><small>にた文字に挑戦</small></button></div><button class="start-btn" onclick="beginListen()">スタート！</button></div>';
+ gameBody.innerHTML='<div class="listen-setup"><div class="message">カードの まいすう</div><div class="choice-row"><button class="mode-btn '+(listen.count===4?'selected':'')+'" id="c4" onclick="setListenCount(4)">4まい</button><button class="mode-btn '+(listen.count===6?'selected':'')+'" id="c6" onclick="setListenCount(6)">6まい</button></div><div class="message">レベルを えらぼう</div><div class="level-row"><button class="level-btn '+(listen.level==="normal"?'selected':'')+'" id="lnormal" onclick="setListenLevel(\'normal\')">ふつう<br><small>いろいろな文字</small></button><button class="level-btn '+(listen.level==="fast"?'selected':'')+'" id="lfast" onclick="setListenLevel(\'fast\')">スピード<br><small>テンポよく10問</small></button><button class="level-btn '+(listen.level==="similar"?'selected':'')+'" id="lsimilar" onclick="setListenLevel(\'similar\')">そっくり<br><small>にた文字に挑戦</small></button></div><button class="start-btn" onclick="beginListen()">スタート！</button></div>';
 }
 function setListenCount(n){listen.count=n;document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("c"+n).classList.add("selected")}
 function setListenLevel(v){listen.level=v;document.querySelectorAll(".level-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("l"+v).classList.add("selected")}
@@ -95,17 +96,17 @@ function nextListen(){listen.locked=false;
  }else a=sample(listen.count);
  listen.target=a[Math.floor(Math.random()*a.length)];
  gameBody.innerHTML='<div class="listen-status"><b>'+listen.round+' / '+listen.maxRounds+'</b><span>せいかい '+listen.correct+'</span></div><div class="message">よく聞いて、文字をタッチ！ <button class="sound-btn" onclick="sayLetter(listen.target)">もう一度聞く</button></div><div class="listen-cards '+(listen.count===6?'six':'four')+'">'+a.map(x=>'<button class="listen-card" onclick="answerListen(\\''+x+'\\',this)">'+x+'</button>').join("")+'</div><div id="listenMsg" class="message"></div>';
- setTimeout(()=>sayLetter(listen.target),listen.level==="fast"?180:400);
+ later(()=>sayLetter(listen.target),listen.level==="fast"?180:400);
 }
 function answerListen(x,el){
  if(listen.locked)return;
  if(x===listen.target){
    listen.locked=true;el.classList.add("correct");listen.correct++;save.stars++;save.coins+=listen.level==="similar"?4:3;persist();
    document.getElementById("listenMsg").textContent="せいかい！";
-   setTimeout(nextListen,listen.level==="fast"?450:750);
+   later(nextListen,listen.level==="fast"?450:750);
  }else{
    el.classList.add("listen-wrong");document.getElementById("listenMsg").textContent="もう一度 よく聞こう！";
-   setTimeout(()=>el.classList.remove("listen-wrong"),400);sayLetter(listen.target);
+   later(()=>el.classList.remove("listen-wrong"),400);sayLetter(listen.target);
  }
 }
 function finishListen(){if(!beginFinishGuard("listen"))return;markClear("listen");
@@ -122,16 +123,16 @@ function nextKaruta(){
  if(karuta.round>karuta.maxRounds){finishKaruta();return}
  let letters=sample(12);karuta.target=letters[Math.floor(Math.random()*letters.length)];
  gameBody.innerHTML='<div class="karuta-top"><b>'+karuta.round+' / '+karuta.maxRounds+'</b><button class="sound-btn" onclick="sayLetter(karuta.target)">もう一度聞く</button></div><div class="score-row">'+Array.from({length:karuta.players},(_,i)=>'<span class="p'+(i+1)+'">'+(i+1)+'P '+karuta.scores[i]+'枚</span>').join("")+'</div><div class="karuta-board">'+letters.map(x=>'<button class="karuta-card" onclick="takeKaruta(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="karutaMsg" class="message">よく聞いてね！</div>';
- setTimeout(()=>sayLetter(karuta.target),450);
+ later(()=>sayLetter(karuta.target),450);
 }
 function takeKaruta(x,el){
  if(karuta.locked)return;
  if(x!==karuta.target){el.classList.add("wrong");setTimeout(()=>el.classList.remove("wrong"),350);sayLetter(karuta.target);return}
  karuta.locked=true;el.classList.add("hit");
- if(karuta.players===1){karuta.scores[0]++;save.stars++;save.coins+=2;persist();setTimeout(nextKaruta,750);return}
+ if(karuta.players===1){karuta.scores[0]++;save.stars++;save.coins+=2;persist();later(nextKaruta,750);return}
  document.getElementById("karutaMsg").innerHTML='だれが とった？<div class="claim-row">'+Array.from({length:karuta.players},(_,i)=>'<button class="claim p'+(i+1)+'" onclick="claimKaruta('+i+')">'+(i+1)+'P</button>').join("")+'</div>';
 }
-function claimKaruta(i){if(!karuta.locked)return;karuta.locked=false;karuta.scores[i]++;save.stars++;save.coins+=2;persist();document.querySelectorAll(".claim-btn,.player-claim").forEach(b=>b.disabled=true);setTimeout(nextKaruta,350)}
+function claimKaruta(i){if(!karuta.locked)return;karuta.locked=false;karuta.scores[i]++;save.stars++;save.coins+=2;persist();document.querySelectorAll(".claim-btn,.player-claim").forEach(b=>b.disabled=true);later(nextKaruta,350)}
 function finishKaruta(){if(!beginFinishGuard("karuta"))return;markClear("karuta");
  let best=Math.max(...karuta.scores.slice(0,karuta.players));let winners=[];for(let i=0;i<karuta.players;i++)if(karuta.scores[i]===best)winners.push((i+1)+'P');
  gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>スターとコインをゲットしたよ！</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button></div>';
@@ -161,10 +162,10 @@ function flipMemory(card){
    save.stars+=2;save.coins+=3;persist();
    memory.first=null;memory.second=null;memory.lock=false;renderMemoryStatus();
    document.getElementById("memoryMsg").textContent="そろった！ もう一回できるよ！";
-   if(memory.matched===memory.totalPairs)setTimeout(finishMemory,650);
+   if(memory.matched===memory.totalPairs)later(finishMemory,650);
  }else{
    document.getElementById("memoryMsg").textContent="おしい！ つぎの人へ。";
-   setTimeout(()=>{memory.first.classList.remove("open");memory.second.classList.remove("open");memory.first=null;memory.second=null;if(memory.players>1)memory.current=(memory.current+1)%memory.players;memory.lock=false;renderMemoryStatus();document.getElementById("memoryMsg").textContent="カードを2まい めくろう！";},900);
+   later(()=>{if(!memory.first||!memory.second)return;memory.first.classList.remove("open");memory.second.classList.remove("open");memory.first=null;memory.second=null;if(memory.players>1)memory.current=(memory.current+1)%memory.players;memory.lock=false;renderMemoryStatus();document.getElementById("memoryMsg").textContent="カードを2まい めくろう！";},900);
  }
 }
 function finishMemory(){if(!beginFinishGuard("memory"))return;markClear("memory");
@@ -179,17 +180,17 @@ function nextRocket(){rocket.locked=false;
  let choices=sample(4);rocket.target=choices[Math.floor(Math.random()*choices.length)];
  let height=Math.min(88,(rocket.correct/rocket.maxRounds)*82+4);
  gameBody.innerHTML='<div class="rocket-game"><div class="rocket-sky"><div class="rocket-stars">A　B　C　D　E　F</div><div class="rocket-orbit">ABC PLANET</div><div class="rocket-craft" style="bottom:'+height+'%"><span class="rocket-window"></span><span class="rocket-flame"></span></div><div class="rocket-cloud c1"></div><div class="rocket-cloud c2"></div><div class="rocket-ground"></div></div><div class="rocket-panel"><div class="listen-status"><b>'+rocket.round+' / '+rocket.maxRounds+'</b><span>パワー '+rocket.correct+'</span></div><div class="message">聞こえた文字をえらんで、ロケットにパワーをためよう！ <button class="sound-btn" onclick="sayLetter(rocket.target)">もう一度聞く</button></div><div class="rocket-choices">'+choices.map(x=>'<button class="rocket-letter" onclick="answerRocket(\\''+x+'\\',this)">'+x+'</button>').join("")+'</div><div id="rocketMsg" class="message"></div></div></div>';
- setTimeout(()=>sayLetter(rocket.target),400);
+ later(()=>sayLetter(rocket.target),400);
 }
 function answerRocket(x,el){
  if(rocket.locked)return;
  if(x===rocket.target){
    rocket.locked=true;el.classList.add("correct");rocket.correct++;save.stars+=2;save.coins+=3;persist();
    document.getElementById("rocketMsg").textContent=rocket.correct===rocket.maxRounds?"フルパワー！":"パワーアップ！";
-   setTimeout(nextRocket,700);
+   later(nextRocket,700);
  }else{
    el.classList.add("listen-wrong");document.getElementById("rocketMsg").textContent="もう一度 音を聞いてみよう！";
-   setTimeout(()=>el.classList.remove("listen-wrong"),400);sayLetter(rocket.target);
+   later(()=>el.classList.remove("listen-wrong"),400);sayLetter(rocket.target);
  }
 }
 function finishRocket(){if(!beginFinishGuard("rocket"))return;markClear("rocket");
@@ -208,7 +209,7 @@ function nextMonster(){
  let choices=sample(4);monster.target=choices[Math.floor(Math.random()*choices.length)];
  let faces=["M","G","R","Z"],face=faces[(monster.round-1)%faces.length];
  gameBody.innerHTML='<div class="monster-wrap"><div class="battle-stage"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-name">LETTER MONSTER</div><div class="monster-body mtype'+((monster.round-1)%4+1)+'"><div class="monster-horns"></div><div class="monster-eyes"><i></i><i></i></div><div class="monster-mouth"></div><div class="monster-mark">'+face+'</div></div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\\''+x+'\\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
- setTimeout(()=>sayLetter(monster.target),450);
+ later(()=>sayLetter(monster.target),450);
 }
 function answerMonster(x,el){
  if(monster.locked)return;
@@ -217,11 +218,11 @@ function answerMonster(x,el){
    el.classList.add("correct");save.stars+=2;save.coins+=3;
    let msg="ヒット！";
    if(monster.power>=3){monster.power=0;save.stars+=3;save.coins+=5;msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-body").classList.add("special-hit")}
-   persist();document.getElementById("monsterMsg").textContent=msg;setTimeout(nextMonster,850);
+   persist();document.getElementById("monsterMsg").textContent=msg;later(nextMonster,850);
  }else{
    monster.hp=Math.max(0,monster.hp-1);monster.combo=0;monster.power=0;el.classList.add("listen-wrong");
    document.getElementById("monsterMsg").textContent="おしい！ 音をもう一度聞こう。";
-   if(monster.hp===0){monster.locked=true;setTimeout(monsterRecover,700)}else{setTimeout(()=>el.classList.remove("listen-wrong"),400);sayLetter(monster.target)}
+   if(monster.hp===0){monster.locked=true;later(monsterRecover,700)}else{later(()=>el.classList.remove("listen-wrong"),400);sayLetter(monster.target)}
  }
 }
 function monsterRecover(){
@@ -242,14 +243,14 @@ function nextTreasure(){
  treasure.locked=false;
  let letters=sample(10);treasure.target=letters[Math.floor(Math.random()*letters.length)];
  gameBody.innerHTML='<div class="treasure-wrap"><div class="treasure-map"><div class="map-sea"></div><div class="island island-a"></div><div class="island island-b"></div><div class="palm p1tree"><i></i><i></i><i></i></div><div class="palm p2tree"><i></i><i></i><i></i></div><div class="mountain"></div><div class="river"></div><div class="path-dots">• • • • • • • •</div><div class="chest"></div>'+letters.map((x,i)=>'<button class="hidden-letter" style="left:'+treasureSpots[i].x+'%;top:'+treasureSpots[i].y+'%" onclick="findTreasure(\\''+x+'\\',this)">'+x+'</button>').join("")+'</div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="treasure-scroll"><p>海ぞくからのミッション</p><div class="message">聞こえた文字を 地図からさがそう！</div><button class="sound-btn big-sound" onclick="sayLetter(treasure.target)">音を聞く</button></div><div id="treasureMsg" class="message">地図を よーく見てね。</div></div></div>';
- setTimeout(()=>sayLetter(treasure.target),450);
+ later(()=>sayLetter(treasure.target),450);
 }
 function findTreasure(x,el){
  if(treasure.locked)return;
  if(x===treasure.target){
    treasure.locked=true;treasure.found++;el.classList.add("treasure-found");save.stars+=2;save.coins+=4;persist();
    document.getElementById("treasureMsg").textContent="みつけた！ たからをゲット！";
-   setTimeout(nextTreasure,900);
+   later(nextTreasure,900);
  }else{
    el.classList.add("treasure-miss");document.getElementById("treasureMsg").textContent="そこじゃないみたい。もう一度聞こう！";
    setTimeout(()=>el.classList.remove("treasure-miss"),450);sayLetter(treasure.target);
@@ -279,7 +280,7 @@ function answerTrain(x,el){
    let m=document.querySelector(".missing-car b");if(m)m.textContent=train.target;
    document.getElementById("trainMsg").textContent="せいかい！ 列車が出発！";
    document.querySelector(".train-cars").classList.add("depart");document.querySelector(".train-engine").classList.add("depart-engine");
-   setTimeout(nextTrain,1000);
+   later(nextTrain,1000);
  }else{
    el.classList.add("listen-wrong");document.getElementById("trainMsg").textContent="おしい！ Aから順番に言ってみよう。";
    setTimeout(()=>el.classList.remove("listen-wrong"),450);
@@ -311,7 +312,7 @@ function nextBoss(){
    prompt='？に入る文字で バリアをやぶれ！';
  }
  gameBody.innerHTML='<div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\\''+x+'\\',this)">'+x+'</button>').join("")+'</div><div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
- if(boss.type!=="order")setTimeout(()=>sayLetter(boss.target),450);
+ if(boss.type!=="order")later(()=>sayLetter(boss.target),450);
 }
 function answerBoss(x,el){
  if(boss.locked)return;
@@ -321,7 +322,7 @@ function answerBoss(x,el){
    let bonus=boss.combo>0&&boss.combo%3===0;if(bonus){boss.hp=Math.max(0,boss.hp-1);save.stars+=3;save.coins+=5}
    persist();document.querySelector(".boss-creature").classList.add("boss-hit");
    document.getElementById("bossMsg").textContent=bonus?"3れんぞく！ ダブルアタック！":"ヒット！";
-   setTimeout(nextBoss,850);
+   later(nextBoss,850);
  }else{
    boss.playerHp=Math.max(0,boss.playerHp-1);boss.combo=0;el.classList.add("listen-wrong");
    document.getElementById("bossMsg").textContent="おしい！ ボスのこうげき！";
@@ -342,7 +343,7 @@ const mapAreas=[
  ["ロケット岬","rocket",2],["モンスター谷","monster",3],["たから島","treasure",4],
  ["ABCステーション","train",5],["天空の城","boss",6],["？？？",null,7]
 ];
-function openAdventureMap(){
+function openAdventureMap(){newSession();
  home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ABCぼうけんマップ";
  let lv=save.worldLv||1;
  gameBody.innerHTML='<div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>ゲームをクリアすると、新しい道がひらくよ。</span></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=i===0||lv>=a[2];let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(unlocked&&a[1]?'onclick="openGame(\\''+a[1]+'\\')"':'')+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div>';
@@ -387,7 +388,7 @@ function ensureBuddySave(){
  if(!save.activeBuddy)save.activeBuddy="";
  persist();
 }
-function openEggs(){
+function openEggs(){newSession();
  ensureBuddySave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ABCたまご・なかま";
  let owned=save.buddies.length,need=20,ready=save.eggProgress>=need;
  gameBody.innerHTML='<div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>たまごパワー '+Math.min(save.eggProgress,need)+' / '+need+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready?'disabled':'')+'>スター2こで パワー +2</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
@@ -524,7 +525,7 @@ const titleDefs=[
 ]
 function ensureTitleSave(){if(!save.selectedTitle)save.selectedTitle="";persist()}
 function titleUnlocked(d){try{return !!d[2](save)}catch(e){return false}}
-function openTitles(){
+function openTitles(){newSession();
  ensureTitleSave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="しょうごう";
  let count=titleDefs.filter(titleUnlocked).length;
  gameBody.innerHTML='<div class="title-head"><div><b>見つけたしょうごう　'+count+' / '+titleDefs.length+'</b><small>遊び方によって、ひみつのしょうごうも見つかるよ。</small></div><div class="wearing-title">いまのしょうごう：<b>'+(save.selectedTitle||"まだ つけていない")+'</b></div></div><div class="title-grid">'+titleDefs.map((d,i)=>renderTitle(d,i)).join("")+'</div><div class="secret-title-note">条件が書いていない「？？？」もあるよ。いろいろな遊び方を試してみよう。</div>';
@@ -546,7 +547,7 @@ function dailyData(){
  ["ABCゲームで 3回遊ぼう",Math.min(3,(save.plays||0)-save.daily.startPlays),3,8,"coin"],
  ["スターを 5こ集めよう",Math.min(5,Math.max(0,(save.stars||0)-save.daily.startStars)),5,4,"egg"]
  ]}
-function openDaily(){
+function openDaily(){newSession();
  ensureDaily();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="きょうのミッション";
  let ds=dailyData();
  gameBody.innerHTML='<div class="daily-banner"><b>きょうの3つのミッション</b><span>できる日だけでOK。れんぞくログインはありません。</span></div><div class="daily-list">'+ds.map((d,i)=>'<div class="daily-card '+(d[1]>=d[2]?'daily-done':'')+'"><div class="daily-number">'+(i+1)+'</div><div><b>'+d[0]+'</b><div class="daily-meter"><i style="width:'+(d[1]/d[2]*100)+'%"></i></div><small>'+d[1]+' / '+d[2]+'　ごほうび：'+(d[4]==="star"?"スター "+d[3]+"こ":d[4]==="coin"?"コイン "+d[3]+"まい":"たまごパワー +"+d[3])+'</small></div><button onclick="claimDaily('+i+')" '+(d[1]<d[2]||save.daily.claimed[i]?'disabled':'')+'>'+(save.daily.claimed[i]?"うけとりずみ":"うけとる")+'</button></div>').join("")+'</div><div class="daily-note">休んだ日があっても不利にならないよ。次に来た日に、新しいミッションにちょうせんしよう！</div>';
@@ -557,11 +558,11 @@ function claimDaily(i){
  save.daily.claimed[i]=true;persist();openDaily();
 }
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true};persist()}
-function openSettings(){
+function openSettings(){newSession();
  ensureSettings();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="せってい";
  gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="sayLetter(\\'A\\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\\'sound\\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\\'motion\\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは自動保存されます。</small></div><span class="saved-badge">保存中</span></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p></div></div>';
 }
-function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();openSettings()}
+function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
 function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
 document.addEventListener("visibilitychange",()=>{if(document.hidden&&"speechSynthesis" in window)speechSynthesis.cancel()});
 render();
