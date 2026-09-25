@@ -10,6 +10,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:12px}.l
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.game{min-height:160px;border:4px solid #fff;border-radius:22px;padding:14px;box-shadow:0 5px 0 rgba(92,61,30,.35);cursor:pointer;text-align:left}.game b{display:block;font-size:clamp(18px,2.1vw,27px);margin-bottom:8px}.game small{font-weight:800;line-height:1.55}.g1{background:#ffe77a}.g2{background:#ffc7e3}.g3{background:#bdeeff}.g4{background:#d8c8ff}.g5{background:#c9f48d}.g6{background:#ffe4a0}.g7{background:#aef0c4}.g8{background:#ffc2a7}
 .letter{font-family:NH,sans-serif;font-size:42px;letter-spacing:8px}.nav{margin-top:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:#a96b2c;padding:10px;border-radius:18px}.nav button{border:0;border-radius:13px;padding:12px 5px;background:#fff1c2;font-weight:900;cursor:pointer}
 .screen{display:none;background:#fffdf3;border-radius:24px;padding:20px;min-height:70vh}.screen.active{display:block}.home.hidden{display:none}.back{border:0;background:#ffd34f;border-radius:14px;padding:10px 16px;font-weight:900}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.card{aspect-ratio:1;border:4px solid #69a8d8;border-radius:20px;background:white;font-family:NH,sans-serif;font-size:clamp(42px,9vw,92px);font-weight:700}.message{text-align:center;font-size:24px;font-weight:900;margin:18px}
+.player-select{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.player-btn{border:3px solid #9b642a;background:#ffe77a;border-radius:18px;padding:18px 26px;font-size:24px;font-weight:1000}.karuta-note{text-align:center;font-weight:800}.karuta-top,.score-row{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin:12px}.sound-btn{border:0;border-radius:14px;background:#8edcff;padding:10px 16px;font-weight:900}.score-row span{padding:8px 13px;border-radius:14px;font-weight:1000;background:#eee}.p1{background:#bfe2ff!important}.p2{background:#ffc7d1!important}.p3{background:#c8f2b2!important}.p4{background:#fff0a4!important}.karuta-board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:820px;margin:14px auto}.karuta-card{aspect-ratio:1.25;background:#fff;border:4px solid #e2b65d;border-radius:18px;font-family:NH,sans-serif;font-size:clamp(46px,8vw,82px);box-shadow:0 5px 0 #b67a31}.karuta-card.hit{background:#fff09a;transform:scale(.96)}.karuta-card.wrong{animation:shake .25s}.claim-row{display:flex;justify-content:center;gap:10px;margin-top:12px}.claim{border:0;border-radius:15px;padding:13px 22px;font-weight:1000}.finish-box{text-align:center;padding:30px;font-size:22px;font-weight:900}.big-star{font-size:80px;color:#f5b400}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.nav{grid-template-columns:repeat(3,1fr)}.game{min-height:135px}.hero{align-items:flex-start}.world{font-size:12px}}
 </style></head><body><main class="app">
 <div id="home" class="home">
@@ -34,13 +35,37 @@ const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save=JSON.parse(localStorag
 function render(){stars.textContent=save.stars;coins.textContent=save.coins;worldLv.textContent=save.worldLv}
 function persist(){localStorage.setItem("abcAdventureSave",JSON.stringify(save));render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
-function openGame(id){home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="listen") startListen(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function openGame(id){home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="karuta") startKarutaSetup(); else if(id==="listen") startListen(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
 function goHome(){game.classList.remove("active");home.classList.remove("hidden")}
 function sayLetter(l){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.75;speechSynthesis.speak(u)}
 function sample(n){return [...ABC].sort(()=>Math.random()-.5).slice(0,n)}
 let target="";
 function startListen(){let a=sample(4);target=a[Math.floor(Math.random()*a.length)];gameBody.innerHTML='<div class="message">音を聞いて、文字をタッチ！ <button onclick="sayLetter(target)">もう一度聞く</button></div><div class="cards">'+a.map(x=>'<button class="card" onclick="answer(\''+x+'\')">'+x+'</button>').join("")+'</div>';setTimeout(()=>sayLetter(target),350)}
 function answer(x){if(x===target){save.stars++;save.coins+=3;persist();gameBody.innerHTML='<div class="message">せいかい！ ★をゲット！<br><button class="back" onclick="startListen()">つぎの問題</button></div>'}else{sayLetter(target)}}
+let karuta={players:1,round:0,maxRounds:10,scores:[0,0,0,0],target:"",locked:false};
+function startKarutaSetup(){
+ gameBody.innerHTML='<div class="message">なん人で あそぶ？</div><div class="player-select">'+[1,2,3,4].map(n=>'<button class="player-btn" onclick="beginKaruta('+n+')">'+n+'人</button>').join("")+'</div><p class="karuta-note">iPadを まんなかに おいて、聞こえた文字を いちばん早くタッチ！</p>';
+}
+function beginKaruta(n){karuta={players:n,round:0,maxRounds:10,scores:[0,0,0,0],target:"",locked:false};nextKaruta()}
+function nextKaruta(){
+ karuta.round++; karuta.locked=false;
+ if(karuta.round>karuta.maxRounds){finishKaruta();return}
+ let letters=sample(12);karuta.target=letters[Math.floor(Math.random()*letters.length)];
+ gameBody.innerHTML='<div class="karuta-top"><b>'+karuta.round+' / '+karuta.maxRounds+'</b><button class="sound-btn" onclick="sayLetter(karuta.target)">もう一度聞く</button></div><div class="score-row">'+Array.from({length:karuta.players},(_,i)=>'<span class="p'+(i+1)+'">'+(i+1)+'P '+karuta.scores[i]+'枚</span>').join("")+'</div><div class="karuta-board">'+letters.map(x=>'<button class="karuta-card" onclick="takeKaruta(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="karutaMsg" class="message">よく聞いてね！</div>';
+ setTimeout(()=>sayLetter(karuta.target),450);
+}
+function takeKaruta(x,el){
+ if(karuta.locked)return;
+ if(x!==karuta.target){el.classList.add("wrong");setTimeout(()=>el.classList.remove("wrong"),350);sayLetter(karuta.target);return}
+ karuta.locked=true;el.classList.add("hit");
+ if(karuta.players===1){karuta.scores[0]++;save.stars++;save.coins+=2;persist();setTimeout(nextKaruta,750);return}
+ document.getElementById("karutaMsg").innerHTML='だれが とった？<div class="claim-row">'+Array.from({length:karuta.players},(_,i)=>'<button class="claim p'+(i+1)+'" onclick="claimKaruta('+i+')">'+(i+1)+'P</button>').join("")+'</div>';
+}
+function claimKaruta(i){karuta.scores[i]++;save.stars++;save.coins+=2;persist();setTimeout(nextKaruta,350)}
+function finishKaruta(){
+ let best=Math.max(...karuta.scores.slice(0,karuta.players));let winners=[];for(let i=0;i<karuta.players;i++)if(karuta.scores[i]===best)winners.push((i+1)+'P');
+ gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>スターとコインをゲットしたよ！</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button></div>';
+}
 function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
 render();
 </script></body></html>
