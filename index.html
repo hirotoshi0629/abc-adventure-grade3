@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ABCアドベンチャー</title>
+<style>
+@font-face{font-family:NH;src:url("NHHandwriting-Medium.otf") format("opentype");font-display:swap}
+*{box-sizing:border-box}body{margin:0;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#dff5ff;color:#33291f}
+button{font:inherit;touch-action:manipulation}.app{max-width:1180px;margin:auto;min-height:100vh;background:linear-gradient(#9de2ff,#f8efb8 56%,#b9e985);padding:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}.logo{font-weight:1000;font-size:clamp(28px,5vw,58px);color:#d85a13;text-shadow:0 3px #fff}.stats{display:flex;gap:8px}.pill{background:#fff;border:3px solid #9b642a;border-radius:30px;padding:9px 16px;font-weight:900}
+.hero{margin:8px 0 14px;background:linear-gradient(135deg,#78d7ff,#fff0a8);border:4px solid #fff;border-radius:24px;padding:18px;box-shadow:0 5px 0 #9b642a;display:flex;justify-content:space-between;align-items:center;min-height:150px}.hero h1{margin:0;font-size:clamp(22px,4vw,44px)}.hero p{font-weight:800}.world{background:#fff8df;border:3px solid #9b642a;border-radius:18px;padding:12px;text-align:center;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.game{min-height:160px;border:4px solid #fff;border-radius:22px;padding:14px;box-shadow:0 5px 0 rgba(92,61,30,.35);cursor:pointer;text-align:left}.game b{display:block;font-size:clamp(18px,2.1vw,27px);margin-bottom:8px}.game small{font-weight:800;line-height:1.55}.g1{background:#ffe77a}.g2{background:#ffc7e3}.g3{background:#bdeeff}.g4{background:#d8c8ff}.g5{background:#c9f48d}.g6{background:#ffe4a0}.g7{background:#aef0c4}.g8{background:#ffc2a7}
+.letter{font-family:NH,sans-serif;font-size:42px;letter-spacing:8px}.nav{margin-top:16px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:#a96b2c;padding:10px;border-radius:18px}.nav button{border:0;border-radius:13px;padding:12px 5px;background:#fff1c2;font-weight:900;cursor:pointer}
+.screen{display:none;background:#fffdf3;border-radius:24px;padding:20px;min-height:70vh}.screen.active{display:block}.home.hidden{display:none}.back{border:0;background:#ffd34f;border-radius:14px;padding:10px 16px;font-weight:900}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.card{aspect-ratio:1;border:4px solid #69a8d8;border-radius:20px;background:white;font-family:NH,sans-serif;font-size:clamp(42px,9vw,92px);font-weight:700}.message{text-align:center;font-size:24px;font-weight:900;margin:18px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.nav{grid-template-columns:repeat(3,1fr)}.game{min-height:135px}.hero{align-items:flex-start}.world{font-size:12px}}
+</style></head><body><main class="app">
+<div id="home" class="home">
+<header><div class="logo">ABC アドベンチャー</div><div class="stats"><div class="pill">★ <span id="stars">0</span></div><div class="pill">COIN <span id="coins">0</span></div></div></header>
+<section class="hero"><div><h1>26文字の たからものを さがそう！</h1><p>きいて・みつけて・あつめて、ABCワールドを大きくしよう。</p><div class="letter">A B C D E F</div></div><div class="world">MY WORLD<br>草原エリア Lv.<span id="worldLv">1</span></div></section>
+<section class="grid">
+<button class="game g1" onclick="openGame('karuta')"><b>ABCかるた</b><small>音を聞いて文字をタッチ！</small></button>
+<button class="game g2" onclick="openGame('memory')"><b>ABC神経衰弱</b><small>1〜3人でカードをそろえよう！</small></button>
+<button class="game g3" onclick="openGame('listen')"><b>聞いてタッチ！</b><small>4枚・6枚から聞こえた文字を選ぼう！</small></button>
+<button class="game g4" onclick="openGame('rocket')"><b>ABCロケット</b><small>正しい文字を選んで宇宙へ！</small></button>
+<button class="game g5" onclick="openGame('monster')"><b>アルファベットモンスター</b><small>聞こえた文字のモンスターを倒そう！</small></button>
+<button class="game g6" onclick="openGame('treasure')"><b>ABCトレジャーハント</b><small>かくれた文字を見つけよう！</small></button>
+<button class="game g7" onclick="openGame('train')"><b>ABCトレイン</b><small>たりない文字を選んで列車を完成！</small></button>
+<button class="game g8" onclick="openGame('boss')"><b>ボスバトル</b><small>いろいろな問題でボスに挑戦！</small></button>
+</section>
+<nav class="nav"><button onclick="showNotice('ぼうけんマップ')">ぼうけんマップ</button><button onclick="showNotice('ABCずかん')">ABCずかん</button><button onclick="showNotice('たまご・なかま')">たまご・なかま</button><button onclick="showNotice('ごほうびマシン')">ごほうびマシン</button><button onclick="showNotice('しょうごう')">しょうごう</button><button onclick="showNotice('せってい')">せってい</button></nav>
+</div>
+<section id="game" class="screen"><button class="back" onclick="goHome()">← ホーム</button><h2 id="gameTitle"></h2><div id="gameBody"></div></section>
+</main>
+<script>
+const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}');
+function render(){stars.textContent=save.stars;coins.textContent=save.coins;worldLv.textContent=save.worldLv}
+function persist(){localStorage.setItem("abcAdventureSave",JSON.stringify(save));render()}
+const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
+function openGame(id){home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="listen") startListen(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function goHome(){game.classList.remove("active");home.classList.remove("hidden")}
+function sayLetter(l){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.75;speechSynthesis.speak(u)}
+function sample(n){return [...ABC].sort(()=>Math.random()-.5).slice(0,n)}
+let target="";
+function startListen(){let a=sample(4);target=a[Math.floor(Math.random()*a.length)];gameBody.innerHTML='<div class="message">音を聞いて、文字をタッチ！ <button onclick="sayLetter(target)">もう一度聞く</button></div><div class="cards">'+a.map(x=>'<button class="card" onclick="answer(\''+x+'\')">'+x+'</button>').join("")+'</div>';setTimeout(()=>sayLetter(target),350)}
+function answer(x){if(x===target){save.stars++;save.coins+=3;persist();gameBody.innerHTML='<div class="message">せいかい！ ★をゲット！<br><button class="back" onclick="startListen()">つぎの問題</button></div>'}else{sayLetter(target)}}
+function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
+render();
+</script></body></html>
