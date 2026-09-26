@@ -298,6 +298,10 @@ body.inner-screen button:active{transform:translateY(2px) scale(.985)}
 body.inner-screen .correct{animation:kgPop .28s ease}
 @keyframes kgPop{0%{transform:scale(.94)}55%{transform:scale(1.06)}100%{transform:scale(1)}}
 @media(pointer:coarse){body.inner-screen button{min-height:52px}}
+
+.adventure-celebration{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(24,63,121,.18);opacity:0;pointer-events:none;transition:.25s}
+.adventure-celebration.show{opacity:1}.celebrate-card{min-width:min(82vw,420px);padding:24px 28px;border:6px solid #fff;border-radius:28px;background:linear-gradient(#fffbe1,#ffe46c);box-shadow:0 10px 0 #d69a21,0 18px 35px #274a7955;text-align:center;transform:scale(.78);transition:.28s cubic-bezier(.2,1.35,.4,1)}
+.adventure-celebration.show .celebrate-card{transform:scale(1)}.celebrate-stars{font-size:34px;letter-spacing:8px;color:#ff9f1c;text-shadow:0 2px 0 #b96900}.celebrate-card b{display:block;font-size:clamp(28px,5vw,46px);color:#2454a4}.celebrate-card span{display:block;margin-top:8px;font-weight:900;color:#5d4a22}.review-shortcut{background:linear-gradient(#d8b4ff,#a572ed)!important;color:#fff!important;box-shadow:0 5px 0 #7046b0!important}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -502,7 +506,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-recorded-audio-final";
+const APP_BUILD="2026.09.26-final-polish-pass7";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -594,12 +598,28 @@ function syncWorldLevel(){
  let kinds=practiceClearKinds(),lv=Math.min(6,1+kinds);
  save.worldLv=Math.max(1,Math.min(6,Math.max(save.worldLv||1,lv)));
 }
-function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;syncWorldLevel();ensureMilestoneShards();syncEarnedTitles();return first}
+function showAdventureCelebration(title,sub){
+ if(save.settings&&save.settings.motion===false)return;
+ let old=document.getElementById("adventureCelebration");if(old)old.remove();
+ let el=document.createElement("div");el.id="adventureCelebration";el.className="adventure-celebration";
+ el.innerHTML='<div class="celebrate-card"><div class="celebrate-stars">★ ★ ★</div><b>'+title+'</b><span>'+sub+'</span></div>';
+ document.body.appendChild(el);setTimeout(()=>el.classList.add("show"),20);setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},1700);
+}
+function markClear(id){
+ save.clears=save.clears||{};let first=!save.clears[id],before=save.worldLv||1;
+ save.clears[id]=(save.clears[id]||0)+1;syncWorldLevel();ensureMilestoneShards();syncEarnedTitles();
+ let after=save.worldLv||1;
+ setTimeout(()=>{if(after>before)showAdventureCelebration("ワールド Lv."+after+"！","ぼうけんできる世界が広がった！");else if(first)showAdventureCelebration("はじめてクリア！","新しい記録がふえたよ！")},180);
+ return first
+}
+function reviewShortcut(){
+ let w=weakLetters(5);return w.length?'<button class="back review-shortcut" onclick="listen.level=\'review\';openGame(\'listen\')">ふくしゅう '+w.slice(0,3).join("・")+'</button>':''
+}
 function clearNextStep(){
- let k=practiceClearKinds();
- if(k<5)return '<div class="clear-next"><b>つぎの目標</b><span>あと '+(5-k)+'しゅるいクリアで ボスへの道がひらく！</span><button class="back" onclick="openAdventureMap()">ぼうけんマップ</button></div>';
- if(!(save.clears?.boss>0))return '<div class="clear-next"><b>つぎの目標</b><span>ボスへの道がひらいた！</span><button class="back" onclick="openGame(\'boss\')">ボスバトルへ</button></div>';
- let s=secretState();return '<div class="clear-next"><b>つぎの目標</b><span>'+(s.open?'？？？の島への道が見えている！':'ボスの先の？？？をさがそう。なかま・島・かけらがカギ！')+'</span><button class="back" onclick="openAdventureMap()">ぼうけんマップ</button></div>';
+ let k=practiceClearKinds(),review=reviewShortcut();
+ if(k<5)return '<div class="clear-next"><b>つぎの目標</b><span>あと '+(5-k)+'しゅるいクリアで ボスへの道がひらく！</span><button class="back" onclick="openAdventureMap()">ぼうけんマップ</button>'+review+'</div>';
+ if(!(save.clears?.boss>0))return '<div class="clear-next"><b>つぎの目標</b><span>ボスへの道がひらいた！</span><button class="back" onclick="openGame(\'boss\')">ボスバトルへ</button>'+review+'</div>';
+ let sec=secretState();return '<div class="clear-next"><b>つぎの目標</b><span>'+(sec.open?'？？？の島への道が見えている！':'ボスの先の？？？をさがそう。なかま・島・かけらがカギ！')+'</span><button class="back" onclick="openAdventureMap()">ぼうけんマップ</button>'+review+'</div>';
 }
 function rewardProgressText(){ensureEconomy();let cards=collectionCount(),egg=Math.min(20,save.eggProgress||0);return 'ABCカード '+cards+' / 260　・　たまごパワー '+egg+' / 20　・　ワールド Lv.'+(save.worldLv||1)}
 function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);return true}
@@ -608,8 +628,8 @@ function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false;
 function openGame(id){if(openGameBusy)return;openGameBusy=true;try{if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}finally{openGameBusy=false}}
-function enterGameScreen(title){soundAuditRun++;let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){openGameBusy=false;soundAuditRun++;let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function enterGameScreen(title){soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
