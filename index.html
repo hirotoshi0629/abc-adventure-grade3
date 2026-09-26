@@ -514,7 +514,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-ios-audio-pass12";
+const APP_BUILD="2026.09.26-audio-guard-pass13";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -676,7 +676,7 @@ function preferredEnglishVoice(){
  return vs.find(x=>/^en-US$/i.test(x.lang)&&x.localService)||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang)&&x.localService)||vs.find(x=>/^en(-|_)/i.test(x.lang));
 }
 function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
-const EXPECTED_RECORDED_AUDIO_END=40.0;
+const EXPECTED_RECORDED_AUDIO_END=39.45;
 function recordedAudioHealthy(){let d=Number(recordedAlphabetAudio.duration);return !recordedAudioFailed&&Number.isFinite(d)&&d>=EXPECTED_RECORDED_AUDIO_END}
 function validateRecordedAudio(){let d=Number(recordedAlphabetAudio.duration);if(Number.isFinite(d)&&d<EXPECTED_RECORDED_AUDIO_END){recordedAudioFailed=true;console.warn("Recorded alphabet audio is shorter than expected:",d)}}
 recordedAlphabetAudio.addEventListener("loadedmetadata",validateRecordedAudio);
