@@ -187,7 +187,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 /* APPROVED MASTER IMAGE MODE — activates only when the exact approved master asset loads */
 .master-home{display:none;position:relative;width:min(100%,1536px);margin:0 auto;aspect-ratio:3/2;background:#dff5ff;overflow:hidden}
 .master-home.ready{display:block}
-.master-home.ready~#home{display:none!important}
+.master-home.ready{display:block!important}body.master-mode #home{display:none!important}
 .master-home-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .master-hotspot{position:absolute;background:transparent!important;border:0!important;box-shadow:none!important;min-height:0!important;padding:0!important;z-index:3}
 .master-hotspot:focus-visible{outline:5px solid #2479c9;outline-offset:2px;border-radius:18px}
@@ -243,7 +243,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-master-live";
+const APP_BUILD="2026.09.26-master-live-fix";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -294,9 +294,9 @@ function openFirstGuide(){
 function initApprovedMasterHome(){
  let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
  if(!art||!wrap)return;
- const ready=()=>{wrap.classList.add("ready");syncMasterHome()};
+ const ready=()=>{wrap.classList.add("ready");document.body.classList.add("master-mode");wrap.style.display="block";syncMasterHome()};
  art.addEventListener("load",ready,{once:true});
- art.addEventListener("error",()=>wrap.classList.remove("ready"),{once:true});
+ art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode")},{once:true});
  if(art.complete&&art.naturalWidth>0)ready();
 }
 function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins");if(a)a.textContent=save.stars||0;if(b)b.textContent=save.coins||0}
@@ -322,8 +322,8 @@ function gameUnlocked(id){let req={karuta:1,memory:2,listen:2,rocket:2,monster:3
 function lockedGame(id){let req={memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6}[id]||1;enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>まだ きりの中……</h2><p>ぼうけんマップの道を進めて、ワールド Lv.'+req+'になると遊べるよ。</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false;
 function openGame(id){if(openGameBusy)return;openGameBusy=true;later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
-function enterGameScreen(title){let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){let mh=document.getElementById("masterHome");if(mh&&mh.classList.contains("ready"))mh.style.display="block";newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function enterGameScreen(title){let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){let mh=document.getElementById("masterHome");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
