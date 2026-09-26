@@ -149,7 +149,7 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-d";
+const APP_BUILD="2026.09.26-e";
 const SAVE_VERSION=3;
 function verifyMasterContract(){
  const nav=document.querySelectorAll(".bottom-nav button");
@@ -260,7 +260,7 @@ function takeKaruta(x,el){
  if(karuta.players===1){karuta.scores[0]++;earn(1,2);persist();later(nextKaruta,750);return}
  document.getElementById("karutaMsg").innerHTML='だれが とった？<div class="claim-row">'+Array.from({length:karuta.players},(_,i)=>'<button class="claim p'+(i+1)+'" onclick="claimKaruta('+i+')">'+(i+1)+'P</button>').join("")+'</div>';
 }
-function claimKaruta(i){if(!karuta.locked)return;karuta.locked=false;karuta.scores[i]++;earn(1,2);persist();document.querySelectorAll(".claim-btn,.player-claim").forEach(b=>b.disabled=true);later(nextKaruta,350)}
+function claimKaruta(i){if(!karuta.locked)return;karuta.scores[i]++;document.querySelectorAll(".claim,.claim-btn,.player-claim").forEach(b=>b.disabled=true);earn(1,2);persist();later(nextKaruta,350)}
 function finishKaruta(){if(!beginFinishGuard("karuta"))return;markClear("karuta");let first=firstClearBonus("karuta",2,5);
  let best=Math.max(...karuta.scores.slice(0,karuta.players));let winners=[];for(let i=0;i<karuta.players;i++)if(karuta.scores[i]===best)winners.push((i+1)+'P');
  gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>スターとコインをゲットしたよ！'+(first?' はじめてクリアボーナスもゲット！':'')+'</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button> <button class="back" onclick="goHome()">ホーム</button></div>';
@@ -478,7 +478,8 @@ function openAdventureMap(){enterGameScreen("ABCぼうけんマップ");ensureMi
  gameBody.innerHTML='<div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>ゲームをクリアすると、新しい道がひらくよ。</span></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div role="button" tabindex="0" onkeydown="activateMapKey(event)" class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\\''+a[1]+'\\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div>';
 }
 function openSecretIsland(){ensureMilestoneShards();let s=secretState();enterGameScreen(s.open?"ひみつの島":"？？？");if(!s.open){gameBody.innerHTML='<div class="secret-locked"><div class="mystery-island">？？？</div><h2>まだ きりの中……</h2><p>天空のおしろの先に、島のかげが見える。</p><div class="secret-hints"><span>'+(s.boss?'天空から ふしぎな道が見えた':'天空のおしろに 何かありそう')+'</span><span>'+(s.shards>=4?'かけらが ひとつの形になりそう':'ひみつのかけらが 関係していそう')+'</span><span>'+(s.buddies>=5?'なかまたちが 道を見つけたみたい':'なかまと進むと 何か起こるかも')+'</span></div><button class="back" onclick="openAdventureMap()">地図にもどる</button></div>';return}save.secretDiscovered=true;persist();let buddy=save.activeBuddy||"なかまたち";gameBody.innerHTML='<div class="secret-island-scene"><div class="secret-sky">A　?　B　?　C</div><div class="secret-land"><div class="secret-gate"><b>ABC</b></div><div class="secret-crystal">?</div></div><h2>ひみつの島を 発見！</h2><p>'+buddy+'と いっしょに、きりの向こうへたどり着いた！</p><div class="secret-message">島の奥には、まだ開かない大きな門がある……<br><b>THE ADVENTURE CONTINUES...</b></div><button class="back" onclick="openSecretChallenge()">島を たんけんする</button> <button class="back" onclick="openAdventureMap()">地図にもどる</button></div>'}
-function openSecretChallenge(){enterGameScreen("ひみつの島・ABCチャレンジ");let target=sample(1)[0],pool=choicesWithTarget(target,4);gameBody.innerHTML='<div class="secret-challenge"><button class="back" onclick="openSecretIsland()">← 島にもどる</button><h2>きりの中から 聞こえた文字は？</h2><button class="sound-btn" onclick="sayLetter(\\''+target+'\\')">もう一度聞く</button><div class="listen-cards four">'+pool.map((x,i)=>'<button class="listen-card" onclick="answerSecret(\\''+x+'\\',\\''+target+'\\',this)">'+x+'</button>').join("")+'</div><p id="secretMsg">正しい文字を見つけると、島が少し光るよ。</p></div>';if(speechReady)later(()=>sayLetter(target),350)}
+let secretAnswerLocked=false;
+function openSecretChallenge(){enterGameScreen("ひみつの島・ABCチャレンジ");secretAnswerLocked=false;let target=sample(1)[0],pool=choicesWithTarget(target,4);gameBody.innerHTML='<div class="secret-challenge"><button class="back" onclick="openSecretIsland()">← 島にもどる</button><h2>きりの中から 聞こえた文字は？</h2><button class="sound-btn" onclick="sayLetter(\\''+target+'\\')">もう一度聞く</button><div class="listen-cards four">'+pool.map((x,i)=>'<button class="listen-card" onclick="answerSecret(\\''+x+'\\',\\''+target+'\\',this)">'+x+'</button>').join("")+'</div><p id="secretMsg">正しい文字を見つけると、島が少し光るよ。</p></div>';if(speechReady)later(()=>sayLetter(target),350)}
 function answerSecret(x,target,el){if(document.querySelector(".secret-challenge .correct"))return;if(x===target){el.classList.add("correct");save.secretPlays=(save.secretPlays||0)+1;let reward=(save.secretPlays||0)<=3;if(reward)earn(2,5);persist();document.getElementById("secretMsg").textContent=reward?"島が光った！ ごほうびも見つけた！":"島が光った！ でも、大きな門はまだ開かない……";later(openSecretIsland,1000)}else{if(el.dataset.busy==="1")return;el.dataset.busy="1";el.classList.add("listen-wrong");document.getElementById("secretMsg").textContent="もう一度 よく聞こう！";sayLetter(target);later(()=>{el.classList.remove("listen-wrong");delete el.dataset.busy},400)}}
 function mapIcon(i,u){
  if(!u)return '<span class="fog">?</span>';
@@ -533,14 +534,14 @@ function renderBuddy(b,i){
 }
 let eggFeedBusy=false;
 function feedEgg(){
- ensureBuddySave();if(eggFeedBusy||(save.stars||0)<2||save.eggProgress>=20)return;eggFeedBusy=true;
+ ensureBuddySave();if(eggFeedBusy||(save.stars||0)<2||save.eggProgress>=20||(save.buddies||[]).length>=buddies.length)return;eggFeedBusy=true;
  save.stars=Math.max(0,save.stars-2);save.eggProgress=Math.min(20,save.eggProgress+2);persist();openEggs();
 }
 let hatchBusy=false;
 function hatchEgg(){if(hatchBusy)return;hatchBusy=true;
  ensureBuddySave();if(save.eggProgress<20){hatchBusy=false;return;}
  let left=buddies.map((_,i)=>i).filter(i=>!save.buddies.includes(i));
- if(!left.length){hatchBusy=false;gameBody.innerHTML='<div class="finish-box"><h2>なかまたちが そろった！</h2><p>でも、遠くから新しいたまごの気配がする……</p><div class="mystery-island">？？？</div><button class="back" onclick="openEggs()">なかまを見る</button></div>';return}
+ if(!left.length){hatchBusy=false;gameBody.innerHTML='<div class="finish-box"><h2>なかまたちが そろった！</h2><p>でも、遠くから新しいたまごの気配がする……</p><div class="mystery-island">？？？</div><button class="back" onclick="openEggs()">なかまを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>';return}
  let idx=left[Math.floor(Math.random()*left.length)];save.buddies.push(idx);save.eggProgress=0;if(!save.activeBuddy)save.activeBuddy=buddies[idx][0];persist();
  let b=buddies[idx];
  gameBody.innerHTML='<div class="hatch-scene"><div class="hatch-rays"></div><div class="new-buddy buddy-creature buddy-c'+(idx%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+b[2]+'</em></div><h2>'+b[0]+'が なかまになった！</h2><p>'+b[1]+'の力をもつ ABCなかまだよ。</p><button class="back" onclick="openEggs()">なかまたちを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>';
@@ -571,7 +572,7 @@ function useRewardMachine(){
  ensureRewardSave();if(rewardBusy||save.coins<10)return;rewardBusy=true;save.coins=Math.max(0,save.coins-10);
  save.rewardMachineUses=(save.rewardMachineUses||0)+1;
  let forceShard=save.rewardMachineUses%8===0&&(save.rewardItems.shard||0)<4;
- let r=forceShard?rewardItems.find(x=>x.kind==="shard"):rewardItems[Math.floor(Math.random()*rewardItems.length)];
+ let r=(forceShard?rewardItems.find(x=>x.kind==="shard"):null)||rewardItems[Math.floor(Math.random()*rewardItems.length)];
  if(r.kind==="egg"){if((save.buddies||[]).length>=buddies.length){save.rewardItems.sparkle=(save.rewardItems.sparkle||0)+r.amount;r={name:"ワールドのひかり",kind:"sparkle",amount:r.amount,mark:"LIGHT"}}else save.eggProgress=Math.min(20,(save.eggProgress||0)+r.amount)}
  else if(r.kind==="star"){earn(r.amount,0)}
  else if(r.kind==="card"){save.rewardItems.bonusCards=(save.rewardItems.bonusCards||0)+1;save.totalCardsFound=Math.min(260,(save.totalCardsFound||0)+1)}
@@ -597,10 +598,8 @@ function worldSpiritLabel(){let n=worldSpirit();return n<12?"小さな光":n<30?
 function ensureWorldSave(){
  ensureRewardSave();
  if(!save.worldPlaced)save.worldPlaced={tree:0,flower:0};
- persist();
 }
-function openMyWorld(){enterGameScreen("マイワールド");ensureMilestoneShards();persist();
- ensureWorldSave();
+function openMyWorld(){enterGameScreen("マイワールド");ensureMilestoneShards();ensureWorldSave();persist();
  let lv=save.worldLv||1,trees=save.worldPlaced.tree||0,flowers=save.worldPlaced.flower||0;
  let buddy=buddies.find(b=>b[0]===save.activeBuddy);
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="myworld-head"><div><b>ABCワールド Lv.'+lv+'</b><small>ぼうけんするほど、島が少しずつにぎやかになるよ。</small><span class="world-spirit">島のひかり：'+worldSpiritLabel()+'</span></div><div class="world-stock">もっているもの　木 '+save.rewardItems.tree+'　お花 '+save.rewardItems.flower+'</div></div><div class="world-canvas lv'+Math.min(lv,6)+'"><div class="world-sun"></div><div class="world-cloud wc1"></div><div class="world-cloud wc2"></div><div class="world-island"><div class="world-river"></div>'+worldBuildings(lv)+worldDecor("tree",trees)+worldDecor("flower",flowers)+(buddy?'<div class="world-buddy"><div class="buddy-creature buddy-c'+(buddies.indexOf(buddy)%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+buddy[2]+'</em></div><b>'+buddy[0]+'</b></div>':'')+'</div><div class="far-island">'+(lv>=6?'？？？':'')+'</div><div class="world-whisper">'+(save.secretDiscovered?'ひみつの島への道が見えている。でも、その奥にはまだ大きな門が……':worldSpirit()>=90?'空のむこうで、大きな光が動いた……':worldSpirit()>=55?'遠くの島が、少しずつ近づいている気がする……':worldSpirit()>=30?'海のむこうに、何か光っている……':'島を育てると、まだ知らない場所が見つかるかも……')+'</div></div><div class="world-actions"><div><h3>島をかざろう</h3><button onclick="placeWorldItem(\\'tree\\')" '+(save.rewardItems.tree<1?'disabled':'')+'>木を1本おく</button><button onclick="placeWorldItem(\\'flower\\')" '+(save.rewardItems.flower<1?'disabled':'')+'>お花を1つおく</button></div><div class="world-growth"><b>島の成長</b>'+worldGrowthRows(lv)+'</div></div>';
@@ -712,10 +711,11 @@ function openDaily(){enterGameScreen("きょうのミッション");
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="daily-banner"><b>きょうの3つのミッション</b><span>できる日だけでOK。れんぞくログインはありません。</span></div><div class="daily-list">'+ds.map((d,i)=>'<div class="daily-card '+(d[1]>=d[2]?'daily-done':'')+'"><div class="daily-number">'+(i+1)+'</div><div><b>'+d[0]+'</b><div class="daily-meter"><i style="width:'+(d[1]/d[2]*100)+'%"></i></div><small>'+d[1]+' / '+d[2]+'　ごほうび：'+(d[4]==="star"?"スター "+d[3]+"こ":d[4]==="coin"?"コイン "+d[3]+"まい":"たまごパワー +"+d[3])+'</small></div><button onclick="claimDaily('+i+')" '+(d[1]<d[2]||save.daily.claimed[i]?'disabled':'')+'>'+(save.daily.claimed[i]?"うけとりずみ":"うけとる")+'</button></div>').join("")+'</div><div class="daily-note">休んだ日があっても不利にならないよ。次に来た日に、新しいミッションにちょうせんしよう！</div>';
  render();
 }
-function claimDaily(i){
- let d=dailyData()[i];if(!d||d[1]<d[2]||save.daily.claimed[i])return;
+let dailyClaimBusy=false;
+function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
+ let d=dailyData()[i];if(!d||d[1]<d[2]||save.daily.claimed[i]){dailyClaimBusy=false;return;}
  if(d[4]==="star"){earn(d[3],0)}else if(d[4]==="coin"){earn(0,d[3])}else{if((save.buddies||[]).length>=buddies.length){ensureRewardSave();save.rewardItems.sparkle=(save.rewardItems.sparkle||0)+d[3]}else save.eggProgress=Math.min(20,(save.eggProgress||0)+d[3]);}
- save.daily.claimed[i]=true;persist();openDaily();
+ save.daily.claimed[i]=true;persist();dailyClaimBusy=false;openDaily();
 }
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
