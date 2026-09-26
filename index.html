@@ -4,7 +4,7 @@
 <style>
 @font-face{font-family:"NHHandwriting";src:local("NHHandwriting Medium"),local("NHHandwriting-Medium"),local("NHHandwriting");font-display:swap}
 
-*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;touch-action:manipulation}body{margin:0;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#dff5ff;color:#33291f}
+*{box-sizing:border-box}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}html{-webkit-text-size-adjust:100%;touch-action:manipulation}body{margin:0;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#dff5ff;color:#33291f}
 button{font:inherit;touch-action:manipulation;min-height:44px;-webkit-tap-highlight-color:transparent;user-select:none}button:focus-visible{outline:5px solid #2479c9;outline-offset:3px}.app{max-width:1180px;margin:auto;min-height:100vh;background:linear-gradient(#9de2ff,#f8efb8 56%,#b9e985);padding:14px}
 header{display:flex;justify-content:space-between;align-items:center;gap:12px}.logo{font-weight:1000;font-size:clamp(28px,5vw,58px);color:#d85a13;text-shadow:0 3px #fff}.stats{display:flex;gap:8px}.pill{background:#fff;border:3px solid #9b642a;border-radius:30px;padding:9px 16px;font-weight:900}
 .hero:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 68% 22%,rgba(255,255,255,.75),transparent 16%),linear-gradient(155deg,transparent 58%,rgba(66,156,93,.28) 59% 73%,rgba(71,176,211,.3) 74%);pointer-events:none}.hero{position:relative;overflow:hidden;margin:8px 0 14px;background:linear-gradient(135deg,#78d7ff,#fff0a8);border:4px solid #fff;border-radius:24px;padding:18px;box-shadow:0 5px 0 #9b642a;display:flex;justify-content:space-between;align-items:center;min-height:150px}.hero h1{margin:0;font-size:clamp(22px,4vw,44px)}.hero p{font-weight:800}.world{background:#fff8df;border:3px solid #9b642a;border-radius:18px;padding:12px;text-align:center;font-weight:900}
@@ -139,6 +139,24 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
  .game-topbar h2{font-size:20px;padding-right:54px}
  .game-topbar .back{font-size:13px;padding:7px 9px}
 }
+
+/* CLASSROOM RELEASE HARDENING */
+body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+button{cursor:pointer}
+button:disabled,[aria-disabled="true"]{cursor:default}
+.screen{min-height:100dvh}
+@media(orientation:landscape) and (max-height:700px){
+ .app{padding-top:8px}
+ .hero{min-height:118px;padding:12px}
+ .hero p{margin:5px 0}
+ .grid{gap:9px}
+ .game{min-height:132px;padding:10px}
+}
+@media(max-width:620px){
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .game{min-height:138px}
+ .nav.bottom-nav{grid-template-columns:repeat(4,1fr)}
+}
 </style></head><body><main class="app">
 <div id="home" class="home">
 <header><div class="logo"><span>ABC</span> アドベンチャー <small>ALPHABET</small></div><div class="stats"><div class="pill">★ <span id="stars">0</span></div><div class="pill">COIN <span id="coins">0</span></div></div></header>
@@ -165,11 +183,11 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 </nav>
 </div>
 <section id="game" class="screen"><div class="game-topbar"><button class="back" onclick="goHome()">← ホーム</button><h2 id="gameTitle"></h2></div><div id="gameBody" class="game-body"></div></section>
-</main>
+<div id="appStatus" class="sr-only" aria-live="polite" aria-atomic="true"></div></main>
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-classroom-final";
+const APP_BUILD="2026.09.26-release-candidate";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -244,8 +262,10 @@ function goHome(){newSession();if("speechSynthesis" in window)try{speechSynthesi
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
+if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
 function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}speechReady=true;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
-function showToast(msg){let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
+function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
+function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
 function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function sample(n){return shuffle(ABC).slice(0,n)}
 function makeTargetDeck(n){let out=[];while(out.length<n)out.push(...shuffle(ABC));return out.slice(0,n)}
@@ -767,19 +787,27 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
  let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
-async function copySaveForTeacher(){try{let t=JSON.stringify(save);if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
+async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
+function runTeacherCheck(){
+ let storage=false;try{let k="abc_test_"+Date.now();localStorage.setItem(k,"1");storage=localStorage.getItem(k)==="1";localStorage.removeItem(k)}catch(e){}
+ let speech=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
+ let h=appHealthCheck(),font=approvedFontReady();
+ let msg="端末チェック\n\nゲーム構成："+(h.fnOK&&h.navOK&&h.gameOK?"OK":"要確認")+"\n自動保存："+(storage?"OK":"要確認")+"\n音声機能："+(speech?"OK":"要確認")+"\n指定英字フォント："+(font?"読込済み":"端末未読込")+"\n\nBuild: "+APP_BUILD;
+ alert(msg);
+ if(speech&&save.settings?.sound)setTimeout(()=>sayLetter("A"),120);
+}
 async function restoreSaveForTeacher(){
  let raw=prompt("以前コピーした記録データを貼り付けてください。\n※今の記録と入れかわります。");
  if(!raw)return;
  try{
   let parsed=JSON.parse(raw);
-  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");
+  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");if(parsed.stars!=null&&!Number.isFinite(Number(parsed.stars)))throw new Error("bad");if(parsed.coins!=null&&!Number.isFinite(Number(parsed.coins)))throw new Error("bad");if(parsed.worldLv!=null&&!Number.isFinite(Number(parsed.worldLv)))throw new Error("bad");
   if(!confirm("この記録データに入れかえますか？"))return;
-  save=parsed;migrateSave();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();showToast("記録データを復元しました");goHome();
+  delete parsed._export;save=parsed;migrateSave();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();showToast("記録データを復元しました");goHome();
  }catch(e){showToast("記録データを読み取れませんでした")}
 }
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
