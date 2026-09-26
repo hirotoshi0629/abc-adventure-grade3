@@ -185,7 +185,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 }
 <style>.sound-check-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.sound-check-grid button{font-family:"NHHandwriting",sans-serif;font-size:28px;min-height:58px}@media(max-width:600px){.sound-check-grid{grid-template-columns:repeat(4,1fr)}}
 /* APPROVED MASTER IMAGE MODE — activates only when the exact approved master asset loads */
-.master-home{display:none;position:relative;width:min(100%,1536px);margin:0 auto;aspect-ratio:3/2;background:#dff5ff;overflow:hidden}
+.master-home{display:none;position:relative;width:min(100%,1536px);margin:0 auto;aspect-ratio:16/9;background:#dff5ff;overflow:hidden}
 .master-home.ready{display:block}
 .master-home.ready{display:block!important}body.master-mode #home{display:none!important}
 .master-home-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
@@ -200,7 +200,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 .master-lock.show{display:flex}
 .master-lock span{background:rgba(62,47,43,.88);color:white;border-radius:999px;padding:5px 9px;font-size:clamp(10px,1.05vw,14px);font-weight:900;box-shadow:0 2px 5px #0003}
 .master-hotspot.locked{cursor:not-allowed}
-.master-world-level{position:absolute;z-index:5;left:87.2%;top:33.1%;width:8.7%;text-align:center;font-weight:1000;font-size:clamp(10px,1vw,14px);color:#49331f;pointer-events:none}
+.master-world-level{display:none!important;position:absolute;z-index:5;left:87.2%;top:33.1%;width:8.7%;text-align:center;font-weight:1000;font-size:clamp(10px,1vw,14px);color:#49331f;pointer-events:none}
 
 /* TRUE SCREEN SWITCHING */
 body.inner-screen #masterHome,
@@ -246,7 +246,7 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 .progress-hub small{display:block;font-weight:700;margin-top:3px}
 @media(max-width:760px){.progress-hub{grid-template-columns:repeat(2,1fr)}}
 
-.master-daily-progress{position:absolute;z-index:6;left:74.5%;top:34.25%;min-width:5.5%;padding:2px 6px;border-radius:999px;background:#fff8d9;border:2px solid #bd813d;text-align:center;font-weight:1000;color:#4b3421;font-size:clamp(9px,.9vw,13px);pointer-events:none}
+.master-daily-progress{display:none!important;position:absolute;z-index:6;left:74.5%;top:34.25%;min-width:5.5%;padding:2px 6px;border-radius:999px;background:#fff8d9;border:2px solid #bd813d;text-align:center;font-weight:1000;color:#4b3421;font-size:clamp(9px,.9vw,13px);pointer-events:none}
 .long-goal{max-width:900px;margin:8px auto 14px;padding:10px 14px;border-radius:15px;background:#f3eaff;border:2px solid #9d76c8;text-align:center;font-weight:900}
 <style>
 @media (pointer:coarse){button,.master-hotspot{min-width:44px;min-height:44px}button{-webkit-tap-highlight-color:transparent}}
@@ -256,33 +256,33 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 @media (orientation:landscape) and (max-height:820px){body.inner-screen .game-head{padding:6px 12px}.memory-board{max-width:min(68vw,520px);gap:6px}.memory-card{border-width:3px;border-radius:12px}.memory-msg{font-size:16px!important}}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
-<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
+<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" data-kids-home="assets/homejpg/p0.txt" alt="">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
 <span id="masterDailyProgress" class="master-daily-progress">0/3</span><button id="masterDailyHotspot" class="master-hotspot" style="left:49.7%;top:33.0%;width:32.5%;height:8.3%" onclick="openDaily()" aria-label="きょうのミッション"></button>
-<button class="master-hotspot" style="left:83.5%;top:11%;width:14.5%;height:28%" onclick="openMyWorld()" aria-label="マイワールド"></button>
-<button class="master-hotspot" style="left:2%;top:45%;width:23.5%;height:22.5%" id="masterGame-karuta" data-master-game="karuta" onclick="masterOpenGame('karuta')" aria-label="ABCかるた"></button>
-<button class="master-hotspot" style="left:26.4%;top:45%;width:23.5%;height:22.5%" id="masterGame-memory" data-master-game="memory" onclick="masterOpenGame('memory')" aria-label="ABC神経衰弱"></button>
-<button class="master-hotspot" style="left:50.5%;top:45%;width:23.5%;height:22.5%" id="masterGame-listen" data-master-game="listen" onclick="masterOpenGame('listen')" aria-label="聞いてタッチ"></button>
-<button class="master-hotspot" style="left:74.5%;top:45%;width:23.5%;height:22.5%" id="masterGame-rocket" data-master-game="rocket" onclick="masterOpenGame('rocket')" aria-label="ABCロケット"></button>
-<button class="master-hotspot" style="left:2%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-monster" data-master-game="monster" onclick="masterOpenGame('monster')" aria-label="アルファベットモンスター"></button>
-<button class="master-hotspot" style="left:26.4%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-treasure" data-master-game="treasure" onclick="masterOpenGame('treasure')" aria-label="ABCトレジャーハント"></button>
-<button class="master-hotspot" style="left:50.5%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-train" data-master-game="train" onclick="masterOpenGame('train')" aria-label="ABCトレイン"></button>
-<button class="master-hotspot" style="left:74.5%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-boss" data-master-game="boss" onclick="masterOpenGame('boss')" aria-label="ボスバトル"></button>
-<div id="masterLock-memory" class="master-lock" style="left:26.4%;top:45%;width:23.5%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-listen" class="master-lock" style="left:50.5%;top:45%;width:23.5%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-rocket" class="master-lock" style="left:74.5%;top:45%;width:23.5%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-monster" class="master-lock" style="left:2%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-treasure" class="master-lock" style="left:26.4%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-train" class="master-lock" style="left:50.5%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-boss" class="master-lock" style="left:74.5%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
+<button class="master-hotspot" style="left:82.0%;top:9.5%;width:16.5%;height:32.5%" onclick="openMyWorld()" aria-label="マイワールド"></button>
+<button class="master-hotspot" style="left:1.0%;top:44.8%;width:24.2%;height:22.3%" id="masterGame-karuta" data-master-game="karuta" onclick="masterOpenGame('karuta')" aria-label="ABCかるた"></button>
+<button class="master-hotspot" style="left:25.8%;top:44.8%;width:24.2%;height:22.3%" id="masterGame-memory" data-master-game="memory" onclick="masterOpenGame('memory')" aria-label="ABC神経衰弱"></button>
+<button class="master-hotspot" style="left:50.5%;top:44.8%;width:23.7%;height:22.3%" id="masterGame-listen" data-master-game="listen" onclick="masterOpenGame('listen')" aria-label="聞いてタッチ"></button>
+<button class="master-hotspot" style="left:74.7%;top:44.8%;width:24.3%;height:22.3%" id="masterGame-rocket" data-master-game="rocket" onclick="masterOpenGame('rocket')" aria-label="ABCロケット"></button>
+<button class="master-hotspot" style="left:1.0%;top:68.1%;width:24.2%;height:22.5%" id="masterGame-monster" data-master-game="monster" onclick="masterOpenGame('monster')" aria-label="アルファベットモンスター"></button>
+<button class="master-hotspot" style="left:25.8%;top:68.1%;width:24.2%;height:22.5%" id="masterGame-treasure" data-master-game="treasure" onclick="masterOpenGame('treasure')" aria-label="ABCトレジャーハント"></button>
+<button class="master-hotspot" style="left:50.5%;top:68.1%;width:23.7%;height:22.5%" id="masterGame-train" data-master-game="train" onclick="masterOpenGame('train')" aria-label="ABCトレイン"></button>
+<button class="master-hotspot" style="left:74.7%;top:68.1%;width:24.3%;height:22.5%" id="masterGame-boss" data-master-game="boss" onclick="masterOpenGame('boss')" aria-label="ボスバトル"></button>
+<div id="masterLock-memory" class="master-lock" style="left:25.8%;top:44.8%;width:24.2%;height:22.3%"><span>まだ きりの中</span></div>
+<div id="masterLock-listen" class="master-lock" style="left:50.5%;top:44.8%;width:23.7%;height:22.3%"><span>まだ きりの中</span></div>
+<div id="masterLock-rocket" class="master-lock" style="left:74.7%;top:44.8%;width:24.3%;height:22.3%"><span>まだ きりの中</span></div>
+<div id="masterLock-monster" class="master-lock" style="left:1.0%;top:68.1%;width:24.2%;height:22.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-treasure" class="master-lock" style="left:25.8%;top:68.1%;width:24.2%;height:22.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-train" class="master-lock" style="left:50.5%;top:68.1%;width:23.7%;height:22.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-boss" class="master-lock" style="left:74.7%;top:68.1%;width:24.3%;height:22.5%"><span>まだ きりの中</span></div>
 <div id="masterWorldLevel" class="master-world-level">Lv.1</div>
-<button class="master-hotspot" style="left:1%;top:91.5%;width:13.5%;height:7.5%" onclick="goHome()" aria-label="ホーム"></button>
-<button class="master-hotspot" style="left:14.5%;top:91.5%;width:16%;height:7.5%" onclick="openAdventureMap()" aria-label="ぼうけんマップ"></button>
-<button class="master-hotspot" style="left:30.5%;top:91.5%;width:14%;height:7.5%" onclick="openBook()" aria-label="ABCずかん"></button>
-<button class="master-hotspot" style="left:44.5%;top:91.5%;width:14.5%;height:7.5%" onclick="openEggs()" aria-label="たまご・なかま"></button>
-<button class="master-hotspot" style="left:59%;top:91.5%;width:16%;height:7.5%" onclick="openRewardMachine()" aria-label="ごほうびマシン"></button>
-<button class="master-hotspot" style="left:75%;top:91.5%;width:11.5%;height:7.5%" onclick="openTitles()" aria-label="しょうごう"></button>
-<button class="master-hotspot" style="left:86.5%;top:91.5%;width:12.5%;height:7.5%" onclick="openSettings()" aria-label="せってい"></button>
+<button class="master-hotspot" style="left:0%;top:91.2%;width:14.3%;height:8.8%" onclick="goHome()" aria-label="ホーム"></button>
+<button class="master-hotspot" style="left:14.3%;top:91.2%;width:14.3%;height:8.8%" onclick="openAdventureMap()" aria-label="ぼうけんマップ"></button>
+<button class="master-hotspot" style="left:28.6%;top:91.2%;width:14.3%;height:8.8%" onclick="openBook()" aria-label="ABCずかん"></button>
+<button class="master-hotspot" style="left:42.9%;top:91.2%;width:14.3%;height:8.8%" onclick="openEggs()" aria-label="たまご・なかま"></button>
+<button class="master-hotspot" style="left:57.2%;top:91.2%;width:14.3%;height:8.8%" onclick="openRewardMachine()" aria-label="ごほうびマシン"></button>
+<button class="master-hotspot" style="left:71.5%;top:91.2%;width:14.3%;height:8.8%" onclick="openTitles()" aria-label="しょうごう"></button>
+<button class="master-hotspot" style="left:85.8%;top:91.2%;width:14.2%;height:8.8%" onclick="openSettings()" aria-label="せってい"></button>
 </div><div id="home" class="home">
 <header><div class="logo"><span>ABC</span> アドベンチャー <small>ALPHABET</small></div><div class="stats"><div class="pill">★ <span id="stars">0</span></div><div class="pill">COIN <span id="coins">0</span></div></div></header>
 <section class="hero"><div><h1>～26文字の たからものを さがそう！～</h1><p>きいて・みつけて・あつめて、ABCワールドを大きくしよう。</p><div class="english-sign">Play　/　Listen　/　Find　/　Collect<br><b>Let's enjoy English!</b></div></div><button class="world" onclick="openMyWorld()" aria-label="マイワールドを開く">マイワールド<br><small>町を大きくする</small><br>Lv.<span id="worldLv">1</span></button></section>
@@ -312,7 +312,7 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-m-memory-rocket";
+const APP_BUILD="2026.09.26-kids-home-live";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -320,7 +320,7 @@ function appHealthCheck(){
  const fnOK=requiredFns.every(n=>typeof window[n]==="function");
  const navOK=document.querySelectorAll(".bottom-nav button").length===7;
  const gameOK=document.querySelectorAll(".game").length===8;
- const masterOK=!!document.getElementById("masterHome")&&!!document.querySelector('img[src="assets/abc-master-home-web.jpg"]');
+ const masterOK=!!document.getElementById("masterHome")&&!!document.querySelector('#masterHomeArt[data-kids-home="assets/homejpg/p0.txt"]');
  const hotspotOK=document.querySelectorAll("[data-master-game]").length===8&&!!document.getElementById("masterDailyHotspot");
  const saveOK=selfCheck();
  return {fnOK,navOK,gameOK,masterOK,hotspotOK,saveOK,build:APP_BUILD};
@@ -377,13 +377,19 @@ function syncMasterLocks(){
  });
  let w=document.getElementById("masterWorldLevel");if(w)w.textContent="Lv."+Math.max(1,Number(save.worldLv)||1);
 }
+async function loadKidsHomeArt(){
+ let art=document.getElementById("masterHomeArt");if(!art)return false;
+ let src=art.dataset.kidsHome;if(!src)return false;
+ try{let r=await fetch(src,{cache:"force-cache"});if(!r.ok)throw new Error("home art");let b=(await r.text()).trim();if(!b.startsWith("/9j/"))throw new Error("home art data");art.src="data:image/jpeg;base64,"+b;return true}catch(e){console.warn("Kids home art fallback",e);return false}
+}
 function initApprovedMasterHome(){
  let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
  if(!art||!wrap)return;
  const ready=()=>{wrap.classList.add("ready");document.body.classList.add("master-mode");wrap.style.display="block";syncMasterHome()};
- art.addEventListener("load",ready,{once:true});
- art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode")},{once:true});
+ art.addEventListener("load",ready);
+ art.addEventListener("error",()=>{if(!wrap.classList.contains("ready")){wrap.classList.remove("ready");document.body.classList.remove("master-mode")}}, {once:true});
  if(art.complete&&art.naturalWidth>0)ready();
+ loadKidsHomeArt();
 }
 function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}let d=document.getElementById("masterDailyProgress");if(d){let ds=dailyData(),done=ds.filter((x,i)=>x[1]>=x[2]||save.daily.claimed[i]).length;d.textContent=done+"/3"}syncMasterLocks()}
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
