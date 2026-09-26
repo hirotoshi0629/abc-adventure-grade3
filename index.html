@@ -497,7 +497,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-learning-pass4";
+const APP_BUILD="2026.09.26-learning-pass5";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -625,11 +625,11 @@ let target="";
 let listen={count:4,level:"normal",round:0,correct:0,maxRounds:10,target:""};
 const similarGroups=[["B","D","P","T"],["C","G","O","Q"],["E","F","L","I"],["M","N","W","V"],["A","H","K","R"],["S","X","Z","Y"]];
 function startListen(){gameTitle.textContent="聞いてタッチ！";
- gameBody.innerHTML='<div class="listen-setup"><div class="howto-chip">① まいすうとレベルをえらぶ　② 音を聞く　③ 文字をタッチ　※正解してから次へ</div><div class="message">カードの まいすう</div><div class="choice-row"><button class="mode-btn '+(listen.count===4?'selected':'')+'" id="c4" onclick="setListenCount(4)">4まい</button><button class="mode-btn '+(listen.count===6?'selected':'')+'" id="c6" onclick="setListenCount(6)">6まい</button></div><div class="message">レベルを えらぼう</div><div class="level-row"><button class="level-btn '+(listen.level==="normal"?'selected':'')+'" id="lnormal" onclick="setListenLevel(\'normal\')">ふつう<br><small>いろいろな文字</small></button><button class="level-btn '+(listen.level==="fast"?'selected':'')+'" id="lfast" onclick="setListenLevel(\'fast\')">スピード<br><small>テンポよく10問</small></button><button class="level-btn '+(listen.level==="similar"?'selected':'')+'" id="lsimilar" onclick="setListenLevel(\'similar\')">そっくり<br><small>B・D・P・Tなどに挑戦</small></button></div><button class="start-btn" onclick="beginListen()">スタート！</button></div>';
+ gameBody.innerHTML='<div class="listen-setup"><div class="howto-chip">① まいすうとレベルをえらぶ　② 音を聞く　③ 文字をタッチ　※正解してから次へ</div><div class="message">カードの まいすう</div><div class="choice-row"><button class="mode-btn '+(listen.count===4?'selected':'')+'" id="c4" onclick="setListenCount(4)">4まい</button><button class="mode-btn '+(listen.count===6?'selected':'')+'" id="c6" onclick="setListenCount(6)">6まい</button></div><div class="message">レベルを えらぼう</div><div class="level-row"><button class="level-btn '+(listen.level==="normal"?'selected':'')+'" id="lnormal" onclick="setListenLevel(\'normal\')">ふつう<br><small>いろいろな文字</small></button><button class="level-btn '+(listen.level==="fast"?'selected':'')+'" id="lfast" onclick="setListenLevel(\'fast\')">スピード<br><small>テンポよく10問</small></button><button class="level-btn '+(listen.level==="similar"?'selected':'')+'" id="lsimilar" onclick="setListenLevel(\'similar\')">そっくり<br><small>B・D・P・Tなどに挑戦</small></button><button class="level-btn '+(listen.level==="review"?'selected':'')+'" id="lreview" onclick="setListenLevel(\'review\')">ふくしゅう<br><small>まちがえやすい文字を中心に</small></button></div><button class="start-btn" onclick="beginListen()">スタート！</button></div>';
 }
 function setListenCount(n){listen.count=n;document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("c"+n).classList.add("selected")}
 function setListenLevel(v){listen.level=v;document.querySelectorAll(".level-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("l"+v).classList.add("selected")}
-function beginListen(){resetFinishGuard("listen");recordGameStart("listen");listen.round=0;listen.correct=0;listen.targets=makeTargetDeck(listen.maxRounds);nextListen()}
+function beginListen(){resetFinishGuard("listen");recordGameStart("listen");listen.round=0;listen.correct=0;if(listen.level==="review"){let weak=weakLetters(10);listen.targets=weak.length?Array.from({length:listen.maxRounds},(_,i)=>weak[i%weak.length]):makeTargetDeck(listen.maxRounds)}else listen.targets=makeTargetDeck(listen.maxRounds);nextListen()}
 function nextListen(){listen.locked=false;
  listen.round++;
  if(listen.round>listen.maxRounds){finishListen();return}
@@ -638,6 +638,9 @@ function nextListen(){listen.locked=false;
  if(listen.level==="similar"){
    let group=similarGroups.find(g=>g.includes(listen.target))||[];
    a=choicesWithTarget(listen.target,listen.count,group);
+ }else if(listen.level==="review"){
+   let preferred=weakLetters(10).filter(x=>x!==listen.target);
+   a=choicesWithTarget(listen.target,listen.count,preferred);
  }else a=choicesWithTarget(listen.target,listen.count);
  gameBody.innerHTML='<div class="listen-status"><b>'+listen.round+' / '+listen.maxRounds+'</b><span>せいかい '+listen.correct+'</span></div><div class="message">よく聞いて、文字をタッチ！ <button class="sound-btn" onclick="sayLetter(listen.target)">もう一度聞く</button></div><div class="listen-cards '+(listen.count===6?'six':'four')+'">'+a.map(x=>'<button class="listen-card" onclick="answerListen(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="listenMsg" class="message"></div>';
  later(()=>sayLetter(listen.target),listen.level==="fast"?180:400);
