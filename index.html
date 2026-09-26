@@ -459,6 +459,11 @@ body.inner-screen .finish-box{
  body.inner-screen .memory-msg{margin:3px auto!important;padding:4px 8px!important}
 }
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#4b8fe8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ABCアドベンチャー">
 </head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" data-kids-home="assets/homejpg/p0.txt" alt="">
@@ -518,7 +523,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-guidance-pass17";
+const APP_BUILD="2026.09.26-offline-pass18";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1346,4 +1351,9 @@ migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy()
 let hiddenDuringPlay=false,hiddenAt=0;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};newSession()}else{let away=Date.now()-hiddenAt;if(hiddenDuringPlay&&away>1200){goHome();showToast("ホームにもどりました")}hiddenDuringPlay=false;render()}});
-</script></body></html>
+</script><script>
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(e=>console.warn("SW",e)));
+}
+</script>
+</body></html>
