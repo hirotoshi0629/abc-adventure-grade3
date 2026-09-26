@@ -502,7 +502,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-recorded-audio-pass7";
+const APP_BUILD="2026.09.26-recorded-audio-final";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -617,15 +617,15 @@ if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged
 const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"ell",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
 const LETTER_RATE={H:.66,M:.84,N:.78,O:.68,V:.68,W:.62};
 const ALPHABET_AUDIO={
- A:{start:0,duration:1.4},B:{start:1.58,duration:1.588},C:{start:3.348,duration:1.582},D:{start:5.11,duration:1.997},
- E:{start:7.287,duration:1.849},F:{start:9.316,duration:1.676},G:{start:11.172,duration:1.764},H:{start:13.116,duration:1.913},
- I:{start:15.209,duration:1.331},J:{start:16.72,duration:1.426},K:{start:18.326,duration:1.217},L:{start:19.723,duration:1.565},
- M:{start:21.468,duration:1.767},N:{start:23.415,duration:1.488},O:{start:25.083,duration:1.062},P:{start:26.325,duration:1.054},
- Q:{start:27.559,duration:1.165},R:{start:28.904,duration:1.644},S:{start:30.728,duration:1.557},T:{start:32.465,duration:1.706},
- U:{start:34.351,duration:1.644},V:{start:36.175,duration:1.699},W:{start:38.054,duration:1.739},X:{start:39.973,duration:1.61},
- Y:{start:41.763,duration:1.556},Z:{start:43.499,duration:1.558}
-};
-const recordedAlphabetAudio=new Audio("assets/audio/alphabet-sprite.mp3?v=20260926-1");
+ A:{start:0,duration:1.236},B:{start:1.356,duration:1.461},C:{start:2.937,duration:1.209},D:{start:4.266,duration:1.866},
+ E:{start:6.252,duration:1.319},F:{start:7.691,duration:1.543},G:{start:9.354,duration:1.363},H:{start:10.837,duration:1.785},
+ I:{start:12.742,duration:1.258},J:{start:14.12,duration:1.316},K:{start:15.556,duration:1.104},L:{start:16.78,duration:1.135},
+ M:{start:18.035,duration:1.648},N:{start:19.803,duration:1.363},O:{start:21.286,duration:1.005},P:{start:22.411,duration:1.211},
+ Q:{start:23.742,duration:1.234},R:{start:25.096,duration:1.564},S:{start:26.78,duration:1.413},T:{start:28.313,duration:1.563},
+ U:{start:29.996,duration:1.516},V:{start:31.632,duration:1.585},W:{start:33.337,duration:1.629},X:{start:35.086,duration:1.488},
+ Y:{start:36.694,duration:1.457},Z:{start:38.271,duration:1.319}
+}
+const recordedAlphabetAudio=new Audio("assets/audio/alphabet-sprite.mp3?v=20260926-2");
 recordedAlphabetAudio.preload="auto";
 let recordedAudioTimer=0,recordedAudioUnlocked=false,recordedAudioFailed=false;
 function stopRecordedLetter(){clearTimeout(recordedAudioTimer);recordedAudioTimer=0;try{recordedAlphabetAudio.pause()}catch(e){}}
