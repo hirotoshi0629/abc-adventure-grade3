@@ -194,19 +194,34 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 .master-live{position:absolute;z-index:4;font-weight:1000;color:#17214a;text-align:center;pointer-events:none;background:#fffdf8;border-radius:18px;line-height:1.18;padding:.18% .2%}
 .master-star{left:78.35%;top:2.72%;width:5.15%;font-size:clamp(15px,2vw,32px);padding:.12% 0;border-radius:12px}
 .master-coin{left:91.0%;top:2.65%;width:5.1%;font-size:clamp(15px,2vw,32px)}
+
+/* MASTER HOME INTERACTION LAYER */
+.master-lock{position:absolute;z-index:5;display:none;align-items:flex-start;justify-content:flex-end;padding:6px;pointer-events:none}
+.master-lock.show{display:flex}
+.master-lock span{background:rgba(62,47,43,.88);color:white;border-radius:999px;padding:5px 9px;font-size:clamp(10px,1.05vw,14px);font-weight:900;box-shadow:0 2px 5px #0003}
+.master-hotspot.locked{cursor:not-allowed}
+.master-world-level{position:absolute;z-index:5;left:87.2%;top:33.1%;width:8.7%;text-align:center;font-weight:1000;font-size:clamp(10px,1vw,14px);color:#49331f;pointer-events:none}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
 <button class="master-hotspot" style="left:83.5%;top:11%;width:14.5%;height:28%" onclick="openMyWorld()" aria-label="マイワールド"></button>
-<button class="master-hotspot" style="left:2%;top:45%;width:23.5%;height:22.5%" onclick="openGame('karuta')" aria-label="ABCかるた"></button>
-<button class="master-hotspot" style="left:26.4%;top:45%;width:23.5%;height:22.5%" onclick="openGame('memory')" aria-label="ABC神経衰弱"></button>
-<button class="master-hotspot" style="left:50.5%;top:45%;width:23.5%;height:22.5%" onclick="openGame('listen')" aria-label="聞いてタッチ"></button>
-<button class="master-hotspot" style="left:74.5%;top:45%;width:23.5%;height:22.5%" onclick="openGame('rocket')" aria-label="ABCロケット"></button>
-<button class="master-hotspot" style="left:2%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('monster')" aria-label="アルファベットモンスター"></button>
-<button class="master-hotspot" style="left:26.4%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('treasure')" aria-label="ABCトレジャーハント"></button>
-<button class="master-hotspot" style="left:50.5%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('train')" aria-label="ABCトレイン"></button>
-<button class="master-hotspot" style="left:74.5%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('boss')" aria-label="ボスバトル"></button>
+<button class="master-hotspot" style="left:2%;top:45%;width:23.5%;height:22.5%" id="masterGame-karuta" data-master-game="karuta" onclick="masterOpenGame('karuta')" aria-label="ABCかるた"></button>
+<button class="master-hotspot" style="left:26.4%;top:45%;width:23.5%;height:22.5%" id="masterGame-memory" data-master-game="memory" onclick="masterOpenGame('memory')" aria-label="ABC神経衰弱"></button>
+<button class="master-hotspot" style="left:50.5%;top:45%;width:23.5%;height:22.5%" id="masterGame-listen" data-master-game="listen" onclick="masterOpenGame('listen')" aria-label="聞いてタッチ"></button>
+<button class="master-hotspot" style="left:74.5%;top:45%;width:23.5%;height:22.5%" id="masterGame-rocket" data-master-game="rocket" onclick="masterOpenGame('rocket')" aria-label="ABCロケット"></button>
+<button class="master-hotspot" style="left:2%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-monster" data-master-game="monster" onclick="masterOpenGame('monster')" aria-label="アルファベットモンスター"></button>
+<button class="master-hotspot" style="left:26.4%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-treasure" data-master-game="treasure" onclick="masterOpenGame('treasure')" aria-label="ABCトレジャーハント"></button>
+<button class="master-hotspot" style="left:50.5%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-train" data-master-game="train" onclick="masterOpenGame('train')" aria-label="ABCトレイン"></button>
+<button class="master-hotspot" style="left:74.5%;top:68.5%;width:23.5%;height:21.5%" id="masterGame-boss" data-master-game="boss" onclick="masterOpenGame('boss')" aria-label="ボスバトル"></button>
+<div id="masterLock-memory" class="master-lock" style="left:26.4%;top:45%;width:23.5%;height:22.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-listen" class="master-lock" style="left:50.5%;top:45%;width:23.5%;height:22.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-rocket" class="master-lock" style="left:74.5%;top:45%;width:23.5%;height:22.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-monster" class="master-lock" style="left:2%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-treasure" class="master-lock" style="left:26.4%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-train" class="master-lock" style="left:50.5%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
+<div id="masterLock-boss" class="master-lock" style="left:74.5%;top:68.5%;width:23.5%;height:21.5%"><span>まだ きりの中</span></div>
+<div id="masterWorldLevel" class="master-world-level">Lv.1</div>
 <button class="master-hotspot" style="left:1%;top:91.5%;width:13.5%;height:7.5%" onclick="goHome()" aria-label="ホーム"></button>
 <button class="master-hotspot" style="left:14.5%;top:91.5%;width:16%;height:7.5%" onclick="openAdventureMap()" aria-label="ぼうけんマップ"></button>
 <button class="master-hotspot" style="left:30.5%;top:91.5%;width:14%;height:7.5%" onclick="openBook()" aria-label="ABCずかん"></button>
@@ -243,7 +258,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-star-counter-fit";
+const APP_BUILD="2026.09.26-master-interactive";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -291,6 +306,20 @@ function openFirstGuide(){
  gameBody.innerHTML='<div class="finish-box"><h2>ぼうけんの はじめかた</h2><p><b>① 音をよく聞く</b><br>② 文字を見つけてタッチ<br>③ スターやコインを集める<br>④ マイワールドや ぼうけんマップを育てる</p><p>まずは <b>ABCかるた</b> からスタート！</p><button class="start-btn" onclick="openGame(\'karuta\')">ABCかるたへ</button> <button class="back" onclick="goHome()">ホームを見る</button></div>';
  normalizeButtons();
 }
+function masterOpenGame(id){
+ if(gameUnlocked(id))return openGame(id);
+ const need={memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6}[id]||1;
+ showToast("マイワールド Lv."+need+" で あそべるよ！");
+}
+function syncMasterLocks(){
+ const need={karuta:1,memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6};
+ Object.keys(need).forEach(id=>{
+  let b=document.getElementById("masterGame-"+id),l=document.getElementById("masterLock-"+id),ok=gameUnlocked(id);
+  if(b){b.classList.toggle("locked",!ok);b.setAttribute("aria-disabled",ok?"false":"true")}
+  if(l)l.classList.toggle("show",!ok);
+ });
+ let w=document.getElementById("masterWorldLevel");if(w)w.textContent="Lv."+Math.max(1,Number(save.worldLv)||1);
+}
 function initApprovedMasterHome(){
  let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
  if(!art||!wrap)return;
@@ -299,7 +328,7 @@ function initApprovedMasterHome(){
  art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode")},{once:true});
  if(art.complete&&art.naturalWidth>0)ready();
 }
-function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}}
+function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}syncMasterLocks()}
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
