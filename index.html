@@ -124,6 +124,21 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 
 .game-locked{filter:saturate(.65);position:relative}
 .game-locked .lock-badge{position:absolute;right:7px;top:7px;padding:4px 7px;border-radius:999px;background:rgba(62,47,34,.88);color:white;font-size:10px;font-weight:900;z-index:4}
+
+/* CLASSROOM FINAL PASS — preserves the approved master structure */
+.logo span,.logo small,.letter,.english-sign,.pill,.game h3:before,
+.karuta-card,.memory-card.open,.memory-card.matched,.listen-card,.rocket-letter,.monster-letter,
+.train-letter,.boss-letter,.book-letter,.book-card b,.big-letter,.memory-celebrate,.sound-test{
+ font-family:"NHHandwriting","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif
+}
+.game-topbar{display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:40}
+.game-topbar .back{flex:0 0 auto;margin:0}
+.game-topbar h2{flex:1;text-align:center;padding-right:92px}
+.game-body{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+@media(max-width:700px){
+ .game-topbar h2{font-size:20px;padding-right:54px}
+ .game-topbar .back{font-size:13px;padding:7px 9px}
+}
 </style></head><body><main class="app">
 <div id="home" class="home">
 <header><div class="logo"><span>ABC</span> アドベンチャー <small>ALPHABET</small></div><div class="stats"><div class="pill">★ <span id="stars">0</span></div><div class="pill">COIN <span id="coins">0</span></div></div></header>
@@ -149,12 +164,12 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <button onclick="openSettings()">せってい</button>
 </nav>
 </div>
-<section id="game" class="screen"><button class="back" onclick="goHome()">← ホーム</button><h2 id="gameTitle"></h2><div id="gameBody"></div></section>
+<section id="game" class="screen"><div class="game-topbar"><button class="back" onclick="goHome()">← ホーム</button><h2 id="gameTitle"></h2></div><div id="gameBody" class="game-body"></div></section>
 </main>
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-font-ready";
+const APP_BUILD="2026.09.26-classroom-final";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -171,6 +186,7 @@ function verifyMasterContract(){
  const names=[...nav].map(x=>x.textContent.trim()).join("|");
  return names==="ホーム|ぼうけんマップ|ABCずかん|たまご・なかま|ごほうびマシン|しょうごう|せってい";
 }
+function normalizeGuideState(){if(save.guideSeen==null&&((save.plays||0)>0||(save.totalStarsEarned||0)>0||(save.worldLv||1)>1))save.guideSeen=true}
 function selfCheck(){
  try{
   save.stars=Math.max(0,save.stars||0);save.coins=Math.max(0,save.coins||0);
@@ -193,6 +209,14 @@ function migrateSave(){
 function ensureEconomy(){save.totalStarsEarned=Math.max(save.totalStarsEarned||0,save.stars||0);save.totalCoinsEarned=Math.max(save.totalCoinsEarned||0,save.coins||0);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function earn(starsN=0,coinsN=0){ensureEconomy();save.stars=(save.stars||0)+starsN;save.coins=(save.coins||0)+coinsN;save.totalStarsEarned=(save.totalStarsEarned||0)+Math.max(0,starsN);save.totalCoinsEarned=(save.totalCoinsEarned||0)+Math.max(0,coinsN);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor(save.totalStarsEarned/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function refreshGameLocks(){document.querySelectorAll(".game[onclick]").forEach(b=>{let m=(b.getAttribute("onclick")||"").match(/openGame\('([^']+)'\)/);if(!m)return;let ok=gameUnlocked(m[1]);b.classList.toggle("game-locked",!ok);b.setAttribute("aria-disabled",ok?"false":"true");let badge=b.querySelector(".lock-badge");if(!ok&&!badge){badge=document.createElement("span");badge.className="lock-badge";badge.textContent="まだ きりの中";b.appendChild(badge)}else if(ok&&badge)badge.remove()})}
+function openFirstGuide(){
+ if(save.guideSeen)return;
+ save.guideSeen=true;
+ try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}
+ enterGameScreen("ABCアドベンチャーへ ようこそ！");
+ gameBody.innerHTML='<div class="finish-box"><h2>ぼうけんの はじめかた</h2><p><b>① 音をよく聞く</b><br>② 文字を見つけてタッチ<br>③ スターやコインを集める<br>④ マイワールドや ぼうけんマップを育てる</p><p>まずは <b>ABCかるた</b> からスタート！</p><button class="start-btn" onclick="openGame(\'karuta\')">ABCかるたへ</button> <button class="back" onclick="goHome()">ホームを見る</button></div>';
+ normalizeButtons();
+}
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
@@ -743,11 +767,21 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button></div></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
  let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify(save);if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
+async function restoreSaveForTeacher(){
+ let raw=prompt("以前コピーした記録データを貼り付けてください。\n※今の記録と入れかわります。");
+ if(!raw)return;
+ try{
+  let parsed=JSON.parse(raw);
+  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");
+  if(!confirm("この記録データに入れかえますか？"))return;
+  save=parsed;migrateSave();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();showToast("記録データを復元しました");goHome();
+ }catch(e){showToast("記録データを読み取れませんでした")}
+}
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
 function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
 function offerRecovery(){try{showToast("うまく動かないときは、ホームにもどってもう一度ためしてね")}catch(e){}}
@@ -755,7 +789,7 @@ window.addEventListener("error",offerRecovery);
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
-migrateSave();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();
+migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();setTimeout(()=>openFirstGuide(),120);
 let hiddenDuringPlay=false;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");if("speechSynthesis" in window)speechSynthesis.cancel();newSession()}else{if(hiddenDuringPlay){game.classList.remove("active");home.classList.remove("hidden");hiddenDuringPlay=false;showToast("ホームにもどりました")}render()}});
