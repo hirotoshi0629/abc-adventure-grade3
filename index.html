@@ -152,7 +152,7 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-h";
+const APP_BUILD="2026.09.26-i";
 const SAVE_VERSION=3;
 function verifyMasterContract(){
  const nav=document.querySelectorAll(".bottom-nav button");
@@ -189,16 +189,19 @@ let sessionToken=0;function newSession(){sessionToken++;return sessionToken}func
 const finishLocks={};function beginFinishGuard(id){if(finishLocks[id])return false;finishLocks[id]=true;return true}function resetFinishGuard(id){finishLocks[id]=false}
 function clearCount(id){return (save.clears&&save.clears[id])||0}
 function syncWorldLevel(){
- const order=["karuta","memory","listen","rocket","monster","treasure","train","boss"];
- let unique=order.filter(k=>(save.clears?.[k]||0)>0).length;
- let lv=1;if(unique>=1)lv=2;if(unique>=3)lv=3;if(unique>=4)lv=4;if(unique>=5)lv=5;if(unique>=6)lv=6;
+ let lv=1;
+ if((save.clears?.karuta||0)>0)lv=2;
+ if((save.clears?.rocket||0)>0)lv=3;
+ if((save.clears?.monster||0)>0)lv=4;
+ if((save.clears?.treasure||0)>0)lv=5;
+ if((save.clears?.train||0)>0)lv=6;
  save.worldLv=Math.max(save.worldLv||1,lv);
 }
 function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;syncWorldLevel();return first}
 function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);return true}
 function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist()}
 function gameUnlocked(id){let req={karuta:1,memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6};return (save.worldLv||1)>=(req[id]||1)}
-function lockedGame(id){let req={memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6}[id]||1;enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>まだ きりの中……</h2><p>ぼうけんを進めて、ワールド Lv.'+req+'になると遊べるよ。</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
+function lockedGame(id){let req={memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6}[id]||1;enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>まだ きりの中……</h2><p>ぼうけんマップの道を進めて、ワールド Lv.'+req+'になると遊べるよ。</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 function openGame(id){if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
 function enterGameScreen(title){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
 function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render()}
@@ -328,8 +331,8 @@ function answerRocket(x,el){
  }
 }
 function finishRocket(){if(!beginFinishGuard("rocket"))return;markClear("rocket");
- let first=firstClearBonus("rocket",3,8);earn(0,6);save.worldLv=Math.max(save.worldLv,2);persist();
- gameBody.innerHTML='<div class="finish-box rocket-finish"><div class="planet-big">ABC</div><h2>ABC PLANETに とうちゃく！</h2><p>8もんクリア！ '+(first?'はじめてクリア！ スター +3・コイン +14':'クリアボーナス コイン +6')+'</p><p>ABCワールドに 新しい道がひらいたよ。</p><button class="back" onclick="startRocket()">もう一回 とぶ！</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("rocket",3,8);if(!first)earn(0,6);persist();
+ gameBody.innerHTML='<div class="finish-box rocket-finish"><div class="planet-big">ABC</div><h2>ABC PLANETに とうちゃく！</h2><p>8もんクリア！ '+(first?'はじめてクリア！ スター +3・コイン +8':'クリアボーナス コイン +6')+'</p><p>ABCワールドに 新しい道がひらいたよ。</p><button class="back" onclick="startRocket()">もう一回 とぶ！</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8)};
 function startMonster(){resetFinishGuard("monster");recordGameStart("monster");gameTitle.textContent="アルファベットモンスター";
@@ -363,8 +366,8 @@ function monsterRecover(){
  gameBody.innerHTML='<div class="finish-box"><h2>パワーを かいふくしよう！</h2><p>だいじょうぶ。何回でも ちょうせんできるよ。</p><button class="back" onclick="startMonster()">もう一回 ちょうせん</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 function finishMonster(){if(!beginFinishGuard("monster"))return;markClear("monster");
- let first=firstClearBonus("monster",3,9);earn(0,7);save.worldLv=Math.max(save.worldLv,3);persist();
- gameBody.innerHTML='<div class="finish-box monster-clear"><div class="monster-medal">ABC</div><h2>モンスターに かった！</h2><p>さいこう '+monster.bestCombo+'れんぞく正解！</p><p>'+(first?'はじめてクリア！ スター +3・コイン +16':'クリアボーナス コイン +7')+'</p><p>ABCワールドに 新しいエリアがひらいたよ。</p><button class="back" onclick="startMonster()">もう一回 バトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("monster",3,9);if(!first)earn(0,7);persist();
+ gameBody.innerHTML='<div class="finish-box monster-clear"><div class="monster-medal">ABC</div><h2>モンスターに かった！</h2><p>さいこう '+monster.bestCombo+'れんぞく正解！</p><p>'+(first?'はじめてクリア！ スター +3・コイン +9':'クリアボーナス コイン +7')+'</p><p>ABCワールドに 新しいエリアがひらいたよ。</p><button class="back" onclick="startMonster()">もう一回 バトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let treasure={round:0,maxRounds:6,target:"",found:0,locked:false};
 const treasureSpots=[{x:12,y:20},{x:31,y:12},{x:52,y:27},{x:77,y:16},{x:20,y:52},{x:43,y:62},{x:67,y:49},{x:84,y:66},{x:34,y:82},{x:63,y:84}];
@@ -391,8 +394,8 @@ function findTreasure(x,el){
  }
 }
 function finishTreasure(){if(!beginFinishGuard("treasure"))return;markClear("treasure");
- let first=firstClearBonus("treasure",3,10);earn(0,8);save.worldLv=Math.max(save.worldLv,4);persist();
- gameBody.innerHTML='<div class="finish-box treasure-clear"><div class="big-chest"><span>ABC</span></div><h2>ひみつの たからを発見！</h2><p>'+treasure.found+'この たからを見つけた！</p><p>'+(first?'はじめてクリア！ スター +3・コイン +18':'クリアボーナス コイン +8')+'</p><p>ABCワールドの 新しい場所がひらいたよ。</p><button class="back" onclick="startTreasure()">もう一度 たんけん</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("treasure",3,10);if(!first)earn(0,8);persist();
+ gameBody.innerHTML='<div class="finish-box treasure-clear"><div class="big-chest"><span>ABC</span></div><h2>ひみつの たからを発見！</h2><p>'+treasure.found+'この たからを見つけた！</p><p>'+(first?'はじめてクリア！ スター +3・コイン +10':'クリアボーナス コイン +8')+'</p><p>ABCワールドの 新しい場所がひらいたよ。</p><button class="back" onclick="startTreasure()">もう一度 たんけん</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let train={round:0,maxRounds:8,target:"",correct:0,locked:false};
 function startTrain(){resetFinishGuard("train");recordGameStart("train");gameTitle.textContent="ABCトレイン";train={round:0,maxRounds:8,target:"",correct:0,locked:false,starts:shuffle(Array.from({length:23},(_,i)=>i)).slice(0,8)};nextTrain()}
@@ -421,8 +424,8 @@ function answerTrain(x,el){
  }
 }
 function finishTrain(){if(!beginFinishGuard("train"))return;markClear("train");
- let first=firstClearBonus("train",4,10);earn(0,8);save.worldLv=Math.max(save.worldLv,5);persist();
- gameBody.innerHTML='<div class="finish-box train-clear"><div class="station-sign">ABC<br><small>ADVENTURE STATION</small></div><h2>しゅうてんに とうちゃく！</h2><p>8この列車を 完成させたよ！</p><p>'+(first?'はじめてクリア！ スター +4・コイン +18':'クリアボーナス コイン +8')+'</p><p>ABCワールドに 駅ができた！</p><button class="back" onclick="startTrain()">もう一度 しゅっぱつ</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("train",4,10);if(!first)earn(0,8);persist();
+ gameBody.innerHTML='<div class="finish-box train-clear"><div class="station-sign">ABC<br><small>ADVENTURE STATION</small></div><h2>しゅうてんに とうちゃく！</h2><p>8この列車を 完成させたよ！</p><p>'+(first?'はじめてクリア！ スター +4・コイン +10':'クリアボーナス コイン +8')+'</p><p>ABCワールドに 駅ができた！</p><button class="back" onclick="startTrain()">もう一度 しゅっぱつ</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let boss={round:0,maxRounds:9,hp:9,playerHp:5,target:"",type:"",locked:false,combo:0};
 function startBoss(){resetFinishGuard("boss");recordGameStart("boss");gameTitle.textContent="ボスバトル";boss={round:0,maxRounds:9,hp:9,playerHp:5,target:"",type:"",locked:false,combo:0,targets:makeTargetDeck(9)};nextBoss()}
@@ -469,9 +472,10 @@ function bossRetry(){
 function finishBoss(){
  if(boss.hp>0){nextBoss();return}
  if(!beginFinishGuard("boss"))return;markClear("boss");
- let first=firstClearBonus("boss",6,15);earn(5,15);save.worldLv=Math.max(save.worldLv,6);persist();
- gameBody.innerHTML='<div class="finish-box boss-clear"><div class="boss-crystal">ABC</div><h2>ABCボスを たおした！</h2><p>'+(first?'はじめてクリア！　スター +11　コイン +30':'クリアボーナス　スター +5　コイン +15')+'</p><p>空のむこうに、新しい島のかげが見える……</p><div class="mystery-island">？？？</div><p>ひみつのかけら・なかま・島のひかり――何かがつながりそうだ。</p><button class="back" onclick="startBoss()">もう一度 ボスバトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("boss",6,15);if(!first)earn(5,15);persist();
+ gameBody.innerHTML='<div class="finish-box boss-clear"><div class="boss-crystal">ABC</div><h2>ABCボスを たおした！</h2><p>'+(first?'はじめてクリア！　スター +6　コイン +15':'クリアボーナス　スター +5　コイン +15')+'</p><p>'+(first?'空のむこうに、新しい島のかげが見える……':'天空の城を もう一度まもった！')+'</p><div class="mystery-island">？？？</div><p>ひみつのかけら・なかま・島のひかり――何かがつながりそうだ。</p><button class="back" onclick="startBoss()">もう一度 ボスバトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
+function nextAdventureGoal(){if(!(save.clears?.karuta>0))return "まずは ABCかるた！";if(!(save.clears?.rocket>0))return "つぎは ABCロケット！";if(!(save.clears?.monster>0))return "つぎは アルファベットモンスター！";if(!(save.clears?.treasure>0))return "つぎは ABCトレジャーハント！";if(!(save.clears?.train>0))return "つぎは ABCトレイン！";if(!(save.clears?.boss>0))return "天空の城の ボスにちょうせん！";return "？？？の島を さがしてみよう！"}
 function activateMapKey(e){if((e.key==="Enter"||e.key===" ")&&e.currentTarget.onclick){e.preventDefault();e.currentTarget.click()}}
 const mapAreas=[
  ["はじまりの草原","karuta",0],["もじもじの森","memory",1],["ひびきの砂漠","listen",2],
@@ -481,7 +485,7 @@ const mapAreas=[
 function openAdventureMap(){enterGameScreen("ABCぼうけんマップ");ensureMilestoneShards();persist();
  
  let lv=save.worldLv||1,secret=secretState();
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>ゲームをクリアすると、新しい道がひらくよ。</span></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div role="button" tabindex="0" onkeydown="activateMapKey(event)" class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\''+a[1]+'\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>ゲームをクリアすると、新しい道がひらくよ。</span><strong class="next-goal">'+nextAdventureGoal()+'</strong></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div role="button" tabindex="0" onkeydown="activateMapKey(event)" class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\''+a[1]+'\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div>';
 }
 function openSecretIsland(){ensureMilestoneShards();let s=secretState();enterGameScreen(s.open?"ひみつの島":"？？？");if(!s.open){gameBody.innerHTML='<div class="secret-locked"><div class="mystery-island">？？？</div><h2>まだ きりの中……</h2><p>天空のおしろの先に、島のかげが見える。</p><div class="secret-hints"><span>'+(s.boss?'✓ 天空から ふしぎな道が見えた':'・天空のおしろに 何かありそう')+'</span><span>'+(s.shards>=4?'✓ かけらが ひとつの形になりそう':'・ひみつのかけらが 関係していそう')+'</span><span>'+(s.buddies>=5?'✓ なかまたちが 道を見つけたみたい':'・なかまと進むと 何か起こるかも')+'</span><span>'+(s.light>=55?'✓ 島のひかりが 強くなった':'・マイワールドを もっと育ててみよう')+'</span></div><button class="back" onclick="openAdventureMap()">地図にもどる</button></div>';return}save.secretDiscovered=true;persist();let buddy=save.activeBuddy||"なかまたち";gameBody.innerHTML='<div class="secret-island-scene"><div class="secret-sky">A　?　B　?　C</div><div class="secret-land"><div class="secret-gate"><b>ABC</b></div><div class="secret-crystal">?</div></div><h2>ひみつの島を 発見！</h2><p>'+buddy+'と いっしょに、きりの向こうへたどり着いた！</p><div class="secret-message">島の奥には、まだ開かない大きな門がある……<br><b>THE ADVENTURE CONTINUES...</b></div><button class="back" onclick="openSecretChallenge()">島を たんけんする</button> <button class="back" onclick="openAdventureMap()">地図にもどる</button></div>'}
 let secretAnswerLocked=false;
