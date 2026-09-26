@@ -305,6 +305,7 @@ body.inner-screen .correct{animation:kgPop .28s ease}
 
 .master-review-quick{display:none;position:absolute;z-index:7;left:63.0%;top:45.3%;min-height:0!important;padding:5px 9px!important;border:3px solid #fff!important;border-radius:999px!important;background:linear-gradient(#c992ff,#8a5ce6)!important;color:#fff!important;font-size:clamp(10px,1vw,14px)!important;font-weight:1000!important;box-shadow:0 3px 0 #6542aa,0 5px 10px #304b7255!important}
 .master-review-quick.show{display:block}.master-review-quick:active{transform:translateY(2px)}
+.review-mode-note{max-width:650px;margin:14px auto 0;padding:10px 14px;border:3px solid #fff;border-radius:16px;background:#f1e5ff;color:#583b88;font-weight:900;box-shadow:0 4px 0 #bea1df55}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -488,7 +489,7 @@ body.inner-screen .finish-box{
 <section class="grid">
 <button class="game g1" onclick="openGame('karuta')" aria-label="ABCかるたを開く"><h3>ABCかるた</h3><small>音を聞いて文字をタッチ！</small></button>
 <button class="game g2" onclick="openGame('memory')" aria-label="ABC神経衰弱を開く"><h3>ABC神経衰弱</h3><small>1〜3人でカードをそろえよう！</small></button>
-<button class="game g3" onclick="openGame('listen')" aria-label="聞いてタッチを開く"><h3>聞いてタッチ！</h3><small>4枚・6枚、3つのレベルで挑戦！</small></button>
+<button class="game g3" onclick="openGame('listen')" aria-label="聞いてタッチを開く"><h3>聞いてタッチ！</h3><small>4枚・6枚、4つのレベルで挑戦！</small></button>
 <button class="game g4" onclick="openGame('rocket')" aria-label="ABCロケットを開く"><h3>ABCロケット</h3><small>正しい文字を選んで宇宙へ！</small></button>
 <button class="game g5" onclick="openGame('monster')" aria-label="アルファベットモンスターを開く"><h3>アルファベットモンスター</h3><small>聞こえた文字のモンスターを倒そう！</small></button>
 <button class="game g6" onclick="openGame('treasure')" aria-label="ABCトレジャーハントを開く"><h3>ABCトレジャーハント</h3><small>かくれた文字を見つけよう！</small></button>
@@ -511,7 +512,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-audio-home-pass8";
+const APP_BUILD="2026.09.26-classroom-ready-pass9";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -652,6 +653,7 @@ const ALPHABET_AUDIO={
 }
 const recordedAlphabetAudio=new Audio("assets/audio/alphabet-sprite.mp3?v=20260926-2");
 recordedAlphabetAudio.preload="auto";
+try{recordedAlphabetAudio.load()}catch(e){}
 recordedAlphabetAudio.addEventListener("error",()=>{recordedAudioFailed=true});
 let recordedAudioTimer=0,recordedAudioUnlocked=false,recordedAudioFailed=false;
 function stopRecordedLetter(){clearTimeout(recordedAudioTimer);recordedAudioTimer=0;try{recordedAlphabetAudio.pause()}catch(e){}}
@@ -670,6 +672,7 @@ function preferredEnglishVoice(){
  return vs.find(x=>/^en-US$/i.test(x.lang)&&x.localService)||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang)&&x.localService)||vs.find(x=>/^en(-|_)/i.test(x.lang));
 }
 function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
+function recordedAudioStatus(){if(recordedAudioFailed)return "録音音声：読込エラー（予備音声を使用）";if(recordedAlphabetAudio.readyState>=2)return "録音音声：準備OK";return "録音音声：読み込み中"}
 function fallbackSayLetter(l){
  if(!("speechSynthesis" in window))return;
  try{speechSynthesis.cancel()}catch(e){}
@@ -708,7 +711,7 @@ let target="";
 let listen={count:4,level:"normal",round:0,correct:0,maxRounds:10,target:""};
 const similarGroups=[["B","D","P","T"],["C","G","O","Q"],["E","F","L","I"],["M","N","W","V"],["A","H","K","R"],["S","X","Z","Y"]];
 function startListen(){gameTitle.textContent="聞いてタッチ！";
- gameBody.innerHTML='<div class="listen-setup"><div class="howto-chip">① まいすうとレベルをえらぶ　② 音を聞く　③ 文字をタッチ　※正解してから次へ</div><div class="message">カードの まいすう</div><div class="choice-row"><button class="mode-btn '+(listen.count===4?'selected':'')+'" id="c4" onclick="setListenCount(4)">4まい</button><button class="mode-btn '+(listen.count===6?'selected':'')+'" id="c6" onclick="setListenCount(6)">6まい</button></div><div class="message">レベルを えらぼう</div><div class="level-row"><button class="level-btn '+(listen.level==="normal"?'selected':'')+'" id="lnormal" onclick="setListenLevel(\'normal\')">ふつう<br><small>いろいろな文字</small></button><button class="level-btn '+(listen.level==="fast"?'selected':'')+'" id="lfast" onclick="setListenLevel(\'fast\')">スピード<br><small>テンポよく10問</small></button><button class="level-btn '+(listen.level==="similar"?'selected':'')+'" id="lsimilar" onclick="setListenLevel(\'similar\')">そっくり<br><small>B・D・P・Tなどに挑戦</small></button><button class="level-btn '+(listen.level==="review"?'selected':'')+'" id="lreview" onclick="setListenLevel(\'review\')">ふくしゅう<br><small>まちがえやすい文字を中心に</small></button></div><button class="start-btn" onclick="beginListen()">スタート！</button></div>';
+ gameBody.innerHTML='<div class="listen-setup"><div class="howto-chip">① まいすうとレベルをえらぶ　② 音を聞く　③ 文字をタッチ　※正解してから次へ</div><div class="message">カードの まいすう</div><div class="choice-row"><button class="mode-btn '+(listen.count===4?'selected':'')+'" id="c4" onclick="setListenCount(4)">4まい</button><button class="mode-btn '+(listen.count===6?'selected':'')+'" id="c6" onclick="setListenCount(6)">6まい</button></div><div class="message">レベルを えらぼう</div><div class="level-row"><button class="level-btn '+(listen.level==="normal"?'selected':'')+'" id="lnormal" onclick="setListenLevel(\'normal\')">ふつう<br><small>いろいろな文字</small></button><button class="level-btn '+(listen.level==="fast"?'selected':'')+'" id="lfast" onclick="setListenLevel(\'fast\')">スピード<br><small>テンポよく10問</small></button><button class="level-btn '+(listen.level==="similar"?'selected':'')+'" id="lsimilar" onclick="setListenLevel(\'similar\')">そっくり<br><small>B・D・P・Tなどに挑戦</small></button><button class="level-btn '+(listen.level==="review"?'selected':'')+'" id="lreview" onclick="setListenLevel(\'review\')">ふくしゅう<br><small>まちがえやすい文字を中心に</small></button></div>'+(listen.level==="review"?'<div class="review-mode-note">'+(weakLetters(5).length?'よくまちがえた文字を中心に出すよ：'+weakLetters(5).join('・'):'まだ苦手記録がないので、いろいろな文字から出すよ。')+'</div>':'')+'<button class="start-btn" onclick="beginListen()">スタート！</button></div>';
 }
 function setListenCount(n){listen.count=n;document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("c"+n).classList.add("selected")}
 function setListenLevel(v){listen.level=v;document.querySelectorAll(".level-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("l"+v).classList.add("selected")}
@@ -1252,7 +1255,7 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：録音済み A〜Z（予備：'+currentEnglishVoiceName()+'）</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
+ gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：録音済み A〜Z（予備：'+currentEnglishVoiceName()+'）<br><b>'+recordedAudioStatus()+'</b></small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
  let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK&&h.masterOK&&h.hotspotOK&&h.saveOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
