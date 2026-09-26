@@ -248,6 +248,9 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 
 .master-daily-progress{position:absolute;z-index:6;left:74.5%;top:34.25%;min-width:5.5%;padding:2px 6px;border-radius:999px;background:#fff8d9;border:2px solid #bd813d;text-align:center;font-weight:1000;color:#4b3421;font-size:clamp(9px,.9vw,13px);pointer-events:none}
 .long-goal{max-width:900px;margin:8px auto 14px;padding:10px 14px;border-radius:15px;background:#f3eaff;border:2px solid #9d76c8;text-align:center;font-weight:900}
+<style>
+@media (pointer:coarse){button,.master-hotspot{min-width:44px;min-height:44px}button{-webkit-tap-highlight-color:transparent}}
+button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
@@ -306,15 +309,18 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-long-goals";
+const APP_BUILD="2026.09.26-classroom-audit";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
- const requiredFns=["goHome","openGame","openAdventureMap","openBook","openEggs","openRewardMachine","openMyWorld","openTitles","openSettings"];
+ const requiredFns=["goHome","openGame","openAdventureMap","openBook","openEggs","openRewardMachine","openMyWorld","openTitles","openDaily","openSettings","sayLetter","persist"];
  const fnOK=requiredFns.every(n=>typeof window[n]==="function");
  const navOK=document.querySelectorAll(".bottom-nav button").length===7;
  const gameOK=document.querySelectorAll(".game").length===8;
- return {fnOK,navOK,gameOK,build:APP_BUILD};
+ const masterOK=!!document.getElementById("masterHome")&&!!document.querySelector('img[src="assets/abc-master-home-web.jpg"]');
+ const hotspotOK=document.querySelectorAll("[data-master-game]").length===8&&!!document.getElementById("masterDailyHotspot");
+ const saveOK=selfCheck();
+ return {fnOK,navOK,gameOK,masterOK,hotspotOK,saveOK,build:APP_BUILD};
 }
 function normalizeButtons(){document.querySelectorAll("button:not([type])").forEach(b=>b.type="button")}
 function verifyMasterContract(){
@@ -743,7 +749,7 @@ function openEggs(){hatchBusy=false;enterGameScreen("ABCたまご・なかま");
  ensureBuddySave();
  let owned=save.buddies.length,need=20,allOwned=owned>=buddies.length,ready=!allOwned&&save.eggProgress>=need;
  gameBody.innerHTML=longTermHub()+'<div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(allOwned?'なかまたちが そろった！':ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>'+(allOwned?'遠くの島から、まだ見たことのない光が見える…… これからのたまごパワーは「ワールドのひかり」になるよ。':'たまごパワー '+Math.min(save.eggProgress,need)+' / '+need)+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready||allOwned?'disabled':'')+'>スター2こで たまごを育てる</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
- render();
+ render();normalizeButtons();
 }
 function renderBuddy(b,i){
  let owned=save.buddies.includes(i),active=save.activeBuddy===b[0];
@@ -782,7 +788,7 @@ function ensureRewardSave(){
 function openRewardMachine(){enterGameScreen("ごほうびマシン");rewardBusy=false;
  ensureRewardSave();
  gameBody.innerHTML=longTermHub()+'<div class="reward-room"><div class="reward-machine"><div class="machine-sign">ABC<br><small>REWARD MACHINE</small></div><div class="machine-window"><div class="reward-ball b1">A</div><div class="reward-ball b2">B</div><div class="reward-ball b3">C</div><div class="reward-ball b4">?</div></div><div class="machine-slot"></div><div class="machine-tray">GET!</div></div><div class="reward-info"><div class="coin-wallet">もっているコイン　<b>'+save.coins+'</b></div><h3>コイン10まいで ごほうび1こ！</h3><p>どれが出るかは お楽しみ。どれが出ても「あたり」だよ。ひみつの道は、ゲームを進めても開けるよ。</p><button class="machine-btn" onclick="useRewardMachine()" '+(save.coins<10?'disabled':'')+'>ごほうびを もらう</button><div class="reward-preview"><b>出会えるごほうび</b><span>たまごパワー</span><span>スター</span><span>ABCカード</span><span>ワールドアイテム</span><span>？？？のかけら</span></div></div></div><div class="world-items"><b>ワールドアイテム</b><span>木 '+save.rewardItems.tree+'</span><span>お花 '+save.rewardItems.flower+'</span><span>ひみつのかけら '+save.rewardItems.shard+'</span><span>ワールドのひかり '+(save.rewardItems.sparkle||0)+'</span></div>';
- render();
+ render();normalizeButtons();
 }
 let rewardBusy=false;
 function useRewardMachine(){
@@ -821,7 +827,7 @@ function openMyWorld(){worldPlaceBusy=false;enterGameScreen("マイワールド"
  let lv=save.worldLv||1,trees=save.worldPlaced.tree||0,flowers=save.worldPlaced.flower||0;
  let buddy=buddies.find(b=>b[0]===save.activeBuddy);
  gameBody.innerHTML=longTermHub()+'<div class="myworld-head"><div><b>ABCワールド Lv.'+lv+'</b><small>ちがう練習をクリアするほど、島が少しずつにぎやかになるよ。</small><span class="world-spirit">島のひかり：'+worldSpiritLabel()+'</span></div><div class="world-stock">もっているもの　木 '+save.rewardItems.tree+'　お花 '+save.rewardItems.flower+'</div></div><div class="world-canvas lv'+Math.min(lv,6)+'"><div class="world-sun"></div><div class="world-cloud wc1"></div><div class="world-cloud wc2"></div><div class="world-island"><div class="world-river"></div>'+worldBuildings(lv)+worldDecor("tree",trees)+worldDecor("flower",flowers)+(buddy?'<div class="world-buddy"><div class="buddy-creature buddy-c'+(buddies.indexOf(buddy)%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+buddy[2]+'</em></div><b>'+buddy[0]+'</b></div>':'')+'</div><div class="far-island">'+(lv>=6?'？？？':'')+'</div><div class="world-whisper">'+(save.secretDiscovered?'ひみつの島への道が見えている。でも、その奥にはまだ大きな門が……':worldSpirit()>=90?'空のむこうで、大きな光が動いた……':worldSpirit()>=55?'遠くの島が、少しずつ近づいている気がする……':worldSpirit()>=30?'海のむこうに、何か光っている……':'島を育てると、まだ知らない場所が見つかるかも……')+'</div></div><div class="world-actions"><div><h3>島をかざろう</h3><button onclick="placeWorldItem(\'tree\')" '+(save.rewardItems.tree<1?'disabled':'')+'>木を1本おく</button><button onclick="placeWorldItem(\'flower\')" '+(save.rewardItems.flower<1?'disabled':'')+'>お花を1つおく</button></div><div class="world-growth"><b>島の成長</b>'+worldGrowthRows(lv)+'</div></div>';
- render();
+ render();normalizeButtons();
 }
 function worldBuildings(lv){
  let h='<div class="world-house"><span></span><b>ABC</b></div>';
@@ -911,7 +917,7 @@ function openTitles(){enterGameScreen("しょうごう");syncEarnedTitles();try{
  ensureTitleSave();
  let count=titleDefs.filter(titleUnlocked).length;
  gameBody.innerHTML='<div class="long-goal">'+longGoalText()+'</div><div class="title-head"><div><b>見つけたしょうごう　'+count+' / '+titleDefs.length+'</b><small>遊び方によって、ひみつのしょうごうも見つかるよ。</small></div><div class="wearing-title">いまのしょうごう：<b>'+(save.selectedTitle||"まだ つけていない")+'</b></div></div><div class="title-grid">'+titleDefs.map((d,i)=>renderTitle(d,i)).join("")+'</div><div class="secret-title-note">条件が書いていない「？？？」もあるよ。いろいろな遊び方を試してみよう。</div>';
- render();
+ render();normalizeButtons();
 }
 function renderTitle(d,i){
  let u=titleUnlocked(d),secret=d[3],name=u&&secret?secretTitleName(i):d[0],desc=u? (secret?"ひみつの条件を見つけた！":d[1]) : (secret?"条件も名前も ひみつ":d[1]);
@@ -935,7 +941,7 @@ function openDaily(){dailyClaimBusy=false;enterGameScreen("きょうのミッシ
  ensureDaily();
  let ds=dailyData();
  gameBody.innerHTML='<div class="daily-banner"><b>きょうの3つのミッション</b><span>できる日だけでOK。れんぞくログインはありません。</span></div><div class="daily-list">'+ds.map((d,i)=>'<div class="daily-card '+(d[1]>=d[2]?'daily-done':'')+'"><div class="daily-number">'+(i+1)+'</div><div><b>'+d[0]+'</b><div class="daily-meter"><i style="width:'+(d[1]/d[2]*100)+'%"></i></div><small>'+d[1]+' / '+d[2]+'　ごほうび：'+(d[4]==="star"?"スター "+d[3]+"こ":d[4]==="coin"?"コイン "+d[3]+"まい":"たまごパワー +"+d[3])+'</small></div><button onclick="claimDaily('+i+')" '+(d[1]<d[2]||save.daily.claimed[i]?'disabled':'')+'>'+(save.daily.claimed[i]?"うけとりずみ":"うけとる")+'</button></div>').join("")+'</div><div class="daily-note">休んだ日があっても不利にならないよ。次に来た日に、新しいミッションにちょうせんしよう！</div>';
- render();
+ render();normalizeButtons();
 }
 let dailyClaimBusy=false;
 function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
@@ -947,7 +953,7 @@ function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:tru
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
  gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
- let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
+ let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK&&h.masterOK&&h.hotspotOK&&h.saveOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
@@ -984,5 +990,5 @@ window.addEventListener("online",()=>showToast("インターネットにつな�
 migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();initApprovedMasterHome();setTimeout(()=>openFirstGuide(),120);
 let hiddenDuringPlay=false,hiddenAt=0;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
-document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};newSession()}else{let away=Date.now()-hiddenAt;if(hiddenDuringPlay&&away>1200){game.classList.remove("active");home.classList.remove("hidden");showToast("ホームにもどりました")}hiddenDuringPlay=false;render()}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};newSession()}else{let away=Date.now()-hiddenAt;if(hiddenDuringPlay&&away>1200){goHome();showToast("ホームにもどりました")}hiddenDuringPlay=false;render()}});
 </script></body></html>
