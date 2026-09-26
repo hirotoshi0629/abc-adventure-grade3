@@ -229,6 +229,15 @@ body.inner-screen .listen-cards{max-width:min(820px,92vw);margin:12px auto}
  body.inner-screen .karuta-card{aspect-ratio:1.45;font-size:clamp(38px,7vh,62px)}
  body.inner-screen .player-btn{padding:12px 24px}
 }
+
+/* ONE-PASS CLASSROOM UX */
+.game-help{max-width:820px;margin:8px auto 12px;padding:9px 14px;border:2px dashed #c98a35;border-radius:14px;background:#fff7d7;text-align:center;font-weight:900}
+button:disabled{opacity:.55;cursor:not-allowed}
+body.inner-screen button{touch-action:manipulation}
+body.inner-screen .sound-btn{min-height:44px;min-width:120px}
+@media (max-width:900px){
+ body.inner-screen .rocket-game,body.inner-screen .monster-wrap,body.inner-screen .treasure-wrap,body.inner-screen .train-scene,body.inner-screen .boss-wrap{max-width:100%;overflow:hidden}
+}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
@@ -286,7 +295,7 @@ body.inner-screen .listen-cards{max-width:min(820px,92vw);margin:12px auto}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-classroom-screen-polish";
+const APP_BUILD="2026.09.26-classroom-ux-pass";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -377,7 +386,7 @@ function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.ga
 function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6}
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>いろいろな練習をして、マイワールドを Lv.6 まで育てよう！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false;
-function openGame(id){if(openGameBusy)return;openGameBusy=true;later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function openGame(id){if(openGameBusy)return;openGameBusy=true;if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
 function enterGameScreen(title){let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
 function goHome(){let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
@@ -385,7 +394,8 @@ function primeSpeech(){if(!("speechSynthesis" in window))return false;speechRead
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
 if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
 const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"el",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
-function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}l=String(l||"").toUpperCase();if(!LETTER_SPEECH[l])return;speechReady=true;try{speechSynthesis.cancel()}catch(e){};let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=.72;u.pitch=1;u.volume=1;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
+function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}l=String(l||"").toUpperCase();if(!LETTER_SPEECH[l])return;speechReady=true;try{speechSynthesis.cancel()}catch(e){};let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=.68;u.pitch=1;u.volume=1;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
+function lockAnswerButtons(ms=500){document.querySelectorAll("#gameBody button").forEach(b=>{if(!b.classList.contains("sound-btn")&&!b.classList.contains("back"))b.disabled=true});later(()=>document.querySelectorAll("#gameBody button").forEach(b=>b.disabled=false),ms)}
 function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
 function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
 function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
@@ -416,7 +426,7 @@ function nextListen(){listen.locked=false;
 function answerListen(x,el){
  if(listen.locked)return;
  if(x===listen.target){
-   listen.locked=true;el.classList.add("correct");listen.correct++;earn(1,listen.level==="similar"?4:3);persist();
+   listen.locked=true;el.classList.add("correct");lockAnswerButtons(450);listen.correct++;earn(1,listen.level==="similar"?4:3);persist();
    document.getElementById("listenMsg").textContent="せいかい！";
    later(nextListen,listen.level==="fast"?450:750);
  }else{
@@ -443,11 +453,11 @@ function nextKaruta(){
 function takeKaruta(x,el){
  if(karuta.locked)return;
  if(x!==karuta.target){el.classList.add("wrong");later(()=>el.classList.remove("wrong"),350);sayLetter(karuta.target);return}
- karuta.locked=true;el.classList.add("hit");
+ karuta.locked=true;el.classList.add("hit");lockAnswerButtons(400);
  if(karuta.players===1){karuta.scores[0]++;earn(1,2);persist();later(nextKaruta,750);return}
  document.getElementById("karutaMsg").innerHTML='だれが とった？<div class="claim-row">'+Array.from({length:karuta.players},(_,i)=>'<button class="claim p'+(i+1)+'" onclick="claimKaruta('+i+')">'+(i+1)+'P</button>').join("")+'</div>';
 }
-function claimKaruta(i){if(!karuta.locked)return;karuta.scores[i]++;document.querySelectorAll(".claim,.claim-btn,.player-claim").forEach(b=>b.disabled=true);earn(1,2);persist();later(nextKaruta,350)}
+function claimKaruta(i){if(!karuta.locked)return;lockAnswerButtons(300);karuta.scores[i]++;document.querySelectorAll(".claim,.claim-btn,.player-claim").forEach(b=>b.disabled=true);earn(1,2);persist();later(nextKaruta,350)}
 function finishKaruta(){if(!beginFinishGuard("karuta"))return;markClear("karuta");let first=firstClearBonus("karuta",2,5);earn(0,first?0:3);persist();
  let best=Math.max(...karuta.scores.slice(0,karuta.players));let winners=[];for(let i=0;i<karuta.players;i++)if(karuta.scores[i]===best)winners.push((i+1)+'P');
  gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>'+(first?'はじめてクリア！ スター +2・コイン +5':'クリアボーナス　コイン +3')+'</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button> <button class="back" onclick="goHome()">ホーム</button></div>';
@@ -494,13 +504,13 @@ function nextRocket(){rocket.locked=false;
  if(rocket.round>rocket.maxRounds){finishRocket();return}
  rocket.target=rocket.targets[rocket.round-1];let choices=choicesWithTarget(rocket.target,4);
  let height=Math.min(88,(rocket.correct/rocket.maxRounds)*82+4);
- gameBody.innerHTML='<div class="rocket-game"><div class="rocket-sky"><div class="rocket-stars">A　B　C　D　E　F</div><div class="rocket-orbit">ABC PLANET</div><div class="rocket-craft" style="bottom:'+height+'%"><span class="rocket-window"></span><span class="rocket-flame"></span></div><div class="rocket-cloud c1"></div><div class="rocket-cloud c2"></div><div class="rocket-ground"></div></div><div class="rocket-panel"><div class="listen-status"><b>'+rocket.round+' / '+rocket.maxRounds+'</b><span>パワー '+rocket.correct+'</span></div><div class="message">聞こえた文字をえらんで、ロケットにパワーをためよう！ <button class="sound-btn" onclick="sayLetter(rocket.target)" aria-label="アルファベットの音をもう一度聞く">もう一度聞く</button></div><div class="rocket-choices">'+choices.map(x=>'<button class="rocket-letter" onclick="answerRocket(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="rocketMsg" class="message"></div></div></div>';
+ gameBody.innerHTML='<div class="game-help">音を聞く → 同じ文字をえらぶ → ロケットをとばそう！</div><div class="rocket-game"><div class="rocket-sky"><div class="rocket-stars">A　B　C　D　E　F</div><div class="rocket-orbit">ABC PLANET</div><div class="rocket-craft" style="bottom:'+height+'%"><span class="rocket-window"></span><span class="rocket-flame"></span></div><div class="rocket-cloud c1"></div><div class="rocket-cloud c2"></div><div class="rocket-ground"></div></div><div class="rocket-panel"><div class="listen-status"><b>'+rocket.round+' / '+rocket.maxRounds+'</b><span>パワー '+rocket.correct+'</span></div><div class="message">聞こえた文字をえらんで、ロケットにパワーをためよう！ <button class="sound-btn" onclick="sayLetter(rocket.target)" aria-label="アルファベットの音をもう一度聞く">もう一度聞く</button></div><div class="rocket-choices">'+choices.map(x=>'<button class="rocket-letter" onclick="answerRocket(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="rocketMsg" class="message"></div></div></div>';
  if(speechReady)later(()=>sayLetter(rocket.target),400);
 }
 function answerRocket(x,el){
  if(rocket.locked)return;
  if(x===rocket.target){
-   rocket.locked=true;el.classList.add("correct");rocket.correct++;earn(1,2);persist();
+   rocket.locked=true;el.classList.add("correct");lockAnswerButtons(450);rocket.correct++;earn(1,2);persist();
    document.getElementById("rocketMsg").textContent=rocket.correct===rocket.maxRounds?"フルパワー！":"パワーアップ！";
    later(nextRocket,700);
  }else{
@@ -523,13 +533,13 @@ function nextMonster(){
  monster.locked=false;
  monster.target=monster.targets[monster.round-1];let choices=choicesWithTarget(monster.target,4);
  let faces=["M","G","R","Z"],face=faces[(monster.round-1)%faces.length];
- gameBody.innerHTML='<div class="monster-wrap"><div class="battle-stage"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-name">LETTER MONSTER</div><div class="monster-body mtype'+((monster.round-1)%4+1)+'"><div class="monster-horns"></div><div class="monster-eyes"><i></i><i></i></div><div class="monster-mouth"></div><div class="monster-mark">'+face+'</div></div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)" aria-label="アルファベットの音をもう一度聞く">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap"><div class="battle-stage"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-name">LETTER MONSTER</div><div class="monster-body mtype'+((monster.round-1)%4+1)+'"><div class="monster-horns"></div><div class="monster-eyes"><i></i><i></i></div><div class="monster-mouth"></div><div class="monster-mark">'+face+'</div></div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)" aria-label="アルファベットの音をもう一度聞く">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
  if(speechReady)later(()=>sayLetter(monster.target),450);
 }
 function answerMonster(x,el){
  if(monster.locked)return;
  if(x===monster.target){
-   monster.locked=true;monster.combo++;monster.bestCombo=Math.max(monster.bestCombo,monster.combo);monster.power++;
+   monster.locked=true;monster.combo++;lockAnswerButtons(450);monster.bestCombo=Math.max(monster.bestCombo,monster.combo);monster.power++;
    el.classList.add("correct");earn(2,3);
    let msg="ヒット！";
    if(monster.power>=3){monster.power=0;earn(2,4);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-body").classList.add("special-hit")}
@@ -557,13 +567,13 @@ function nextTreasure(){
  if(treasure.round>treasure.maxRounds){finishTreasure();return}
  treasure.locked=false;
  treasure.target=treasure.targets[treasure.round-1];let letters=choicesWithTarget(treasure.target,10);
- gameBody.innerHTML='<div class="treasure-wrap"><div class="treasure-map"><div class="map-sea"></div><div class="island island-a"></div><div class="island island-b"></div><div class="palm p1tree"><i></i><i></i><i></i></div><div class="palm p2tree"><i></i><i></i><i></i></div><div class="mountain"></div><div class="river"></div><div class="path-dots">• • • • • • • •</div><div class="chest"></div>'+letters.map((x,i)=>'<button class="hidden-letter" style="left:'+treasureSpots[i].x+'%;top:'+treasureSpots[i].y+'%" onclick="findTreasure(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="treasure-scroll"><p>海ぞくからのミッション</p><div class="message">聞こえた文字を 地図からさがそう！</div><button class="sound-btn big-sound" onclick="sayLetter(treasure.target)">音を聞く</button></div><div id="treasureMsg" class="message">地図を よーく見てね。</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">音を聞く → 地図から文字をさがす → たからを集めよう！</div><div class="treasure-wrap"><div class="treasure-map"><div class="map-sea"></div><div class="island island-a"></div><div class="island island-b"></div><div class="palm p1tree"><i></i><i></i><i></i></div><div class="palm p2tree"><i></i><i></i><i></i></div><div class="mountain"></div><div class="river"></div><div class="path-dots">• • • • • • • •</div><div class="chest"></div>'+letters.map((x,i)=>'<button class="hidden-letter" style="left:'+treasureSpots[i].x+'%;top:'+treasureSpots[i].y+'%" onclick="findTreasure(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="treasure-scroll"><p>海ぞくからのミッション</p><div class="message">聞こえた文字を 地図からさがそう！</div><button class="sound-btn big-sound" onclick="sayLetter(treasure.target)">音を聞く</button></div><div id="treasureMsg" class="message">地図を よーく見てね。</div></div></div>';
  if(speechReady)later(()=>sayLetter(treasure.target),450);
 }
 function findTreasure(x,el){
  if(treasure.locked)return;
  if(x===treasure.target){
-   treasure.locked=true;treasure.found++;el.classList.add("treasure-found");earn(1,3);persist();
+   treasure.locked=true;treasure.found++;lockAnswerButtons(450);el.classList.add("treasure-found");earn(1,3);persist();
    document.getElementById("treasureMsg").textContent="みつけた！ たからをゲット！";
    later(nextTreasure,900);
  }else{
@@ -585,13 +595,13 @@ function nextTrain(){
  train.target=seq[missing];
  let shown=seq.map((x,i)=>i===missing?"?":x);
  let ti=ABC.indexOf(train.target),near=[ABC[ti-2],ABC[ti-1],ABC[ti+1],ABC[ti+2]].filter(Boolean).filter(x=>!seq.includes(x));let wrong=shuffle([...new Set(near.concat(sample(8).filter(x=>!seq.includes(x)&&x!==train.target)))]).slice(0,3),choices=shuffle([train.target,...wrong]);
- gameBody.innerHTML='<div class="train-scene"><div class="train-sky"><div class="train-cloud tc1"></div><div class="train-cloud tc2"></div><div class="train-hills"></div><div class="train-track"></div><div class="train-engine"><span></span></div><div class="train-cars">'+shown.map((x,i)=>'<div class="train-car '+(i===missing?'missing-car':'')+'"><b>'+x+'</b><i></i><i></i></div>').join("")+'</div></div><div class="train-panel"><div class="listen-status"><b>STATION '+train.round+' / '+train.maxRounds+'</b><span>せいかい '+train.correct+'</span></div><div class="message">？に入るアルファベットは どれ？</div><div class="train-sequence">'+shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div><div class="train-choices">'+choices.map(x=>'<button class="train-letter" onclick="answerTrain(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="trainMsg" class="message">順番を よく考えよう！</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">文字のじゅんばんを見る → ？に入る文字をえらぼう！</div><div class="train-scene"><div class="train-sky"><div class="train-cloud tc1"></div><div class="train-cloud tc2"></div><div class="train-hills"></div><div class="train-track"></div><div class="train-engine"><span></span></div><div class="train-cars">'+shown.map((x,i)=>'<div class="train-car '+(i===missing?'missing-car':'')+'"><b>'+x+'</b><i></i><i></i></div>').join("")+'</div></div><div class="train-panel"><div class="listen-status"><b>STATION '+train.round+' / '+train.maxRounds+'</b><span>せいかい '+train.correct+'</span></div><div class="message">？に入るアルファベットは どれ？</div><div class="train-sequence">'+shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div><div class="train-choices">'+choices.map(x=>'<button class="train-letter" onclick="answerTrain(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="trainMsg" class="message">順番を よく考えよう！</div></div></div>';
 }
 function answerTrain(x,el){
  if(train.locked)return;
  sayLetter(x);
  if(x===train.target){
-   train.locked=true;train.correct++;el.classList.add("correct");earn(1,2);persist();
+   train.locked=true;train.correct++;lockAnswerButtons(450);el.classList.add("correct");earn(1,2);persist();
    let m=document.querySelector(".missing-car b");if(m)m.textContent=train.target;
    document.getElementById("trainMsg").textContent="せいかい！ 列車が出発！";
    document.querySelector(".train-cars").classList.add("depart");document.querySelector(".train-engine").classList.add("depart-engine");
@@ -626,7 +636,7 @@ function nextBoss(){
    let ti=ABC.indexOf(boss.target),near=[ABC[ti-2],ABC[ti-1],ABC[ti+1],ABC[ti+2]].filter(Boolean).filter(x=>!seq.includes(x));choices=shuffle([boss.target,...shuffle([...new Set(near.concat(sample(8).filter(x=>!seq.includes(x)&&x!==boss.target)))]).slice(0,3)]);
    prompt='？に入る文字で バリアをやぶれ！';
  }
- gameBody.innerHTML='<div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">3つのステージにちょうせん！ 音・形・じゅんばんを使ってボスをたおそう！</div><div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
  if(boss.type!=="order")if(speechReady)later(()=>sayLetter(boss.target),450);
 }
 function answerBoss(x,el){
