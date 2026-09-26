@@ -102,6 +102,17 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
+const SAVE_VERSION=3;
+function migrateSave(){
+ save.version=SAVE_VERSION;
+ save.stars=Math.max(0,Number(save.stars)||0);save.coins=Math.max(0,Number(save.coins)||0);
+ save.worldLv=Math.max(1,Math.min(6,Number(save.worldLv)||1));
+ save.plays=Math.max(0,Number(save.plays)||0);save.clears=save.clears||{};save.gamePlays=save.gamePlays||{};
+ save.buddies=Array.isArray(save.buddies)?[...new Set(save.buddies.filter(i=>Number.isInteger(i)&&i>=0&&i<12))]:[];
+ save.eggProgress=Math.max(0,Math.min(20,Number(save.eggProgress)||0));
+ save.settings=save.settings||{sound:true,motion:true};
+ if(save.settings.sound==null)save.settings.sound=true;if(save.settings.motion==null)save.settings.motion=true;
+}
 function ensureEconomy(){save.totalStarsEarned=Math.max(save.totalStarsEarned||0,save.stars||0);save.totalCoinsEarned=Math.max(save.totalCoinsEarned||0,save.coins||0);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function earn(starsN=0,coinsN=0){ensureEconomy();save.stars=(save.stars||0)+starsN;save.coins=(save.coins||0)+coinsN;save.totalStarsEarned=(save.totalStarsEarned||0)+Math.max(0,starsN);save.totalCoinsEarned=(save.totalCoinsEarned||0)+Math.max(0,coinsN);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor(save.totalStarsEarned/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function render(){ensureEconomy();syncEarnedTitles();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv}
@@ -110,9 +121,15 @@ const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いて�
 let sessionToken=0;function newSession(){sessionToken++;return sessionToken}function later(fn,ms){const t=sessionToken;return setTimeout(()=>{if(t===sessionToken)fn()},ms)}
 const finishLocks={};function beginFinishGuard(id){if(finishLocks[id])return false;finishLocks[id]=true;return true}function resetFinishGuard(id){finishLocks[id]=false}
 function clearCount(id){return (save.clears&&save.clears[id])||0}
-function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;persist();return first}
+function syncWorldLevel(){
+ const order=["karuta","memory","listen","rocket","monster","treasure","train","boss"];
+ let unique=order.filter(k=>(save.clears?.[k]||0)>0).length;
+ let lv=1;if(unique>=1)lv=2;if(unique>=3)lv=3;if(unique>=4)lv=4;if(unique>=5)lv=5;if(unique>=6)lv=6;
+ save.worldLv=Math.max(save.worldLv||1,lv);
+}
+function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;syncWorldLevel();persist();return first}
 function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);persist();return true}
-function openGame(id){newSession();save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function openGame(id){enterGameScreen(titles[id]);save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
 function enterGameScreen(title){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
 function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render()}
 let speechReady=false;
@@ -355,7 +372,7 @@ function nextBoss(){
  }else{
    let s=Math.floor(Math.random()*23),seq=ABC.slice(s,s+4),m=1+Math.floor(Math.random()*2);boss.target=seq[m];
    display='<div class="boss-seq">'+seq.map((x,i)=>'<span>'+(i===m?'?':x)+'</span>').join('<em>→</em>')+'</div>';
-   choices=[boss.target,...sample(8).filter(x=>!seq.includes(x)&&x!==boss.target).slice(0,3)].sort(()=>Math.random()-.5);
+   let ti=ABC.indexOf(boss.target),near=[ABC[ti-2],ABC[ti-1],ABC[ti+1],ABC[ti+2]].filter(Boolean).filter(x=>!seq.includes(x));choices=shuffle([boss.target,...shuffle([...new Set(near.concat(sample(8).filter(x=>!seq.includes(x)&&x!==boss.target)))]).slice(0,3)]);
    prompt='？に入る文字で バリアをやぶれ！';
  }
  gameBody.innerHTML='<div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\\''+x+'\\',this)">'+x+'</button>').join("")+'</div><div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
@@ -390,12 +407,12 @@ const mapAreas=[
  ["ロケット岬","rocket",2],["モンスター谷","monster",3],["たから島","treasure",4],
  ["ABCステーション","train",5],["天空の城","boss",6],["？？？","secret",7]
 ];
-function openAdventureMap(){newSession();ensureMilestoneShards();persist();
+function openAdventureMap(){enterGameScreen("ABCぼうけんマップ");ensureMilestoneShards();persist();
  home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ABCぼうけんマップ";
  let lv=save.worldLv||1,secret=secretState();
- gameBody.innerHTML='<div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>ゲームをクリアすると、新しい道がひらくよ。</span></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\\''+a[1]+'\\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div>';
+ gameBody.innerHTML='<div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>ゲームをクリアすると、新しい道がひらくよ。</span></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div role="button" tabindex="0" class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\\''+a[1]+'\\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div>';
 }
-function openSecretIsland(){newSession();let s=secretState();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=s.open?"ひみつの島":"？？？";if(!s.open){gameBody.innerHTML='<div class="secret-locked"><div class="mystery-island">？？？</div><h2>まだ きりの中……</h2><p>天空のおしろの先に、島のかげが見える。</p><div class="secret-hints"><span>'+(s.boss?'天空から ふしぎな道が見えた':'天空のおしろに 何かありそう')+'</span><span>'+(s.shards>=4?'かけらが ひとつの形になりそう':'ひみつのかけらが 関係していそう')+'</span><span>'+(s.buddies>=5?'なかまたちが 道を見つけたみたい':'なかまと進むと 何か起こるかも')+'</span></div><button class="back" onclick="openAdventureMap()">地図にもどる</button></div>';return}save.secretDiscovered=true;persist();let buddy=save.activeBuddy||"なかまたち";gameBody.innerHTML='<div class="secret-island-scene"><div class="secret-sky">A　?　B　?　C</div><div class="secret-land"><div class="secret-gate"><b>ABC</b></div><div class="secret-crystal">?</div></div><h2>ひみつの島を 発見！</h2><p>'+buddy+'と いっしょに、きりの向こうへたどり着いた！</p><div class="secret-message">島の奥には、まだ開かない大きな門がある……<br><b>THE ADVENTURE CONTINUES...</b></div><button class="back" onclick="openSecretChallenge()">島を たんけんする</button> <button class="back" onclick="openAdventureMap()">地図にもどる</button></div>'}
+function openSecretIsland(){newSession();ensureMilestoneShards();let s=secretState();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=s.open?"ひみつの島":"？？？";if(!s.open){gameBody.innerHTML='<div class="secret-locked"><div class="mystery-island">？？？</div><h2>まだ きりの中……</h2><p>天空のおしろの先に、島のかげが見える。</p><div class="secret-hints"><span>'+(s.boss?'天空から ふしぎな道が見えた':'天空のおしろに 何かありそう')+'</span><span>'+(s.shards>=4?'かけらが ひとつの形になりそう':'ひみつのかけらが 関係していそう')+'</span><span>'+(s.buddies>=5?'なかまたちが 道を見つけたみたい':'なかまと進むと 何か起こるかも')+'</span></div><button class="back" onclick="openAdventureMap()">地図にもどる</button></div>';return}save.secretDiscovered=true;persist();let buddy=save.activeBuddy||"なかまたち";gameBody.innerHTML='<div class="secret-island-scene"><div class="secret-sky">A　?　B　?　C</div><div class="secret-land"><div class="secret-gate"><b>ABC</b></div><div class="secret-crystal">?</div></div><h2>ひみつの島を 発見！</h2><p>'+buddy+'と いっしょに、きりの向こうへたどり着いた！</p><div class="secret-message">島の奥には、まだ開かない大きな門がある……<br><b>THE ADVENTURE CONTINUES...</b></div><button class="back" onclick="openSecretChallenge()">島を たんけんする</button> <button class="back" onclick="openAdventureMap()">地図にもどる</button></div>'}
 function openSecretChallenge(){newSession();gameTitle.textContent="ひみつの島・ABCチャレンジ";let target=sample(1)[0],pool=choicesWithTarget(target,4);gameBody.innerHTML='<div class="secret-challenge"><h2>きりの中から 聞こえた文字は？</h2><button class="sound-btn" onclick="sayLetter(\\''+target+'\\')">もう一度聞く</button><div class="listen-cards four">'+pool.map((x,i)=>'<button class="listen-card" onclick="answerSecret(\\''+x+'\\',\\''+target+'\\',this)">'+x+'</button>').join("")+'</div><p id="secretMsg">正しい文字を見つけると、島が少し光るよ。</p></div>';later(()=>sayLetter(target),350)}
 function answerSecret(x,target,el){if(document.querySelector(".secret-challenge .correct"))return;if(x===target){el.classList.add("correct");save.secretPlays=(save.secretPlays||0)+1;let reward=(save.secretPlays||0)<=3;if(reward)earn(2,5);persist();document.getElementById("secretMsg").textContent=reward?"島が光った！ ごほうびも見つけた！":"島が光った！ でも、大きな門はまだ開かない……";later(openSecretIsland,1000)}else{el.classList.add("listen-wrong");document.getElementById("secretMsg").textContent="もう一度 よく聞こう！";sayLetter(target);later(()=>el.classList.remove("listen-wrong"),400)}}
 function mapIcon(i,u){
@@ -411,7 +428,7 @@ function cardUnlocked(letterIndex,themeIndex){
  let n=collectionCount(),slot=themeIndex*26+letterIndex;
  return slot<n;
 }
-function openBook(){newSession();
+function openBook(){enterGameScreen("ABCずかん");
  home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ABCずかん";
  let got=collectionCount();
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="book-top"><div><b>あつめたカード　'+got+' / 260</b><small>ゲームでスターを集めると、少しずつカードが見つかるよ。</small></div><div class="book-meter"><i style="width:'+(got/260*100)+'%"></i></div></div><div class="book-tabs">'+cardThemes.map((t,i)=>'<button class="book-tab '+(i===0?'active':'')+'" onclick="renderBookTheme('+i+',this)">'+(i===9?'？？？':t[0])+'</button>').join("")+'</div><div id="bookGrid"></div>';
@@ -439,7 +456,7 @@ function ensureBuddySave(){
  if(!save.activeBuddy)save.activeBuddy="";
  persist();
 }
-function openEggs(){newSession();eggFeedBusy=false;
+function openEggs(){hatchBusy=false;enterGameScreen("ABCたまご・なかま");eggFeedBusy=false;
  ensureBuddySave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ABCたまご・なかま";
  let owned=save.buddies.length,need=20,allOwned=owned>=buddies.length,ready=!allOwned&&save.eggProgress>=need;
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(allOwned?'なかまたちが そろった！':ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>'+(allOwned?'遠くの島から、まだ見たことのない光が見える……':'たまごパワー '+Math.min(save.eggProgress,need)+' / '+need)+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready||allOwned?'disabled':'')+'>スター2こで たまごを育てる</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
@@ -454,10 +471,11 @@ function feedEgg(){
  ensureBuddySave();if(eggFeedBusy||(save.stars||0)<2||save.eggProgress>=20)return;eggFeedBusy=true;
  save.stars=Math.max(0,save.stars-2);save.eggProgress=Math.min(20,save.eggProgress+2);persist();openEggs();
 }
-function hatchEgg(){
- ensureBuddySave();if(save.eggProgress<20)return;
+let hatchBusy=false;
+function hatchEgg(){if(hatchBusy)return;hatchBusy=true;
+ ensureBuddySave();if(save.eggProgress<20){hatchBusy=false;return;}
  let left=buddies.map((_,i)=>i).filter(i=>!save.buddies.includes(i));
- if(!left.length){gameBody.innerHTML='<div class="finish-box"><h2>なかまたちが そろった！</h2><p>でも、遠くから新しいたまごの気配がする……</p><div class="mystery-island">？？？</div><button class="back" onclick="openEggs()">なかまを見る</button></div>';return}
+ if(!left.length){hatchBusy=false;gameBody.innerHTML='<div class="finish-box"><h2>なかまたちが そろった！</h2><p>でも、遠くから新しいたまごの気配がする……</p><div class="mystery-island">？？？</div><button class="back" onclick="openEggs()">なかまを見る</button></div>';return}
  let idx=left[Math.floor(Math.random()*left.length)];save.buddies.push(idx);save.eggProgress=0;if(!save.activeBuddy)save.activeBuddy=buddies[idx][0];persist();
  let b=buddies[idx];
  gameBody.innerHTML='<div class="hatch-scene"><div class="hatch-rays"></div><div class="new-buddy buddy-creature buddy-c'+(idx%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+b[2]+'</em></div><h2>'+b[0]+'が なかまになった！</h2><p>'+b[1]+'の力をもつ ABCなかまだよ。</p><button class="back" onclick="openEggs()">なかまたちを見る</button></div>';
@@ -479,7 +497,7 @@ function ensureRewardSave(){
  if(save.rewardMachineUses==null)save.rewardMachineUses=0;
  persist();
 }
-function openRewardMachine(){newSession();rewardBusy=false;
+function openRewardMachine(){enterGameScreen("ごほうびマシン");rewardBusy=false;
  ensureRewardSave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ごほうびマシン";
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="reward-room"><div class="reward-machine"><div class="machine-sign">ABC<br><small>REWARD MACHINE</small></div><div class="machine-window"><div class="reward-ball b1">A</div><div class="reward-ball b2">B</div><div class="reward-ball b3">C</div><div class="reward-ball b4">?</div></div><div class="machine-slot"></div><div class="machine-tray">GET!</div></div><div class="reward-info"><div class="coin-wallet">もっているコイン　<b>'+save.coins+'</b></div><h3>コイン10まいで ごほうび1こ！</h3><p>どれが出ても「あたり」。なくなるものはないよ。</p><button class="machine-btn" onclick="useRewardMachine()" '+(save.coins<10?'disabled':'')+'>ごほうびを もらう</button><div class="reward-preview"><b>出会えるごほうび</b><span>たまごパワー</span><span>スター</span><span>ABCカード</span><span>ワールドアイテム</span><span>？？？のかけら</span></div></div></div><div class="world-items"><b>ワールドアイテム</b><span>木 '+save.rewardItems.tree+'</span><span>お花 '+save.rewardItems.flower+'</span><span>ひみつのかけら '+save.rewardItems.shard+'</span><span>ワールドのひかり '+(save.rewardItems.sparkle||0)+'</span></div>';
  render();
@@ -517,7 +535,7 @@ function ensureWorldSave(){
  if(!save.worldPlaced)save.worldPlaced={tree:0,flower:0};
  persist();
 }
-function openMyWorld(){newSession();ensureMilestoneShards();persist();
+function openMyWorld(){enterGameScreen("マイワールド");ensureMilestoneShards();persist();
  ensureWorldSave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="マイワールド";
  let lv=save.worldLv||1,trees=save.worldPlaced.tree||0,flowers=save.worldPlaced.flower||0;
  let buddy=buddies.find(b=>b[0]===save.activeBuddy);
@@ -619,11 +637,11 @@ function ensureDaily(){
 }
 function dailyData(){
  ensureDaily();return [
- ["ABCゲームで 1回遊ぼう",Math.min(1,(save.plays||0)-save.daily.startPlays),1,3,"star"],
- ["ABCゲームで 3回遊ぼう",Math.min(3,(save.plays||0)-save.daily.startPlays),3,8,"coin"],
+ ["ABCゲームで 1回遊ぼう",Math.min(1,Math.max(0,(save.plays||0)-save.daily.startPlays)),1,3,"star"],
+ ["ABCゲームで 3回遊ぼう",Math.min(3,Math.max(0,(save.plays||0)-save.daily.startPlays)),3,8,"coin"],
  ["スターを 5こ集めよう",Math.min(5,Math.max(0,(save.totalStarsEarned||0)-save.daily.startStars)),5,4,"egg"]
  ]}
-function openDaily(){newSession();
+function openDaily(){enterGameScreen("きょうのミッション");
  ensureDaily();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="きょうのミッション";
  let ds=dailyData();
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="daily-banner"><b>きょうの3つのミッション</b><span>できる日だけでOK。れんぞくログインはありません。</span></div><div class="daily-list">'+ds.map((d,i)=>'<div class="daily-card '+(d[1]>=d[2]?'daily-done':'')+'"><div class="daily-number">'+(i+1)+'</div><div><b>'+d[0]+'</b><div class="daily-meter"><i style="width:'+(d[1]/d[2]*100)+'%"></i></div><small>'+d[1]+' / '+d[2]+'　ごほうび：'+(d[4]==="star"?"スター "+d[3]+"こ":d[4]==="coin"?"コイン "+d[3]+"まい":"たまごパワー +"+d[3])+'</small></div><button onclick="claimDaily('+i+')" '+(d[1]<d[2]||save.daily.claimed[i]?'disabled':'')+'>'+(save.daily.claimed[i]?"うけとりずみ":"うけとる")+'</button></div>').join("")+'</div><div class="daily-note">休んだ日があっても不利にならないよ。次に来た日に、新しいミッションにちょうせんしよう！</div>';
@@ -635,7 +653,7 @@ function claimDaily(i){
  save.daily.claimed[i]=true;persist();openDaily();
 }
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true};persist()}
-function openSettings(){newSession();
+function openSettings(){enterGameScreen("せってい");
  ensureSettings();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="せってい";
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="sayLetter(\\'A\\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\\'sound\\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\\'motion\\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは自動保存されます。</small></div><span class="saved-badge">保存中</span></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p></div></div>';
  render();
@@ -643,6 +661,8 @@ function openSettings(){newSession();
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
 function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
-ensureEconomy();persist();
-document.addEventListener("visibilitychange",()=>{if(document.hidden){if("speechSynthesis" in window)speechSynthesis.cancel();newSession()}else render()});
+window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
+window.addEventListener("online",()=>showToast("インターネットにつながりました"));
+migrateSave();syncWorldLevel();ensureEconomy();persist();
+let hiddenDuringPlay=false;document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");if("speechSynthesis" in window)speechSynthesis.cancel();newSession()}else{if(hiddenDuringPlay){game.classList.remove("active");home.classList.remove("hidden");hiddenDuringPlay=false;showToast("ホームにもどりました")}render()}});
 </script></body></html>
