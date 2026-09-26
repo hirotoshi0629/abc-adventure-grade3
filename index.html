@@ -309,7 +309,7 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-audio-audit";
+const APP_BUILD="2026.09.26-v-clear";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -414,8 +414,8 @@ let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
 if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
-const LETTER_SPEECH={A:"A.",B:"B.",C:"C.",D:"D.",E:"E.",F:"F.",G:"G.",H:"H.",I:"I.",J:"J.",K:"K.",L:"L.",M:"M.",N:"N.",O:"O.",P:"P.",Q:"Q.",R:"R.",S:"S.",T:"T.",U:"U.",V:"V.",W:"W.",X:"X.",Y:"Y.",Z:"Z."};
-function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;speechReady=true;try{speechSynthesis.cancel()}catch(e){};let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=.72;u.pitch=1;u.volume=1;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
+const LETTER_SPEECH={A:"A.",B:"B.",C:"C.",D:"D.",E:"E.",F:"F.",G:"G.",H:"H.",I:"I.",J:"J.",K:"K.",L:"L.",M:"M.",N:"N.",O:"O.",P:"P.",Q:"Q.",R:"R.",S:"S.",T:"T.",U:"U.",V:"vee",W:"W.",X:"X.",Y:"Y.",Z:"Z."};
+function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;speechReady=true;try{speechSynthesis.cancel()}catch(e){};let text=LETTER_SPEECH[l],u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=l==="V"?.58:.72;u.pitch=l==="V"?.96:1;u.volume=1;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
 function lockAnswerButtons(ms=500){document.querySelectorAll("#gameBody button").forEach(b=>{if(!b.classList.contains("sound-btn")&&!b.classList.contains("back"))b.disabled=true});later(()=>document.querySelectorAll("#gameBody button").forEach(b=>b.disabled=false),ms)}
 function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
 function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
