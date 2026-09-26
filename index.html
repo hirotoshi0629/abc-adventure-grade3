@@ -254,6 +254,152 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 <style>.clear-next{max-width:620px;margin:8px auto 14px;padding:10px 14px;border:2px solid #6f9f52;border-radius:16px;background:#f3ffe9;text-align:center}.clear-next b,.clear-next span{display:block;margin-bottom:6px}<style>.sound-audit{display:grid;grid-template-columns:repeat(13,minmax(44px,1fr));gap:6px;margin-top:8px}@media(max-width:760px){.sound-audit{grid-template-columns:repeat(7,minmax(44px,1fr))}}<style>.sound-audit-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}<style>
 .memory-compact{padding:0 8px}.memory-msg{margin:5px auto!important;padding:6px 10px!important;line-height:1.15!important}
 @media (orientation:landscape) and (max-height:820px){body.inner-screen .game-head{padding:6px 12px}.memory-board{max-width:min(68vw,520px);gap:6px}.memory-card{border-width:3px;border-radius:12px}.memory-msg{font-size:16px!important}}
+</style>
+<style id="kidsGameTheme">
+:root{
+ --kg-blue:#27b9ff;--kg-sky:#dff7ff;--kg-navy:#16356e;--kg-yellow:#ffd94a;
+ --kg-orange:#ff8b2b;--kg-green:#62d36b;--kg-pink:#ff78bc;--kg-purple:#9168e8;
+ --kg-panel:#ffffff;--kg-line:#ffffff;--kg-shadow:rgba(42,73,122,.22);
+}
+body.inner-screen{background:linear-gradient(#79d8ff 0%,#dff8ff 55%,#fff7cf 100%);color:#17365f}
+body.inner-screen .screen.active{
+ background:
+ radial-gradient(circle at 8% 10%,rgba(255,255,255,.95) 0 2%,transparent 2.3%),
+ radial-gradient(circle at 90% 8%,rgba(255,255,255,.8) 0 1.8%,transparent 2.1%),
+ linear-gradient(180deg,#81dcff 0%,#def8ff 52%,#fff5c4 100%);
+}
+body.inner-screen .game-topbar{
+ background:linear-gradient(180deg,#1d77d8,#1b59b0)!important;
+ border-bottom:5px solid rgba(255,255,255,.9);
+ box-shadow:0 6px 0 rgba(25,68,130,.18);
+}
+body.inner-screen .game-topbar h2{
+ color:#fff;text-shadow:0 3px 0 #163c7a,0 0 2px #163c7a;font-size:clamp(25px,3.2vw,40px)
+}
+body.inner-screen .game-topbar .back,
+body.inner-screen .back,
+body.inner-screen .start-btn{
+ border:3px solid #fff!important;border-radius:18px!important;
+ background:linear-gradient(#ffe96b,#ffc52f)!important;color:#4b3300!important;
+ box-shadow:0 5px 0 #d58b16,0 7px 12px var(--kg-shadow)!important;
+ font-weight:1000!important;
+}
+body.inner-screen .game-help,
+body.inner-screen .howto-chip,
+body.inner-screen .message{
+ border:3px solid #fff!important;border-radius:18px!important;
+ background:rgba(255,255,255,.93)!important;
+ box-shadow:0 5px 0 rgba(74,139,184,.20),0 7px 18px var(--kg-shadow)!important;
+ color:#24456e;
+}
+body.inner-screen .player-btn,
+body.inner-screen .mode-btn,
+body.inner-screen .level-btn{
+ border:4px solid #fff!important;border-radius:20px!important;
+ background:linear-gradient(#ffffff,#e7f7ff)!important;
+ box-shadow:0 5px 0 #82bddd!important;color:#24456e!important;
+}
+body.inner-screen .player-btn:hover,
+body.inner-screen .mode-btn.selected,
+body.inner-screen .level-btn.selected{
+ background:linear-gradient(#fff46f,#ffd23b)!important;
+ box-shadow:0 5px 0 #d79318!important;
+}
+body.inner-screen .sound-btn{
+ border:3px solid #fff!important;border-radius:16px!important;
+ background:linear-gradient(#59cdfa,#229be0)!important;color:#fff!important;
+ box-shadow:0 4px 0 #1475b0!important;font-weight:1000!important
+}
+
+/* Memory: compact 16-card board in the same kids-game style */
+body.inner-screen .memory-card{
+ background:linear-gradient(145deg,#5b8cff,#6552d9)!important;
+ border:4px solid #fff!important;border-radius:16px!important;
+ box-shadow:0 4px 0 #4638a1,0 6px 12px rgba(46,53,131,.25)!important;
+}
+body.inner-screen .memory-card .memory-back{color:#fff;text-shadow:0 2px 0 #3d3191}
+body.inner-screen .memory-card.open,
+body.inner-screen .memory-card.matched{
+ background:linear-gradient(#fff9bb,#ffe16e)!important;
+ border-color:#fff!important;box-shadow:0 3px 0 #d8a329!important;
+}
+body.inner-screen .memory-card.matched{background:linear-gradient(#caff9b,#76e36f)!important}
+
+/* Listen / letter-answer buttons */
+body.inner-screen .listen-card,
+body.inner-screen .rocket-letter,
+body.inner-screen .monster-letter,
+body.inner-screen .treasure-letter,
+body.inner-screen .train-letter,
+body.inner-screen .boss-letter{
+ border:4px solid #fff!important;border-radius:20px!important;
+ background:linear-gradient(#fff,#eaf8ff)!important;
+ box-shadow:0 5px 0 #55a8d2,0 7px 14px var(--kg-shadow)!important;color:#183c6d!important;
+}
+body.inner-screen .correct{background:linear-gradient(#d8ff94,#72dd66)!important}
+
+/* Rocket: deliberately illustrated/game-like, not photorealistic */
+body.inner-screen .rocket-sky{
+ background:
+ radial-gradient(circle at 82% 16%,#ffd95a 0 6%,#ffbd44 6.3% 8%,transparent 8.3%),
+ linear-gradient(#1c4eb7 0%,#3187e8 40%,#85d9ff 72%,#dff8ff 100%)!important;
+ border:5px solid #fff!important;box-shadow:0 7px 0 #4e88ad,0 12px 22px rgba(31,72,126,.25)!important;
+}
+body.inner-screen .rocket-craft{
+ width:82px!important;height:142px!important;
+ background:linear-gradient(90deg,#e73535 0 17%,#fff 18% 82%,#e73535 83% 100%)!important;
+ border:4px solid #3d5880!important;border-radius:50% 50% 24% 24%!important;
+ box-shadow:inset -7px 0 rgba(0,0,0,.08),0 5px 8px rgba(0,0,0,.23)!important;
+}
+body.inner-screen .rocket-craft:before,
+body.inner-screen .rocket-craft:after{
+ width:28px!important;height:56px!important;bottom:8px!important;
+ background:linear-gradient(#ff6253,#d9282c)!important;border:3px solid #6f3035!important
+}
+body.inner-screen .rocket-craft:before{left:-27px!important;border-radius:55% 12% 15% 45%!important}
+body.inner-screen .rocket-craft:after{right:-27px!important;border-radius:12% 55% 45% 15%!important}
+body.inner-screen .rocket-window{
+ width:34px!important;height:34px!important;left:20px!important;top:38px!important;
+ border-radius:50%!important;background:linear-gradient(#baf6ff,#58c6ef)!important;
+ border:4px solid #3d5880!important;box-shadow:none!important
+}
+body.inner-screen .rocket-flame{
+ left:27px!important;bottom:-46px!important;width:24px!important;height:48px!important;
+ background:linear-gradient(#fff7a8,#ffbd2e 42%,#ff5a32 78%,rgba(255,83,40,0))!important;
+ clip-path:polygon(28% 0,72% 0,100% 62%,50% 100%,0 62%)!important;
+ filter:drop-shadow(0 0 7px #ffb52f)!important
+}
+body.inner-screen .rocket-ground{
+ background:linear-gradient(#70d35b,#399946)!important;height:9%!important
+}
+body.inner-screen .rocket-ground:before,
+body.inner-screen .rocket-ground:after{display:none!important}
+body.inner-screen .rocket-orbit{
+ background:linear-gradient(#fff07c,#ffca3a)!important;border:5px solid #fff!important;
+ color:#704100!important;box-shadow:0 4px 0 #d88f16!important
+}
+
+/* Battle / treasure / train panels */
+body.inner-screen .battle-stage,
+body.inner-screen .treasure-scene,
+body.inner-screen .train-track,
+body.inner-screen .boss-stage,
+body.inner-screen .rocket-panel{
+ border-radius:24px!important
+}
+body.inner-screen .battle-stage{background:linear-gradient(#765fe5,#b79af7 55%,#e4d7ff)!important;border:5px solid #fff!important}
+body.inner-screen .monster-body{border:5px solid #fff!important;box-shadow:0 6px 0 rgba(71,57,103,.25)!important}
+body.inner-screen .finish-box{
+ max-width:900px;margin:10px auto;background:rgba(255,255,255,.94);
+ border:5px solid #fff;border-radius:28px;box-shadow:0 8px 0 rgba(67,125,169,.22),0 14px 28px var(--kg-shadow)
+}
+@media (orientation:landscape) and (max-height:820px){
+ body.inner-screen .game-topbar h2{font-size:26px}
+ body.inner-screen .game-help{margin:4px auto 6px!important;padding:6px 10px!important}
+ body.inner-screen .memory-board{max-width:min(60vw,480px)!important;gap:5px!important;margin:4px auto!important}
+ body.inner-screen .memory-card{border-width:3px!important;border-radius:12px!important}
+ body.inner-screen .memory-msg{margin:3px auto!important;padding:4px 8px!important}
+}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" data-kids-home="assets/homejpg/p0.txt" alt="">
@@ -312,7 +458,7 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-kids-home-live";
+const APP_BUILD="2026.09.26-kids-ui-pass1";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
