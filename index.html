@@ -187,7 +187,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-release-candidate";
+const APP_BUILD="2026.09.26-deploy-ready";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -807,7 +807,7 @@ async function restoreSaveForTeacher(){
   let parsed=JSON.parse(raw);
   if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");if(parsed.stars!=null&&!Number.isFinite(Number(parsed.stars)))throw new Error("bad");if(parsed.coins!=null&&!Number.isFinite(Number(parsed.coins)))throw new Error("bad");if(parsed.worldLv!=null&&!Number.isFinite(Number(parsed.worldLv)))throw new Error("bad");
   if(!confirm("この記録データに入れかえますか？"))return;
-  delete parsed._export;save=parsed;migrateSave();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();showToast("記録データを復元しました");goHome();
+  delete parsed._export;save=parsed;migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();goHome();setTimeout(()=>showToast("記録データを復元しました"),80);
  }catch(e){showToast("記録データを読み取れませんでした")}
 }
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
@@ -818,7 +818,7 @@ document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.prev
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
 migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();setTimeout(()=>openFirstGuide(),120);
-let hiddenDuringPlay=false;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
+let hiddenDuringPlay=false,hiddenAt=0;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
-document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");if("speechSynthesis" in window)speechSynthesis.cancel();newSession()}else{if(hiddenDuringPlay){game.classList.remove("active");home.classList.remove("hidden");hiddenDuringPlay=false;showToast("ホームにもどりました")}render()}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};newSession()}else{let away=Date.now()-hiddenAt;if(hiddenDuringPlay&&away>1200){game.classList.remove("active");home.classList.remove("hidden");showToast("ホームにもどりました")}hiddenDuringPlay=false;render()}});
 </script></body></html>
