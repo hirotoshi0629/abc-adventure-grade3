@@ -238,7 +238,14 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 @media (max-width:900px){
  body.inner-screen .rocket-game,body.inner-screen .monster-wrap,body.inner-screen .treasure-wrap,body.inner-screen .train-scene,body.inner-screen .boss-wrap{max-width:100%;overflow:hidden}
 }
-<style>.reward-progress{display:inline-block;margin:6px auto 12px;padding:8px 14px;border-radius:999px;background:#fff7d7;border:2px solid #d79a3a;font-weight:900;font-size:14px}</style></head><body><main class="app">
+<style>.reward-progress{display:inline-block;margin:6px auto 12px;padding:8px 14px;border-radius:999px;background:#fff7d7;border:2px solid #d79a3a;font-weight:900;font-size:14px}
+/* LONG-TERM LOOP CLARITY */
+.progress-hub{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:900px;margin:8px auto 14px}
+.progress-hub>div{background:#fffdf3;border:2px solid #d6a354;border-radius:15px;padding:9px;text-align:center;font-weight:900}
+.progress-hub b{display:block;font-size:18px}
+.progress-hub small{display:block;font-weight:700;margin-top:3px}
+@media(max-width:760px){.progress-hub{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
@@ -295,7 +302,7 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-reward-loop";
+const APP_BUILD="2026.09.26-growth-hub";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -696,10 +703,14 @@ function cardUnlocked(letterIndex,themeIndex){
  let n=collectionCount(),slot=themeIndex*26+letterIndex;
  return slot<n;
 }
+function longTermHub(){
+ ensureRewardSave();ensureBuddySave();
+ return '<div class="progress-hub"><div><b>カード '+collectionCount()+'/260</b><small>ABCずかん</small></div><div><b>なかま '+(save.buddies||[]).length+'/'+buddies.length+'</b><small>たまご・なかま</small></div><div><b>コイン '+(save.coins||0)+'</b><small>ごほうびマシン</small></div><div><b>Lv.'+(save.worldLv||1)+'</b><small>マイワールド</small></div></div>';
+}
 function openBook(){enterGameScreen("ABCずかん");
  
  let got=collectionCount();
- gameBody.innerHTML='<div class="book-top"><div><b>あつめたカード　'+got+' / 260</b><small>ゲームでスターを集めると、少しずつカードが見つかるよ。</small></div><div class="book-meter"><i style="width:'+(got/260*100)+'%"></i></div></div><div class="book-tabs">'+cardThemes.map((t,i)=>'<button class="book-tab '+(i===0?'active':'')+'" onclick="renderBookTheme('+i+',this)">'+(i===9?'？？？':t[0])+'</button>').join("")+'</div><div id="bookGrid"></div>';
+ gameBody.innerHTML=longTermHub()+'<div class="book-top"><div><b>あつめたカード　'+got+' / 260</b><small>ゲームでスターを集めると、少しずつカードが見つかるよ。</small></div><div class="book-meter"><i style="width:'+(got/260*100)+'%"></i></div></div><div class="book-tabs">'+cardThemes.map((t,i)=>'<button class="book-tab '+(i===0?'active':'')+'" onclick="renderBookTheme('+i+',this)">'+(i===9?'？？？':t[0])+'</button>').join("")+'</div><div id="bookGrid"></div>';
  renderBookTheme(0,document.querySelector(".book-tab"));
  render();normalizeButtons();
 }
@@ -727,7 +738,7 @@ function ensureBuddySave(){
 function openEggs(){hatchBusy=false;enterGameScreen("ABCたまご・なかま");eggFeedBusy=false;
  ensureBuddySave();
  let owned=save.buddies.length,need=20,allOwned=owned>=buddies.length,ready=!allOwned&&save.eggProgress>=need;
- gameBody.innerHTML='<div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(allOwned?'なかまたちが そろった！':ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>'+(allOwned?'遠くの島から、まだ見たことのない光が見える…… これからのたまごパワーは「ワールドのひかり」になるよ。':'たまごパワー '+Math.min(save.eggProgress,need)+' / '+need)+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready||allOwned?'disabled':'')+'>スター2こで たまごを育てる</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
+ gameBody.innerHTML=longTermHub()+'<div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(allOwned?'なかまたちが そろった！':ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>'+(allOwned?'遠くの島から、まだ見たことのない光が見える…… これからのたまごパワーは「ワールドのひかり」になるよ。':'たまごパワー '+Math.min(save.eggProgress,need)+' / '+need)+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready||allOwned?'disabled':'')+'>スター2こで たまごを育てる</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
  render();
 }
 function renderBuddy(b,i){
@@ -746,7 +757,7 @@ function hatchEgg(){if(hatchBusy)return;hatchBusy=true;
  if(!left.length){hatchBusy=false;gameBody.innerHTML='<div class="finish-box"><h2>なかまたちが そろった！</h2><p>でも、遠くから新しいたまごの気配がする……</p><div class="mystery-island">？？？</div><button class="back" onclick="openEggs()">なかまを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>';return}
  let idx=left[Math.floor(Math.random()*left.length)];save.buddies.push(idx);save.eggProgress=0;if(!save.activeBuddy)save.activeBuddy=buddies[idx][0];persist();
  let b=buddies[idx];
- gameBody.innerHTML='<div class="hatch-scene"><div class="hatch-rays"></div><div class="new-buddy buddy-creature buddy-c'+(idx%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+b[2]+'</em></div><h2>'+b[0]+'が なかまになった！</h2><p>'+b[1]+'の力をもつ ABCなかまだよ。</p><button class="back" onclick="openEggs()">なかまたちを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ gameBody.innerHTML='<div class="hatch-scene"><div class="hatch-rays"></div><div class="new-buddy buddy-creature buddy-c'+(idx%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+b[2]+'</em></div><h2>'+b[0]+'が なかまになった！</h2><p>'+b[1]+'の力をもつ ABCなかまだよ。</p><button class="back" onclick="openEggs()">なかまたちを見る</button> <button class="back" onclick="openMyWorld()">いっしょに島へ行く</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 function chooseBuddy(i){if(!save.buddies.includes(i))return;save.activeBuddy=buddies[i][0];persist();openEggs()}
 const rewardItems=[
@@ -766,7 +777,7 @@ function ensureRewardSave(){
 }
 function openRewardMachine(){enterGameScreen("ごほうびマシン");rewardBusy=false;
  ensureRewardSave();
- gameBody.innerHTML='<div class="reward-room"><div class="reward-machine"><div class="machine-sign">ABC<br><small>REWARD MACHINE</small></div><div class="machine-window"><div class="reward-ball b1">A</div><div class="reward-ball b2">B</div><div class="reward-ball b3">C</div><div class="reward-ball b4">?</div></div><div class="machine-slot"></div><div class="machine-tray">GET!</div></div><div class="reward-info"><div class="coin-wallet">もっているコイン　<b>'+save.coins+'</b></div><h3>コイン10まいで ごほうび1こ！</h3><p>どれが出るかは お楽しみ。どれが出ても「あたり」だよ。ひみつの道は、ゲームを進めても開けるよ。</p><button class="machine-btn" onclick="useRewardMachine()" '+(save.coins<10?'disabled':'')+'>ごほうびを もらう</button><div class="reward-preview"><b>出会えるごほうび</b><span>たまごパワー</span><span>スター</span><span>ABCカード</span><span>ワールドアイテム</span><span>？？？のかけら</span></div></div></div><div class="world-items"><b>ワールドアイテム</b><span>木 '+save.rewardItems.tree+'</span><span>お花 '+save.rewardItems.flower+'</span><span>ひみつのかけら '+save.rewardItems.shard+'</span><span>ワールドのひかり '+(save.rewardItems.sparkle||0)+'</span></div>';
+ gameBody.innerHTML=longTermHub()+'<div class="reward-room"><div class="reward-machine"><div class="machine-sign">ABC<br><small>REWARD MACHINE</small></div><div class="machine-window"><div class="reward-ball b1">A</div><div class="reward-ball b2">B</div><div class="reward-ball b3">C</div><div class="reward-ball b4">?</div></div><div class="machine-slot"></div><div class="machine-tray">GET!</div></div><div class="reward-info"><div class="coin-wallet">もっているコイン　<b>'+save.coins+'</b></div><h3>コイン10まいで ごほうび1こ！</h3><p>どれが出るかは お楽しみ。どれが出ても「あたり」だよ。ひみつの道は、ゲームを進めても開けるよ。</p><button class="machine-btn" onclick="useRewardMachine()" '+(save.coins<10?'disabled':'')+'>ごほうびを もらう</button><div class="reward-preview"><b>出会えるごほうび</b><span>たまごパワー</span><span>スター</span><span>ABCカード</span><span>ワールドアイテム</span><span>？？？のかけら</span></div></div></div><div class="world-items"><b>ワールドアイテム</b><span>木 '+save.rewardItems.tree+'</span><span>お花 '+save.rewardItems.flower+'</span><span>ひみつのかけら '+save.rewardItems.shard+'</span><span>ワールドのひかり '+(save.rewardItems.sparkle||0)+'</span></div>';
  render();
 }
 let rewardBusy=false;
@@ -781,7 +792,8 @@ function useRewardMachine(){
  else if(r.kind==="world"){save.rewardItems[r.name.includes("木")?"tree":"flower"]++}
  else if(r.kind==="shard"){save.rewardItems.shard++}
  persist();
- gameBody.innerHTML='<div class="reward-result"><div class="reward-burst"></div><div class="prize-capsule"><span>'+r.mark+'</span></div><h2>'+r.name+'を ゲット！</h2><p>'+(r.kind==="world"||r.kind==="card"||r.kind==="shard"?"コレクションに 追加されたよ。":"+"+r.amount+" もらったよ！")+'</p>'+(r.kind==="shard"?'<p class="mystery-note">このかけら、何かの形になりそう……</p>':'')+'<button class="back" onclick="openRewardMachine()">もう一回見る</button> <button class="back" onclick="openMyWorld()">マイワールド</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let route=r.kind==="egg"?'<button class="back" onclick="openEggs()">たまごを見る</button>':r.kind==="card"?'<button class="back" onclick="openBook()">ずかんを見る</button>':(r.kind==="world"||r.kind==="sparkle"||r.kind==="shard")?'<button class="back" onclick="openMyWorld()">マイワールド</button>':'';
+ gameBody.innerHTML='<div class="reward-result"><div class="reward-burst"></div><div class="prize-capsule"><span>'+r.mark+'</span></div><h2>'+r.name+'を ゲット！</h2><p>'+(r.kind==="world"||r.kind==="card"||r.kind==="shard"?"コレクションに 追加されたよ。":"+"+r.amount+" もらったよ！")+'</p>'+(r.kind==="shard"?'<p class="mystery-note">このかけら、何かの形になりそう……</p>':'')+route+' <button class="back" onclick="openRewardMachine()">もう一回</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 function ensureMilestoneShards(){
  ensureRewardSave();
@@ -804,7 +816,7 @@ function ensureWorldSave(){
 function openMyWorld(){worldPlaceBusy=false;enterGameScreen("マイワールド");ensureMilestoneShards();ensureWorldSave();persist();
  let lv=save.worldLv||1,trees=save.worldPlaced.tree||0,flowers=save.worldPlaced.flower||0;
  let buddy=buddies.find(b=>b[0]===save.activeBuddy);
- gameBody.innerHTML='<div class="myworld-head"><div><b>ABCワールド Lv.'+lv+'</b><small>ちがう練習をクリアするほど、島が少しずつにぎやかになるよ。</small><span class="world-spirit">島のひかり：'+worldSpiritLabel()+'</span></div><div class="world-stock">もっているもの　木 '+save.rewardItems.tree+'　お花 '+save.rewardItems.flower+'</div></div><div class="world-canvas lv'+Math.min(lv,6)+'"><div class="world-sun"></div><div class="world-cloud wc1"></div><div class="world-cloud wc2"></div><div class="world-island"><div class="world-river"></div>'+worldBuildings(lv)+worldDecor("tree",trees)+worldDecor("flower",flowers)+(buddy?'<div class="world-buddy"><div class="buddy-creature buddy-c'+(buddies.indexOf(buddy)%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+buddy[2]+'</em></div><b>'+buddy[0]+'</b></div>':'')+'</div><div class="far-island">'+(lv>=6?'？？？':'')+'</div><div class="world-whisper">'+(save.secretDiscovered?'ひみつの島への道が見えている。でも、その奥にはまだ大きな門が……':worldSpirit()>=90?'空のむこうで、大きな光が動いた……':worldSpirit()>=55?'遠くの島が、少しずつ近づいている気がする……':worldSpirit()>=30?'海のむこうに、何か光っている……':'島を育てると、まだ知らない場所が見つかるかも……')+'</div></div><div class="world-actions"><div><h3>島をかざろう</h3><button onclick="placeWorldItem(\'tree\')" '+(save.rewardItems.tree<1?'disabled':'')+'>木を1本おく</button><button onclick="placeWorldItem(\'flower\')" '+(save.rewardItems.flower<1?'disabled':'')+'>お花を1つおく</button></div><div class="world-growth"><b>島の成長</b>'+worldGrowthRows(lv)+'</div></div>';
+ gameBody.innerHTML=longTermHub()+'<div class="myworld-head"><div><b>ABCワールド Lv.'+lv+'</b><small>ちがう練習をクリアするほど、島が少しずつにぎやかになるよ。</small><span class="world-spirit">島のひかり：'+worldSpiritLabel()+'</span></div><div class="world-stock">もっているもの　木 '+save.rewardItems.tree+'　お花 '+save.rewardItems.flower+'</div></div><div class="world-canvas lv'+Math.min(lv,6)+'"><div class="world-sun"></div><div class="world-cloud wc1"></div><div class="world-cloud wc2"></div><div class="world-island"><div class="world-river"></div>'+worldBuildings(lv)+worldDecor("tree",trees)+worldDecor("flower",flowers)+(buddy?'<div class="world-buddy"><div class="buddy-creature buddy-c'+(buddies.indexOf(buddy)%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+buddy[2]+'</em></div><b>'+buddy[0]+'</b></div>':'')+'</div><div class="far-island">'+(lv>=6?'？？？':'')+'</div><div class="world-whisper">'+(save.secretDiscovered?'ひみつの島への道が見えている。でも、その奥にはまだ大きな門が……':worldSpirit()>=90?'空のむこうで、大きな光が動いた……':worldSpirit()>=55?'遠くの島が、少しずつ近づいている気がする……':worldSpirit()>=30?'海のむこうに、何か光っている……':'島を育てると、まだ知らない場所が見つかるかも……')+'</div></div><div class="world-actions"><div><h3>島をかざろう</h3><button onclick="placeWorldItem(\'tree\')" '+(save.rewardItems.tree<1?'disabled':'')+'>木を1本おく</button><button onclick="placeWorldItem(\'flower\')" '+(save.rewardItems.flower<1?'disabled':'')+'>お花を1つおく</button></div><div class="world-growth"><b>島の成長</b>'+worldGrowthRows(lv)+'</div></div>';
  render();
 }
 function worldBuildings(lv){
