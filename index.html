@@ -456,7 +456,7 @@ body.inner-screen .finish-box{
  body.inner-screen .memory-card{border-width:3px!important;border-radius:12px!important}
  body.inner-screen .memory-msg{margin:3px auto!important;padding:4px 8px!important}
 }
-</style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-2" as="audio" type="audio/mpeg">
+</style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 </head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" data-kids-home="assets/homejpg/p0.txt" alt="">
@@ -516,7 +516,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-classroom-check-pass14";
+const APP_BUILD="2026.09.26-recorded-audio-complete-pass15";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -648,79 +648,14 @@ if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged
 const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"ell",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
 const LETTER_RATE={H:.66,M:.84,N:.78,O:.68,V:.68,W:.62};
 const ALPHABET_AUDIO={
- A:{start:0,duration:1.236},B:{start:1.356,duration:1.461},C:{start:2.937,duration:1.209},D:{start:4.266,duration:1.866},
- E:{start:6.252,duration:1.319},F:{start:7.691,duration:1.543},G:{start:9.354,duration:1.363},H:{start:10.837,duration:1.785},
- I:{start:12.742,duration:1.258},J:{start:14.12,duration:1.316},K:{start:15.556,duration:1.104},L:{start:16.78,duration:1.135},
- M:{start:18.035,duration:1.648},N:{start:19.803,duration:1.363},O:{start:21.286,duration:1.005},P:{start:22.411,duration:1.211},
- Q:{start:23.742,duration:1.234},R:{start:25.096,duration:1.564},S:{start:26.78,duration:1.413},T:{start:28.313,duration:1.563},
- U:{start:29.996,duration:1.516},V:{start:31.632,duration:1.585},W:{start:33.337,duration:1.629},X:{start:35.086,duration:1.488},
- Y:{start:36.694,duration:1.457},Z:{start:38.271,duration:1.319}
-}
-const recordedAlphabetAudio=new Audio("assets/audio/alphabet-sprite.mp3?v=20260926-2");
-recordedAlphabetAudio.preload="auto";
-try{recordedAlphabetAudio.load()}catch(e){}
-recordedAlphabetAudio.addEventListener("error",()=>{recordedAudioFailed=true});
-recordedAlphabetAudio.addEventListener("canplay",()=>{if(recordedAlphabetAudio.duration>=EXPECTED_RECORDED_AUDIO_END)recordedAudioFailed=false});
-let recordedAudioTimer=0,recordedAudioUnlocked=false,recordedAudioFailed=false;
-function stopRecordedLetter(){clearTimeout(recordedAudioTimer);recordedAudioTimer=0;try{recordedAlphabetAudio.pause()}catch(e){}}
-async function primeRecordedAudio(){
- if(recordedAudioUnlocked||recordedAudioFailed)return;
- try{
-  recordedAlphabetAudio.muted=true;recordedAlphabetAudio.currentTime=0;
-  await recordedAlphabetAudio.play();recordedAlphabetAudio.pause();recordedAlphabetAudio.currentTime=0;recordedAlphabetAudio.muted=false;recordedAudioUnlocked=true;
- }catch(e){recordedAlphabetAudio.muted=false;if(e&&e.name!=="NotAllowedError")recordedAudioFailed=true}
-}
-document.addEventListener("pointerdown",()=>{primeRecordedAudio()},{once:true,passive:true});
-function preferredEnglishVoice(){
- let vs=speechSynthesis.getVoices()||[];
- const preferred=["Samantha","Ava","Allison","Susan","Karen","Moira","Google US English","Microsoft Aria","Microsoft Jenny","Microsoft Zira"];
- for(const name of preferred){let v=vs.find(x=>/^en-US$/i.test(x.lang)&&x.name.toLowerCase().includes(name.toLowerCase()));if(v)return v}
- return vs.find(x=>/^en-US$/i.test(x.lang)&&x.localService)||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang)&&x.localService)||vs.find(x=>/^en(-|_)/i.test(x.lang));
-}
-function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
-const EXPECTED_RECORDED_AUDIO_END=39.45;
-function recordedAudioHealthy(){let d=Number(recordedAlphabetAudio.duration);return !recordedAudioFailed&&Number.isFinite(d)&&d>=EXPECTED_RECORDED_AUDIO_END}
-function validateRecordedAudio(){let d=Number(recordedAlphabetAudio.duration);if(Number.isFinite(d)&&d<EXPECTED_RECORDED_AUDIO_END){recordedAudioFailed=true;console.warn("Recorded alphabet audio is shorter than expected:",d)}}
-recordedAlphabetAudio.addEventListener("loadedmetadata",validateRecordedAudio);
-recordedAlphabetAudio.addEventListener("durationchange",validateRecordedAudio);
-function recordedAudioStatus(){if(recordedAudioFailed)return "録音音声：要確認（予備音声を使用）";if(recordedAudioHealthy()&&recordedAudioUnlocked)return "録音音声：準備OK";if(recordedAudioHealthy())return "録音音声：読み込みOK（画面を1回タッチすると有効）";if(recordedAlphabetAudio.readyState>=1)return "録音音声：確認中";return "録音音声：読み込み中"}
-function fallbackSayLetter(l){
- if(!("speechSynthesis" in window))return;
- try{speechSynthesis.cancel()}catch(e){}
- let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=LETTER_RATE[l]||.74;u.pitch=l==="V"?.96:1;u.volume=1;
- let v=preferredEnglishVoice();if(v)u.voice=v;
- try{speechSynthesis.speak(u)}catch(e){}
-}
-function sayLetter(l){
- if(save.settings&&save.settings.sound===false)return;
- l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;
- const seg=ALPHABET_AUDIO[l];
- if(!seg||recordedAudioFailed){fallbackSayLetter(l);return}
- stopRecordedLetter();try{if("speechSynthesis" in window)speechSynthesis.cancel()}catch(e){}
- try{
-  recordedAlphabetAudio.currentTime=seg.start;
-  const p=recordedAlphabetAudio.play();
-  if(p&&typeof p.then==="function")p.then(()=>{
-   recordedAudioUnlocked=true;
-   recordedAudioTimer=setTimeout(()=>{try{recordedAlphabetAudio.pause()}catch(e){}},Math.ceil(seg.duration*1000)+40);
-  }).catch(err=>{
-   if(err&&err.name==="NotAllowedError"){
-    recordedAudioUnlocked=false;
-    fallbackSayLetter(l);
-    return;
-   }
-   recordedAudioFailed=true;fallbackSayLetter(l)
-  });
-  else recordedAudioTimer=setTimeout(()=>{try{recordedAlphabetAudio.pause()}catch(e){}},Math.ceil(seg.duration*1000)+40);
- }catch(e){recordedAudioFailed=true;fallbackSayLetter(l)}
-}
-function playMNCheck(){sayLetter("M");setTimeout(()=>sayLetter("N"),Math.ceil(ALPHABET_AUDIO.M.duration*1000)+300)}
-function lockAnswerButtons(ms=500){document.querySelectorAll("#gameBody button").forEach(b=>{if(!b.classList.contains("sound-btn")&&!b.classList.contains("back"))b.disabled=true});later(()=>document.querySelectorAll("#gameBody button").forEach(b=>b.disabled=false),ms)}
-function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
-function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
-function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
-function sample(n){return shuffle(ABC).slice(0,n)}
-function letterDifficulty(L){let v=save.letterStats?.[L]||{ok:0,ng:0};return (v.ng||0)*3-(v.ok||0)}
+ A:{start:0.000,duration:3.094},B:{start:3.094,duration:2.709},C:{start:5.803,duration:3.671},D:{start:9.473,duration:2.972},
+ E:{start:12.445,duration:2.973},F:{start:15.418,duration:3.141},G:{start:18.559,duration:2.949},H:{start:21.508,duration:2.901},
+ I:{start:24.409,duration:2.733},J:{start:27.143,duration:2.372},K:{start:29.515,duration:2.372},L:{start:31.887,duration:2.420},
+ M:{start:34.306,duration:2.372},N:{start:36.679,duration:2.664},O:{start:39.343,duration:1.867},P:{start:41.210,duration:2.012},
+ Q:{start:43.222,duration:2.179},R:{start:45.402,duration:2.540},S:{start:47.942,duration:1.988},T:{start:49.930,duration:2.660},
+ U:{start:52.590,duration:2.589},V:{start:55.179,duration:2.540},W:{start:57.719,duration:2.589},X:{start:60.308,duration:2.348},
+ Y:{start:62.656,duration:2.259},Z:{start:64.915,duration:2.348}
+}return (v.ng||0)*3-(v.ok||0)}
 function weakLetters(limit=6){return [...ABC].sort((a,b)=>letterDifficulty(b)-letterDifficulty(a)).filter(L=>(save.letterStats?.[L]?.ng||0)>0).slice(0,limit)}
 function recordLetterResult(L,ok){L=String(L||"").toUpperCase();if(!/^[A-Z]$/.test(L))return;save.letterStats=save.letterStats||{};save.letterStats[L]=save.letterStats[L]||{ok:0,ng:0};save.letterStats[L][ok?"ok":"ng"]++}
 function makeTargetDeck(n){let weak=weakLetters(Math.min(6,n)),out=[];if(weak.length){let quota=Math.min(Math.ceil(n/2),weak.length);out.push(...shuffle(weak).slice(0,quota))}while(out.length<n){for(const L of shuffle(ABC)){if(out.length>=n)break;if(out.length&&out[out.length-1]===L)continue;out.push(L)}}return shuffle(out).slice(0,n)}
