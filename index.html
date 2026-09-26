@@ -183,8 +183,38 @@ button:disabled,[aria-disabled="true"]{cursor:default}
  .hero{min-height:250px}
  .home-extra{margin-bottom:8px}
 }
-<style>.sound-check-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.sound-check-grid button{font-family:"NHHandwriting",sans-serif;font-size:28px;min-height:58px}@media(max-width:600px){.sound-check-grid{grid-template-columns:repeat(4,1fr)}}</style></head><body><main class="app">
-<div id="home" class="home">
+<style>.sound-check-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.sound-check-grid button{font-family:"NHHandwriting",sans-serif;font-size:28px;min-height:58px}@media(max-width:600px){.sound-check-grid{grid-template-columns:repeat(4,1fr)}}
+/* APPROVED MASTER IMAGE MODE — activates only when the exact approved master asset loads */
+.master-home{display:none;position:relative;width:min(100%,1536px);margin:0 auto;aspect-ratio:3/2;background:#dff5ff;overflow:hidden}
+.master-home.ready{display:block}
+.master-home.ready~#home{display:none!important}
+.master-home-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.master-hotspot{position:absolute;background:transparent!important;border:0!important;box-shadow:none!important;min-height:0!important;padding:0!important;z-index:3}
+.master-hotspot:focus-visible{outline:5px solid #2479c9;outline-offset:2px;border-radius:18px}
+.master-live{position:absolute;z-index:4;font-weight:1000;color:#17214a;text-align:center;pointer-events:none}
+.master-star{left:78.6%;top:2.6%;width:7.4%;font-size:clamp(16px,2.1vw,34px)}
+.master-coin{left:91.2%;top:2.6%;width:6.2%;font-size:clamp(16px,2.1vw,34px)}
+</style></head><body><main class="app">
+<div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
+<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home.jpg" alt="">
+<span class="master-live master-star" id="masterStars">0</span><span class="master-live master-coin" id="masterCoins">0</span>
+<button class="master-hotspot" style="left:83.5%;top:11%;width:14.5%;height:28%" onclick="openMyWorld()" aria-label="マイワールド"></button>
+<button class="master-hotspot" style="left:2%;top:45%;width:23.5%;height:22.5%" onclick="openGame('karuta')" aria-label="ABCかるた"></button>
+<button class="master-hotspot" style="left:26.4%;top:45%;width:23.5%;height:22.5%" onclick="openGame('memory')" aria-label="ABC神経衰弱"></button>
+<button class="master-hotspot" style="left:50.5%;top:45%;width:23.5%;height:22.5%" onclick="openGame('listen')" aria-label="聞いてタッチ"></button>
+<button class="master-hotspot" style="left:74.5%;top:45%;width:23.5%;height:22.5%" onclick="openGame('rocket')" aria-label="ABCロケット"></button>
+<button class="master-hotspot" style="left:2%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('monster')" aria-label="アルファベットモンスター"></button>
+<button class="master-hotspot" style="left:26.4%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('treasure')" aria-label="ABCトレジャーハント"></button>
+<button class="master-hotspot" style="left:50.5%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('train')" aria-label="ABCトレイン"></button>
+<button class="master-hotspot" style="left:74.5%;top:68.5%;width:23.5%;height:21.5%" onclick="openGame('boss')" aria-label="ボスバトル"></button>
+<button class="master-hotspot" style="left:1%;top:91.5%;width:13.5%;height:7.5%" onclick="goHome()" aria-label="ホーム"></button>
+<button class="master-hotspot" style="left:14.5%;top:91.5%;width:16%;height:7.5%" onclick="openAdventureMap()" aria-label="ぼうけんマップ"></button>
+<button class="master-hotspot" style="left:30.5%;top:91.5%;width:14%;height:7.5%" onclick="openBook()" aria-label="ABCずかん"></button>
+<button class="master-hotspot" style="left:44.5%;top:91.5%;width:14.5%;height:7.5%" onclick="openEggs()" aria-label="たまご・なかま"></button>
+<button class="master-hotspot" style="left:59%;top:91.5%;width:16%;height:7.5%" onclick="openRewardMachine()" aria-label="ごほうびマシン"></button>
+<button class="master-hotspot" style="left:75%;top:91.5%;width:11.5%;height:7.5%" onclick="openTitles()" aria-label="しょうごう"></button>
+<button class="master-hotspot" style="left:86.5%;top:91.5%;width:12.5%;height:7.5%" onclick="openSettings()" aria-label="せってい"></button>
+</div><div id="home" class="home">
 <header><div class="logo"><span>ABC</span> アドベンチャー <small>ALPHABET</small></div><div class="stats"><div class="pill">★ <span id="stars">0</span></div><div class="pill">COIN <span id="coins">0</span></div></div></header>
 <section class="hero"><div><h1>～26文字の たからものを さがそう！～</h1><p>きいて・みつけて・あつめて、ABCワールドを大きくしよう。</p><div class="english-sign">Play　/　Listen　/　Find　/　Collect<br><b>Let's enjoy English!</b></div></div><button class="world" onclick="openMyWorld()" aria-label="マイワールドを開く">マイワールド<br><small>町を大きくする</small><br>Lv.<span id="worldLv">1</span></button></section>
 <section class="grid">
@@ -213,7 +243,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-audio-fix";
+const APP_BUILD="2026.09.26-master-ready";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -261,7 +291,16 @@ function openFirstGuide(){
  gameBody.innerHTML='<div class="finish-box"><h2>ぼうけんの はじめかた</h2><p><b>① 音をよく聞く</b><br>② 文字を見つけてタッチ<br>③ スターやコインを集める<br>④ マイワールドや ぼうけんマップを育てる</p><p>まずは <b>ABCかるた</b> からスタート！</p><button class="start-btn" onclick="openGame(\'karuta\')">ABCかるたへ</button> <button class="back" onclick="goHome()">ホームを見る</button></div>';
  normalizeButtons();
 }
-function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
+function initApprovedMasterHome(){
+ let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
+ if(!art||!wrap)return;
+ const ready=()=>{wrap.classList.add("ready");syncMasterHome()};
+ art.addEventListener("load",ready,{once:true});
+ art.addEventListener("error",()=>wrap.classList.remove("ready"),{once:true});
+ if(art.complete&&art.naturalWidth>0)ready();
+}
+function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins");if(a)a.textContent=save.stars||0;if(b)b.textContent=save.coins||0}
+function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
 let sessionToken=0;function newSession(){sessionToken++;return sessionToken}function later(fn,ms){const t=sessionToken;return setTimeout(()=>{if(t===sessionToken)fn()},ms)}
@@ -283,8 +322,8 @@ function gameUnlocked(id){let req={karuta:1,memory:2,listen:2,rocket:2,monster:3
 function lockedGame(id){let req={memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6}[id]||1;enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>まだ きりの中……</h2><p>ぼうけんマップの道を進めて、ワールド Lv.'+req+'になると遊べるよ。</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false;
 function openGame(id){if(openGameBusy)return;openGameBusy=true;later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
-function enterGameScreen(title){newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function enterGameScreen(title){let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){let mh=document.getElementById("masterHome");if(mh&&mh.classList.contains("ready"))mh.style.display="block";newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
@@ -849,7 +888,7 @@ window.addEventListener("error",offerRecovery);
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
-migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();setTimeout(()=>openFirstGuide(),120);
+migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();initApprovedMasterHome();setTimeout(()=>openFirstGuide(),120);
 let hiddenDuringPlay=false,hiddenAt=0;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};newSession()}else{let away=Date.now()-hiddenAt;if(hiddenDuringPlay&&away>1200){game.classList.remove("active");home.classList.remove("hidden");showToast("ホームにもどりました")}hiddenDuringPlay=false;render()}});
