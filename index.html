@@ -245,10 +245,14 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 .progress-hub b{display:block;font-size:18px}
 .progress-hub small{display:block;font-weight:700;margin-top:3px}
 @media(max-width:760px){.progress-hub{grid-template-columns:repeat(2,1fr)}}
+
+.master-daily-progress{position:absolute;z-index:6;left:74.5%;top:34.25%;min-width:5.5%;padding:2px 6px;border-radius:999px;background:#fff8d9;border:2px solid #bd813d;text-align:center;font-weight:1000;color:#4b3421;font-size:clamp(9px,.9vw,13px);pointer-events:none}
+.long-goal{max-width:900px;margin:8px auto 14px;padding:10px 14px;border-radius:15px;background:#f3eaff;border:2px solid #9d76c8;text-align:center;font-weight:900}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
+<span id="masterDailyProgress" class="master-daily-progress">0/3</span><button id="masterDailyHotspot" class="master-hotspot" style="left:49.7%;top:33.0%;width:32.5%;height:8.3%" onclick="openDaily()" aria-label="きょうのミッション"></button>
 <button class="master-hotspot" style="left:83.5%;top:11%;width:14.5%;height:28%" onclick="openMyWorld()" aria-label="マイワールド"></button>
 <button class="master-hotspot" style="left:2%;top:45%;width:23.5%;height:22.5%" id="masterGame-karuta" data-master-game="karuta" onclick="masterOpenGame('karuta')" aria-label="ABCかるた"></button>
 <button class="master-hotspot" style="left:26.4%;top:45%;width:23.5%;height:22.5%" id="masterGame-memory" data-master-game="memory" onclick="masterOpenGame('memory')" aria-label="ABC神経衰弱"></button>
@@ -302,7 +306,7 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-growth-hub";
+const APP_BUILD="2026.09.26-long-goals";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -372,7 +376,7 @@ function initApprovedMasterHome(){
  art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode")},{once:true});
  if(art.complete&&art.naturalWidth>0)ready();
 }
-function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}syncMasterLocks()}
+function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}let d=document.getElementById("masterDailyProgress");if(d){let ds=dailyData(),done=ds.filter((x,i)=>x[1]>=x[2]||save.daily.claimed[i]).length;d.textContent=done+"/3"}syncMasterLocks()}
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
@@ -689,7 +693,7 @@ function openAdventureMap(){enterGameScreen("ABCぼうけんマップ");ensureMi
 function openSecretIsland(){ensureMilestoneShards();let s=secretState();enterGameScreen(s.open?"ひみつの島":"？？？");if(!s.open){gameBody.innerHTML='<div class="secret-locked"><div class="mystery-island">？？？</div><h2>まだ きりの中……</h2><p>天空のおしろの先に、島のかげが見える。</p><div class="secret-hints"><span>'+(s.boss?'✓ 天空から ふしぎな道が見えた':'・天空のおしろに 何かありそう')+'</span><span>'+(s.shards>=4?'✓ かけらが ひとつの形になりそう':'・ひみつのかけらが 関係していそう')+'</span><span>'+(s.buddies>=5?'✓ なかまたちが 道を見つけたみたい':'・なかまと進むと 何か起こるかも')+'</span><span>'+(s.light>=55?'✓ 島のひかりが 強くなった':'・マイワールドを もっと育ててみよう')+'</span></div><button class="back" onclick="openAdventureMap()">地図にもどる</button></div>';return}save.secretDiscovered=true;persist();let buddy=save.activeBuddy||"なかまたち";gameBody.innerHTML='<div class="secret-island-scene"><div class="secret-sky">A　?　B　?　C</div><div class="secret-land"><div class="secret-gate"><b>ABC</b></div><div class="secret-crystal">?</div></div><h2>ひみつの島を 発見！</h2><p>'+buddy+'と いっしょに、きりの向こうへたどり着いた！</p><div class="secret-message">島の奥には、まだ開かない大きな門がある……<br><b>THE ADVENTURE CONTINUES...</b></div><button class="back" onclick="openSecretChallenge()">島を たんけんする</button> <button class="back" onclick="openAdventureMap()">地図にもどる</button></div>'}
 let secretAnswerLocked=false;
 function openSecretChallenge(){enterGameScreen("ひみつの島・ABCチャレンジ");secretAnswerLocked=false;let target=sample(1)[0],pool=choicesWithTarget(target,4);gameBody.innerHTML='<div class="secret-challenge"><button class="back" onclick="openSecretIsland()">← 島にもどる</button><h2>きりの中から 聞こえた文字は？</h2><button class="sound-btn" onclick="sayLetter(\''+target+'\')">もう一度聞く</button><div class="listen-cards four">'+pool.map((x,i)=>'<button class="listen-card" onclick="answerSecret(\''+x+'\',\''+target+'\',this)">'+x+'</button>').join("")+'</div><p id="secretMsg">正しい文字を見つけると、島が少し光るよ。</p></div>';if(speechReady)later(()=>sayLetter(target),350)}
-function answerSecret(x,target,el){if(document.querySelector(".secret-challenge .correct"))return;if(x===target){el.classList.add("correct");save.secretPlays=(save.secretPlays||0)+1;let reward=(save.secretPlays||0)<=3;if(reward)earn(2,5);persist();document.getElementById("secretMsg").textContent=reward?"島が光った！ ごほうびも見つけた！":"島が光った！ でも、大きな門はまだ開かない……";later(openSecretIsland,1000)}else{if(el.dataset.busy==="1")return;el.dataset.busy="1";el.classList.add("listen-wrong");document.getElementById("secretMsg").textContent="もう一度 よく聞こう！";sayLetter(target);later(()=>{el.classList.remove("listen-wrong");delete el.dataset.busy},400)}}
+function answerSecret(x,target,el){if(document.querySelector(".secret-challenge .correct"))return;if(x===target){el.classList.add("correct");save.secretPlays=(save.secretPlays||0)+1;let reward=(save.secretPlays||0)<=3;if(reward)earn(2,5);persist();document.getElementById("secretMsg").textContent=reward?"島が光った！ ごほうびも見つけた！":"島が光った！ 何度でも練習できるよ。大きな門はまだ開かない……";later(openSecretIsland,1000)}else{if(el.dataset.busy==="1")return;el.dataset.busy="1";el.classList.add("listen-wrong");document.getElementById("secretMsg").textContent="もう一度 よく聞こう！";sayLetter(target);later(()=>{el.classList.remove("listen-wrong");delete el.dataset.busy},400)}}
 function mapIcon(i,u){
  if(!u)return '<span class="fog">?</span>';
  return ['<span class="grass-icon">ABC</span>','<span class="forest-icon">A</span>','<span class="desert-icon">B</span>','<span class="map-rocket">C</span>','<span class="valley-icon">M</span>','<span class="island-icon">X</span>','<span class="station-icon">ABC</span>','<span class="castle-icon">ABC</span>','<span class="fog">?</span>'][i];
@@ -896,10 +900,17 @@ const titleDefs=[
 function ensureTitleSave(){if(!save.selectedTitle)save.selectedTitle="";persist()}
 function titleUnlocked(d){try{return !!d[2](save)}catch(e){return false}}
 function syncEarnedTitles(){save.earnedTitles=save.earnedTitles||[];titleDefs.forEach((d,i)=>{try{if(d[2](save)&&!save.earnedTitles.includes(i))save.earnedTitles.push(i)}catch(e){}})}
+function longGoalText(){
+ let titles=titleDefs.filter(titleUnlocked).length,s=secretState();
+ if(!save.clears?.boss)return "まずは好きな練習を楽しんで、ボスへの道を見つけよう。";
+ if(!s.open)return "ボスの先にも何かあるみたい。なかま・島・かけらを育ててみよう。";
+ if(!save.secretDiscovered)return "？？？の島への道が見えている。ぼうけんマップを調べてみよう。";
+ return "ひみつの島の奥には、まだ開かない門がある……。しょうごう "+titles+"/50";
+}
 function openTitles(){enterGameScreen("しょうごう");syncEarnedTitles();try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}
  ensureTitleSave();
  let count=titleDefs.filter(titleUnlocked).length;
- gameBody.innerHTML='<div class="title-head"><div><b>見つけたしょうごう　'+count+' / '+titleDefs.length+'</b><small>遊び方によって、ひみつのしょうごうも見つかるよ。</small></div><div class="wearing-title">いまのしょうごう：<b>'+(save.selectedTitle||"まだ つけていない")+'</b></div></div><div class="title-grid">'+titleDefs.map((d,i)=>renderTitle(d,i)).join("")+'</div><div class="secret-title-note">条件が書いていない「？？？」もあるよ。いろいろな遊び方を試してみよう。</div>';
+ gameBody.innerHTML='<div class="long-goal">'+longGoalText()+'</div><div class="title-head"><div><b>見つけたしょうごう　'+count+' / '+titleDefs.length+'</b><small>遊び方によって、ひみつのしょうごうも見つかるよ。</small></div><div class="wearing-title">いまのしょうごう：<b>'+(save.selectedTitle||"まだ つけていない")+'</b></div></div><div class="title-grid">'+titleDefs.map((d,i)=>renderTitle(d,i)).join("")+'</div><div class="secret-title-note">条件が書いていない「？？？」もあるよ。いろいろな遊び方を試してみよう。</div>';
  render();
 }
 function renderTitle(d,i){
