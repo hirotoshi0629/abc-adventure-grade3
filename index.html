@@ -149,7 +149,7 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-c";
+const APP_BUILD="2026.09.26-d";
 const SAVE_VERSION=3;
 function verifyMasterContract(){
  const nav=document.querySelectorAll(".bottom-nav button");
@@ -490,7 +490,7 @@ const cardThemes=[
 ];
 function collectionCount(){ensureEconomy();return Math.min(260,Math.max(save.totalCardsFound||0,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function cardUnlocked(letterIndex,themeIndex){
- let n=collectionCount(),slot=themeIndex*26+letterIndex;
+ let n=collectionCount(),slot=letterIndex*10+themeIndex;
  return slot<n;
 }
 function openBook(){enterGameScreen("ABCずかん");
@@ -519,7 +519,7 @@ function ensureBuddySave(){
  if(!Array.isArray(save.buddies))save.buddies=[];
  if(!save.eggProgress)save.eggProgress=0;
  if(!save.activeBuddy)save.activeBuddy="";
- persist();
+ 
 }
 function openEggs(){hatchBusy=false;enterGameScreen("ABCたまご・なかま");eggFeedBusy=false;
  ensureBuddySave();
@@ -560,7 +560,6 @@ function ensureRewardSave(){
  if(!save.rewardItems)save.rewardItems={tree:0,flower:0,shard:0,bonusCards:0,sparkle:0};
  if(save.rewardItems.sparkle==null)save.rewardItems.sparkle=0;
  if(save.rewardMachineUses==null)save.rewardMachineUses=0;
- persist();
 }
 function openRewardMachine(){enterGameScreen("ごほうびマシン");rewardBusy=false;
  ensureRewardSave();
@@ -683,7 +682,7 @@ const titleDefs=[
 function ensureTitleSave(){if(!save.selectedTitle)save.selectedTitle="";persist()}
 function titleUnlocked(d){try{return !!d[2](save)}catch(e){return false}}
 function syncEarnedTitles(){save.earnedTitles=save.earnedTitles||[];titleDefs.forEach((d,i)=>{try{if(d[2](save)&&!save.earnedTitles.includes(i))save.earnedTitles.push(i)}catch(e){}})}
-function openTitles(){enterGameScreen("しょうごう");syncEarnedTitles();persist();
+function openTitles(){enterGameScreen("しょうごう");syncEarnedTitles();try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}
  ensureTitleSave();
  let count=titleDefs.filter(titleUnlocked).length;
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="title-head"><div><b>見つけたしょうごう　'+count+' / '+titleDefs.length+'</b><small>遊び方によって、ひみつのしょうごうも見つかるよ。</small></div><div class="wearing-title">いまのしょうごう：<b>'+(save.selectedTitle||"まだ つけていない")+'</b></div></div><div class="title-grid">'+titleDefs.map((d,i)=>renderTitle(d,i)).join("")+'</div><div class="secret-title-note">条件が書いていない「？？？」もあるよ。いろいろな遊び方を試してみよう。</div>';
@@ -721,12 +720,14 @@ function claimDaily(i){
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="sayLetter(\\'A\\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\\'sound\\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\\'motion\\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button></div></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\\'A\\'):showToast(\\'アルファベットの音をONにしてね\\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\\'sound\\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\\'motion\\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button></div></div>';
+ let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify(save);if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
 function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
+window.addEventListener("error",()=>{try{showToast("うまく動かないときは、ホームにもどってもう一度ためしてね")}catch(e){}});
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
