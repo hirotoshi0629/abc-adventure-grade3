@@ -1,0 +1,10 @@
+{
+  "name":"ABCアドベンチャー",
+  "short_name":"ABCアドベンチャー",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#dff4ff",
+  "theme_color":"#4b8fe8",
+  "description":"小学校のアルファベット学習用アプリ"
+}
