@@ -72,14 +72,16 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-function ensureEconomy(){save.totalStarsEarned=Math.max(save.totalStarsEarned||0,save.stars||0);save.totalCoinsEarned=Math.max(save.totalCoinsEarned||0,save.coins||0);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor((save.totalStarsEarned||0)/2)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
-function earn(starsN=0,coinsN=0){ensureEconomy();save.stars=(save.stars||0)+starsN;save.coins=(save.coins||0)+coinsN;save.totalStarsEarned=(save.totalStarsEarned||0)+Math.max(0,starsN);save.totalCoinsEarned=(save.totalCoinsEarned||0)+Math.max(0,coinsN);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor(save.totalStarsEarned/2)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
+function ensureEconomy(){save.totalStarsEarned=Math.max(save.totalStarsEarned||0,save.stars||0);save.totalCoinsEarned=Math.max(save.totalCoinsEarned||0,save.coins||0);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
+function earn(starsN=0,coinsN=0){ensureEconomy();save.stars=(save.stars||0)+starsN;save.coins=(save.coins||0)+coinsN;save.totalStarsEarned=(save.totalStarsEarned||0)+Math.max(0,starsN);save.totalCoinsEarned=(save.totalCoinsEarned||0)+Math.max(0,coinsN);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor(save.totalStarsEarned/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function render(){ensureEconomy();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));stars.textContent=save.stars;coins.textContent=save.coins;worldLv.textContent=save.worldLv}
 function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
 let sessionToken=0;function newSession(){sessionToken++;return sessionToken}function later(fn,ms){const t=sessionToken;return setTimeout(()=>{if(t===sessionToken)fn()},ms)}
 const finishLocks={};function beginFinishGuard(id){if(finishLocks[id])return false;finishLocks[id]=true;return true}function resetFinishGuard(id){finishLocks[id]=false}
-function markClear(id){save.clears=save.clears||{};save.clears[id]=(save.clears[id]||0)+1;persist()}
+function clearCount(id){return (save.clears&&save.clears[id])||0}
+function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;persist();return first}
+function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);return true}
 function openGame(id){newSession();save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
 function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");render()}
 function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
@@ -119,7 +121,7 @@ function answerListen(x,el){
    later(()=>el.classList.remove("listen-wrong"),400);sayLetter(listen.target);
  }
 }
-function finishListen(){if(!beginFinishGuard("listen"))return;markClear("listen");
+function finishListen(){if(!beginFinishGuard("listen"))return;markClear("listen");let first=firstClearBonus("listen",2,5);
  let bonus=listen.correct===10?10:0;if(bonus){earn(0,bonus);persist()}
  gameBody.innerHTML='<div class="finish-box"><h2>10もん おわり！</h2><div class="listen-result">'+listen.correct+' / 10</div><p>'+(listen.correct===10?'ぜんもん せいかい！ ボーナスコイン +10！':listen.correct>=8?'すごい！ よく聞き分けたね！':'何回でも ちょうせんできるよ！')+'</p><button class="back" onclick="beginListen()">同じレベルでもう一回</button> <button class="back" onclick="goHome()">ホーム</button> <button class="back" onclick="startListen()">モードをかえる</button></div>';
 }
@@ -143,9 +145,9 @@ function takeKaruta(x,el){
  document.getElementById("karutaMsg").innerHTML='だれが とった？<div class="claim-row">'+Array.from({length:karuta.players},(_,i)=>'<button class="claim p'+(i+1)+'" onclick="claimKaruta('+i+')">'+(i+1)+'P</button>').join("")+'</div>';
 }
 function claimKaruta(i){if(!karuta.locked)return;karuta.locked=false;karuta.scores[i]++;earn(1,2);persist();document.querySelectorAll(".claim-btn,.player-claim").forEach(b=>b.disabled=true);later(nextKaruta,350)}
-function finishKaruta(){if(!beginFinishGuard("karuta"))return;markClear("karuta");
+function finishKaruta(){if(!beginFinishGuard("karuta"))return;markClear("karuta");let first=firstClearBonus("karuta",2,5);
  let best=Math.max(...karuta.scores.slice(0,karuta.players));let winners=[];for(let i=0;i<karuta.players;i++)if(karuta.scores[i]===best)winners.push((i+1)+'P');
- gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>スターとコインをゲットしたよ！</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>スターとコインをゲットしたよ！'+(first?' はじめてクリアボーナスもゲット！':'')+'</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let memory={players:1,current:0,scores:[0,0,0],first:null,second:null,lock:false,matched:0,totalPairs:6};
 function startMemorySetup(){
@@ -169,7 +171,7 @@ function flipMemory(card){
  memory.second=card;memory.lock=true;memory.moves++;
  if(memory.first.dataset.letter===memory.second.dataset.letter){
    memory.first.classList.add("matched");memory.second.classList.add("matched");memory.scores[memory.current]++;memory.matched++;
-   earn(2,3);persist();
+   earn(1,2);persist();
    memory.first=null;memory.second=null;memory.lock=false;renderMemoryStatus();
    document.getElementById("memoryMsg").textContent="そろった！ もう一回できるよ！";
    if(memory.matched===memory.totalPairs)later(finishMemory,650);
@@ -178,9 +180,9 @@ function flipMemory(card){
    later(()=>{if(!memory.first||!memory.second)return;memory.first.classList.remove("open");memory.second.classList.remove("open");memory.first=null;memory.second=null;if(memory.players>1)memory.current=(memory.current+1)%memory.players;memory.lock=false;renderMemoryStatus();document.getElementById("memoryMsg").textContent="カードを2まい めくろう！";},900);
  }
 }
-function finishMemory(){if(!beginFinishGuard("memory"))return;markClear("memory");
+function finishMemory(){if(!beginFinishGuard("memory"))return;markClear("memory");let first=firstClearBonus("memory",2,5);
  let active=memory.scores.slice(0,memory.players),best=Math.max(...active),w=[];active.forEach((v,i)=>{if(v===best)w.push((i+1)+"P")});
- gameBody.innerHTML='<div class="finish-box"><h2>ぜんぶ そろった！</h2><div class="memory-celebrate">A B C</div><p>'+(memory.players===1?memory.totalPairs+'ペア クリア！　めくった回数 '+memory.moves+'回':w.join("・")+'　'+best+'ペア！')+'</p><p>スターとコインをゲット！</p><button class="back" onclick="beginMemory('+memory.players+')">もう一回</button> <button class="back" onclick="startMemorySetup()">人数をかえる</button></div>';
+ gameBody.innerHTML='<div class="finish-box"><h2>ぜんぶ そろった！</h2><div class="memory-celebrate">A B C</div><p>'+(memory.players===1?memory.totalPairs+'ペア クリア！　めくった回数 '+memory.moves+'回':w.join("・")+'　'+best+'ペア！')+'</p><p>スターとコインをゲット！'+(first?' はじめてクリアボーナスもゲット！':'')+'</p><button class="back" onclick="beginMemory('+memory.players+')">もう一回</button> <button class="back" onclick="startMemorySetup()">人数をかえる</button></div>';
 }
 let rocket={round:0,correct:0,target:"",maxRounds:8};
 function startRocket(){resetFinishGuard("rocket");gameTitle.textContent="ABCロケット";rocket={round:0,correct:0,target:"",maxRounds:8,targets:makeTargetDeck(8)};nextRocket()}
@@ -195,7 +197,7 @@ function nextRocket(){rocket.locked=false;
 function answerRocket(x,el){
  if(rocket.locked)return;
  if(x===rocket.target){
-   rocket.locked=true;el.classList.add("correct");rocket.correct++;earn(2,3);persist();
+   rocket.locked=true;el.classList.add("correct");rocket.correct++;earn(1,2);persist();
    document.getElementById("rocketMsg").textContent=rocket.correct===rocket.maxRounds?"フルパワー！":"パワーアップ！";
    later(nextRocket,700);
  }else{
@@ -204,8 +206,8 @@ function answerRocket(x,el){
  }
 }
 function finishRocket(){if(!beginFinishGuard("rocket"))return;markClear("rocket");
- earn(0,12);save.worldLv=Math.max(save.worldLv,2);persist();
- gameBody.innerHTML='<div class="finish-box rocket-finish"><div class="planet-big">ABC</div><h2>ABC PLANETに とうちゃく！</h2><p>8もんクリア！ ボーナスコイン +12</p><p>ABCワールドに 新しい道がひらいたよ。</p><button class="back" onclick="startRocket()">もう一回 とぶ！</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("rocket",3,8);earn(0,6);save.worldLv=Math.max(save.worldLv,2);persist();
+ gameBody.innerHTML='<div class="finish-box rocket-finish"><div class="planet-big">ABC</div><h2>ABC PLANETに とうちゃく！</h2><p>8もんクリア！ '+(first?'はじめてクリア！ スター +3・コイン +14':'クリアボーナス コイン +6')+'</p><p>ABCワールドに 新しい道がひらいたよ。</p><button class="back" onclick="startRocket()">もう一回 とぶ！</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8)};
 function startMonster(){resetFinishGuard("monster");gameTitle.textContent="アルファベットモンスター";
@@ -227,7 +229,7 @@ function answerMonster(x,el){
    monster.locked=true;monster.combo++;monster.bestCombo=Math.max(monster.bestCombo,monster.combo);monster.power++;
    el.classList.add("correct");earn(2,3);
    let msg="ヒット！";
-   if(monster.power>=3){monster.power=0;earn(3,5);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-body").classList.add("special-hit")}
+   if(monster.power>=3){monster.power=0;earn(2,4);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-body").classList.add("special-hit")}
    persist();document.getElementById("monsterMsg").textContent=msg;later(nextMonster,850);
  }else{
    monster.hp=Math.max(0,monster.hp-1);monster.combo=0;monster.power=0;el.classList.add("listen-wrong");
@@ -239,8 +241,8 @@ function monsterRecover(){
  gameBody.innerHTML='<div class="finish-box"><h2>パワーを かいふくしよう！</h2><p>だいじょうぶ。何回でも ちょうせんできるよ。</p><button class="back" onclick="startMonster()">もう一回 ちょうせん</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 function finishMonster(){if(!beginFinishGuard("monster"))return;markClear("monster");
- earn(0,15);save.worldLv=Math.max(save.worldLv,3);persist();
- gameBody.innerHTML='<div class="finish-box monster-clear"><div class="monster-medal">ABC</div><h2>モンスターに かった！</h2><p>さいこう '+monster.bestCombo+'れんぞく正解！</p><p>クリアボーナス コイン +15</p><p>ABCワールドに 新しいエリアがひらいたよ。</p><button class="back" onclick="startMonster()">もう一回 バトル</button></div>';
+ let first=firstClearBonus("monster",3,9);earn(0,7);save.worldLv=Math.max(save.worldLv,3);persist();
+ gameBody.innerHTML='<div class="finish-box monster-clear"><div class="monster-medal">ABC</div><h2>モンスターに かった！</h2><p>さいこう '+monster.bestCombo+'れんぞく正解！</p><p>'+(first?'はじめてクリア！ スター +3・コイン +16':'クリアボーナス コイン +7')+'</p><p>ABCワールドに 新しいエリアがひらいたよ。</p><button class="back" onclick="startMonster()">もう一回 バトル</button></div>';
 }
 let treasure={round:0,maxRounds:6,target:"",found:0,locked:false};
 const treasureSpots=[{x:12,y:20},{x:31,y:12},{x:52,y:27},{x:77,y:16},{x:20,y:52},{x:43,y:62},{x:67,y:49},{x:84,y:66},{x:34,y:82},{x:63,y:84}];
@@ -258,7 +260,7 @@ function nextTreasure(){
 function findTreasure(x,el){
  if(treasure.locked)return;
  if(x===treasure.target){
-   treasure.locked=true;treasure.found++;el.classList.add("treasure-found");earn(2,4);persist();
+   treasure.locked=true;treasure.found++;el.classList.add("treasure-found");earn(1,3);persist();
    document.getElementById("treasureMsg").textContent="みつけた！ たからをゲット！";
    later(nextTreasure,900);
  }else{
@@ -267,8 +269,8 @@ function findTreasure(x,el){
  }
 }
 function finishTreasure(){if(!beginFinishGuard("treasure"))return;markClear("treasure");
- earn(0,18);save.worldLv=Math.max(save.worldLv,4);persist();
- gameBody.innerHTML='<div class="finish-box treasure-clear"><div class="big-chest"><span>ABC</span></div><h2>ひみつの たからを発見！</h2><p>'+treasure.found+'この たからを見つけた！</p><p>クリアボーナス コイン +18</p><p>ABCワールドの 新しい場所がひらいたよ。</p><button class="back" onclick="startTreasure()">もう一度 たんけん</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("treasure",3,10);earn(0,8);save.worldLv=Math.max(save.worldLv,4);persist();
+ gameBody.innerHTML='<div class="finish-box treasure-clear"><div class="big-chest"><span>ABC</span></div><h2>ひみつの たからを発見！</h2><p>'+treasure.found+'この たからを見つけた！</p><p>'+(first?'はじめてクリア！ スター +3・コイン +18':'クリアボーナス コイン +8')+'</p><p>ABCワールドの 新しい場所がひらいたよ。</p><button class="back" onclick="startTreasure()">もう一度 たんけん</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let train={round:0,maxRounds:8,target:"",correct:0,locked:false};
 function startTrain(){resetFinishGuard("train");gameTitle.textContent="ABCトレイン";train={round:0,maxRounds:8,target:"",correct:0,locked:false,starts:shuffle(Array.from({length:23},(_,i)=>i)).slice(0,8)};nextTrain()}
@@ -286,7 +288,7 @@ function answerTrain(x,el){
  if(train.locked)return;
  sayLetter(x);
  if(x===train.target){
-   train.locked=true;train.correct++;el.classList.add("correct");earn(2,3);persist();
+   train.locked=true;train.correct++;el.classList.add("correct");earn(1,2);persist();
    let m=document.querySelector(".missing-car b");if(m)m.textContent=train.target;
    document.getElementById("trainMsg").textContent="せいかい！ 列車が出発！";
    document.querySelector(".train-cars").classList.add("depart");document.querySelector(".train-engine").classList.add("depart-engine");
@@ -297,8 +299,8 @@ function answerTrain(x,el){
  }
 }
 function finishTrain(){if(!beginFinishGuard("train"))return;markClear("train");
- earn(0,20);save.worldLv=Math.max(save.worldLv,5);persist();
- gameBody.innerHTML='<div class="finish-box train-clear"><div class="station-sign">ABC<br><small>ADVENTURE STATION</small></div><h2>しゅうてんに とうちゃく！</h2><p>8この列車を 完成させたよ！</p><p>クリアボーナス コイン +20</p><p>ABCワールドに 駅ができた！</p><button class="back" onclick="startTrain()">もう一度 しゅっぱつ</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("train",4,10);earn(0,8);save.worldLv=Math.max(save.worldLv,5);persist();
+ gameBody.innerHTML='<div class="finish-box train-clear"><div class="station-sign">ABC<br><small>ADVENTURE STATION</small></div><h2>しゅうてんに とうちゃく！</h2><p>8この列車を 完成させたよ！</p><p>'+(first?'はじめてクリア！ スター +4・コイン +18':'クリアボーナス コイン +8')+'</p><p>ABCワールドに 駅ができた！</p><button class="back" onclick="startTrain()">もう一度 しゅっぱつ</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 let boss={round:0,maxRounds:9,hp:9,playerHp:5,target:"",type:"",locked:false,combo:0};
 function startBoss(){resetFinishGuard("boss");gameTitle.textContent="ボスバトル";boss={round:0,maxRounds:9,hp:9,playerHp:5,target:"",type:"",locked:false,combo:0,targets:makeTargetDeck(9)};nextBoss()}
@@ -328,7 +330,7 @@ function answerBoss(x,el){
  if(boss.locked)return;
  if(boss.type==="order")sayLetter(x);
  if(x===boss.target){
-   boss.locked=true;boss.hp--;boss.combo++;el.classList.add("correct");earn(3,5);
+   boss.locked=true;boss.hp--;boss.combo++;el.classList.add("correct");earn(2,4);
    let bonus=boss.combo>0&&boss.combo%3===0;if(bonus){boss.hp=Math.max(0,boss.hp-1);earn(3,5)}
    persist();document.querySelector(".boss-creature").classList.add("boss-hit");
    document.getElementById("bossMsg").textContent=bonus?"3れんぞく！ ダブルアタック！":"ヒット！";
@@ -345,8 +347,8 @@ function bossRetry(){
 function finishBoss(){
  if(boss.hp>0){nextBoss();return}
  if(!beginFinishGuard("boss"))return;markClear("boss");
- earn(10,30);save.worldLv=Math.max(save.worldLv,6);persist();
- gameBody.innerHTML='<div class="finish-box boss-clear"><div class="boss-crystal">ABC</div><h2>ABCボスを たおした！</h2><p>クリアボーナス　スター +10　コイン +30</p><p>空のむこうに、新しい島のかげが見える……</p><div class="mystery-island">？？？</div><p>ひみつのかけら・なかま・島のひかり――何かがつながりそうだ。</p><button class="back" onclick="startBoss()">もう一度 ボスバトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
+ let first=firstClearBonus("boss",6,15);earn(5,15);save.worldLv=Math.max(save.worldLv,6);persist();
+ gameBody.innerHTML='<div class="finish-box boss-clear"><div class="boss-crystal">ABC</div><h2>ABCボスを たおした！</h2><p>'+(first?'はじめてクリア！　スター +11　コイン +30':'クリアボーナス　スター +5　コイン +15')+'</p><p>空のむこうに、新しい島のかげが見える……</p><div class="mystery-island">？？？</div><p>ひみつのかけら・なかま・島のひかり――何かがつながりそうだ。</p><button class="back" onclick="startBoss()">もう一度 ボスバトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 const mapAreas=[
  ["はじまりの草原","karuta",0],["もじもじの森","memory",1],["ひびきの砂漠","listen",2],
@@ -369,7 +371,7 @@ const cardThemes=[
  ["はじまり","草原"],["もり","木の葉"],["そら","雲"],["うみ","波"],["ほし","宇宙"],
  ["たから","宝"],["モンスター","バトル"],["レインボー","虹"],["ナイト","夜"],["ひみつ","???"]
 ];
-function collectionCount(){ensureEconomy();return Math.min(260,Math.max(save.totalCardsFound||0,Math.floor((save.totalStarsEarned||0)/2)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
+function collectionCount(){ensureEconomy();return Math.min(260,Math.max(save.totalCardsFound||0,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function cardUnlocked(letterIndex,themeIndex){
  let n=collectionCount(),slot=themeIndex*26+letterIndex;
  return slot<n;
@@ -405,7 +407,7 @@ function ensureBuddySave(){
 function openEggs(){newSession();eggFeedBusy=false;
  ensureBuddySave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ABCたまご・なかま";
  let owned=save.buddies.length,need=20,allOwned=owned>=buddies.length,ready=!allOwned&&save.eggProgress>=need;
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(allOwned?'なかまたちが そろった！':ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>'+(allOwned?'遠くの島から、まだ見たことのない光が見える……':'たまごパワー '+Math.min(save.eggProgress,need)+' / '+need)+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready||allOwned?'disabled':'')+'>スター2こで パワー +2</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="buddy-top"><div><b>なかま　'+owned+' / '+buddies.length+'</b><small>ゲームでもらったスターの力で、たまごを育てよう。</small></div><div class="active-buddy">'+(save.activeBuddy?'いっしょに冒険中：'+save.activeBuddy:'いっしょに冒険する なかまを選べるよ')+'</div></div><div class="egg-zone"><div class="egg-pedestal"><div class="abc-egg '+(ready?'egg-ready':'')+'"><span>ABC</span></div></div><div class="egg-info"><h3>'+(allOwned?'なかまたちが そろった！':ready?'たまごが うごいている！':'ABCたまご')+'</h3><div class="egg-meter"><i style="width:'+Math.min(100,save.eggProgress/need*100)+'%"></i></div><p>'+(allOwned?'遠くの島から、まだ見たことのない光が見える……':'たまごパワー '+Math.min(save.eggProgress,need)+' / '+need)+'</p><button class="egg-feed" onclick="feedEgg()" '+((save.stars||0)<2||ready||allOwned?'disabled':'')+'>スター2こで たまごを育てる</button>'+(ready?'<button class="hatch-btn" onclick="hatchEgg()">たまごを かえす！</button>':'')+'<small>スターがなくなっても、ゲームを遊べばまた集められるよ。</small></div></div><h3 class="buddy-heading">なかまたち</h3><div class="buddy-grid">'+buddies.map((b,i)=>renderBuddy(b,i)).join("")+'</div>';
  render();
 }
 function renderBuddy(b,i){
@@ -442,7 +444,7 @@ function ensureRewardSave(){
 }
 function openRewardMachine(){newSession();rewardBusy=false;
  ensureRewardSave();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent="ごほうびマシン";
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="reward-room"><div class="reward-machine"><div class="machine-sign">ABC<br><small>REWARD MACHINE</small></div><div class="machine-window"><div class="reward-ball b1">A</div><div class="reward-ball b2">B</div><div class="reward-ball b3">C</div><div class="reward-ball b4">?</div></div><div class="machine-slot"></div><div class="machine-tray">GET!</div></div><div class="reward-info"><div class="coin-wallet">もっているコイン　<b>'+save.coins+'</b></div><h3>コイン10まいで 1回！</h3><p>どれが出ても「あたり」。なくなるものはないよ。</p><button class="machine-btn" onclick="useRewardMachine()" '+(save.coins<10?'disabled':'')+'>ごほうびを もらう</button><div class="reward-preview"><b>出会えるごほうび</b><span>たまごパワー</span><span>スター</span><span>ABCカード</span><span>ワールドアイテム</span><span>？？？のかけら</span></div></div></div><div class="world-items"><b>ワールドアイテム</b><span>木 '+save.rewardItems.tree+'</span><span>お花 '+save.rewardItems.flower+'</span><span>ひみつのかけら '+save.rewardItems.shard+'</span><span>ワールドのひかり '+(save.rewardItems.sparkle||0)+'</span></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="reward-room"><div class="reward-machine"><div class="machine-sign">ABC<br><small>REWARD MACHINE</small></div><div class="machine-window"><div class="reward-ball b1">A</div><div class="reward-ball b2">B</div><div class="reward-ball b3">C</div><div class="reward-ball b4">?</div></div><div class="machine-slot"></div><div class="machine-tray">GET!</div></div><div class="reward-info"><div class="coin-wallet">もっているコイン　<b>'+save.coins+'</b></div><h3>コイン10まいで ごほうび1こ！</h3><p>どれが出ても「あたり」。なくなるものはないよ。</p><button class="machine-btn" onclick="useRewardMachine()" '+(save.coins<10?'disabled':'')+'>ごほうびを もらう</button><div class="reward-preview"><b>出会えるごほうび</b><span>たまごパワー</span><span>スター</span><span>ABCカード</span><span>ワールドアイテム</span><span>？？？のかけら</span></div></div></div><div class="world-items"><b>ワールドアイテム</b><span>木 '+save.rewardItems.tree+'</span><span>お花 '+save.rewardItems.flower+'</span><span>ひみつのかけら '+save.rewardItems.shard+'</span><span>ワールドのひかり '+(save.rewardItems.sparkle||0)+'</span></div>';
  render();
 }
 let rewardBusy=false;
