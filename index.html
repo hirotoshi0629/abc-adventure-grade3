@@ -183,7 +183,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
  .hero{min-height:250px}
  .home-extra{margin-bottom:8px}
 }
-</style></head><body><main class="app">
+<style>.sound-check-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.sound-check-grid button{font-family:"NHHandwriting",sans-serif;font-size:28px;min-height:58px}@media(max-width:600px){.sound-check-grid{grid-template-columns:repeat(4,1fr)}}</style></head><body><main class="app">
 <div id="home" class="home">
 <header><div class="logo"><span>ABC</span> アドベンチャー <small>ALPHABET</small></div><div class="stats"><div class="pill">★ <span id="stars">0</span></div><div class="pill">COIN <span id="coins">0</span></div></div></header>
 <section class="hero"><div><h1>～26文字の たからものを さがそう！～</h1><p>きいて・みつけて・あつめて、ABCワールドを大きくしよう。</p><div class="english-sign">Play　/　Listen　/　Find　/　Collect<br><b>Let's enjoy English!</b></div></div><button class="world" onclick="openMyWorld()" aria-label="マイワールドを開く">マイワールド<br><small>町を大きくする</small><br>Lv.<span id="worldLv">1</span></button></section>
@@ -213,7 +213,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-published-layout-fix";
+const APP_BUILD="2026.09.26-audio-fix";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -289,7 +289,8 @@ let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
 if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
-function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}speechReady=true;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
+const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"el",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
+function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}l=String(l||"").toUpperCase();if(!LETTER_SPEECH[l])return;speechReady=true;try{speechSynthesis.cancel()}catch(e){};let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=.72;u.pitch=1;u.volume=1;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
 function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
 function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
 function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
@@ -813,11 +814,16 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
  let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
+function openAlphabetSoundCheck(){
+ enterGameScreen("A〜Z 音声チェック");
+ gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="finish-box"><h2>文字をタッチして音を確認</h2><p>かるたと同じ音声です。</p><div class="sound-check-grid">'+ABC.map(x=>'<button class="sound-test" onclick="sayLetter(\''+x+'\')">'+x+'</button>').join("")+'</div></div>';
+ normalizeButtons();
+}
 function runTeacherCheck(){
  let storage=false;try{let k="abc_test_"+Date.now();localStorage.setItem(k,"1");storage=localStorage.getItem(k)==="1";localStorage.removeItem(k)}catch(e){}
  let speech=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
