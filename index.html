@@ -196,7 +196,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 .master-coin{left:91.2%;top:2.6%;width:6.2%;font-size:clamp(16px,2.1vw,34px)}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
-<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home.jpg" alt="">
+<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
 <span class="master-live master-star" id="masterStars">0</span><span class="master-live master-coin" id="masterCoins">0</span>
 <button class="master-hotspot" style="left:83.5%;top:11%;width:14.5%;height:28%" onclick="openMyWorld()" aria-label="マイワールド"></button>
 <button class="master-hotspot" style="left:2%;top:45%;width:23.5%;height:22.5%" onclick="openGame('karuta')" aria-label="ABCかるた"></button>
@@ -243,7 +243,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-master-ready";
+const APP_BUILD="2026.09.26-master-live";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
