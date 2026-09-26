@@ -285,6 +285,14 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
  .monster-body{width:175px;height:185px}.boss-creature{width:215px;height:235px;margin-top:36px}
  .boss-arm{width:65px}.boss-arm.a1{left:-52px}.boss-arm.a2{right:-52px}
 }
+
+.review-hint{display:block;margin-top:7px;padding:7px 10px;border-radius:12px;background:#fff4aa;color:#6c4a00;font-weight:900}
+@media(min-width:700px) and (max-height:900px){
+ body.inner-screen .memory-board{max-width:520px;gap:6px}
+ body.inner-screen .memory-card{font-size:clamp(30px,4.6vw,48px)}
+ body.inner-screen .karuta-board{max-width:760px;gap:8px}
+ body.inner-screen .karuta-card{font-size:clamp(40px,6.5vw,68px)}
+}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -489,7 +497,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-kids-ui-pass3";
+const APP_BUILD="2026.09.26-learning-pass4";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -525,6 +533,7 @@ function migrateSave(){
  save.worldLv=Math.max(1,Math.min(6,Number(save.worldLv)||1));
  save.plays=Math.max(0,Number(save.plays)||0);save.clears=save.clears||{};save.gamePlays=save.gamePlays||{};for(const k of ["karuta","memory","listen","rocket","monster","treasure","train","boss"]){save.clears[k]=Math.max(0,Number(save.clears[k])||0);save.gamePlays[k]=Math.max(0,Number(save.gamePlays[k])||0)}
  save.buddies=Array.isArray(save.buddies)?[...new Set(save.buddies.filter(i=>Number.isInteger(i)&&i>=0&&i<12))]:[];
+ save.letterStats=save.letterStats&&typeof save.letterStats==="object"?save.letterStats:{};for(const L of ABC){let v=save.letterStats[L]||{};save.letterStats[L]={ok:Math.max(0,Number(v.ok)||0),ng:Math.max(0,Number(v.ng)||0)};}
  save.eggProgress=Math.max(0,Math.min(20,Number(save.eggProgress)||0));
  save.settings=save.settings||{sound:true,motion:true};save.rewardItems=save.rewardItems||{tree:0,flower:0,shard:0,bonusCards:0,sparkle:0};for(const k of ["tree","flower","shard","bonusCards","sparkle"])save.rewardItems[k]=Math.max(0,Number(save.rewardItems[k])||0);save.worldPlaced=save.worldPlaced||{tree:0,flower:0};save.worldPlaced.tree=Math.max(0,Number(save.worldPlaced.tree)||0);save.worldPlaced.flower=Math.max(0,Number(save.worldPlaced.flower)||0);
  if(save.settings.sound==null)save.settings.sound=true;if(save.settings.motion==null)save.settings.motion=true;
@@ -607,7 +616,10 @@ function announce(msg){let el=document.getElementById("appStatus");if(el){el.tex
 function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
 function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function sample(n){return shuffle(ABC).slice(0,n)}
-function makeTargetDeck(n){let out=[];while(out.length<n)out.push(...shuffle(ABC));return out.slice(0,n)}
+function letterDifficulty(L){let v=save.letterStats?.[L]||{ok:0,ng:0};return (v.ng||0)*3-(v.ok||0)}
+function weakLetters(limit=6){return [...ABC].sort((a,b)=>letterDifficulty(b)-letterDifficulty(a)).filter(L=>(save.letterStats?.[L]?.ng||0)>0).slice(0,limit)}
+function recordLetterResult(L,ok){L=String(L||"").toUpperCase();if(!/^[A-Z]$/.test(L))return;save.letterStats=save.letterStats||{};save.letterStats[L]=save.letterStats[L]||{ok:0,ng:0};save.letterStats[L][ok?"ok":"ng"]++}
+function makeTargetDeck(n){let weak=weakLetters(Math.min(6,n)),out=[];if(weak.length){let quota=Math.min(Math.ceil(n/2),weak.length);out.push(...shuffle(weak).slice(0,quota))}while(out.length<n){for(const L of shuffle(ABC)){if(out.length>=n)break;if(out.length&&out[out.length-1]===L)continue;out.push(L)}}return shuffle(out).slice(0,n)}
 function choicesWithTarget(target,n,preferred=[]){let pool=shuffle([...new Set(preferred.filter(x=>x!==target).concat(ABC.filter(x=>x!==target)))]);return shuffle([target,...pool.slice(0,n-1)])}
 let target="";
 let listen={count:4,level:"normal",round:0,correct:0,maxRounds:10,target:""};
@@ -633,10 +645,12 @@ function nextListen(){listen.locked=false;
 function answerListen(x,el){
  if(listen.locked)return;
  if(x===listen.target){
+   recordLetterResult(listen.target,true);
    listen.locked=true;el.classList.add("correct");lockAnswerButtons(450);listen.correct++;earn(1,listen.level==="similar"?4:3);persist();
    document.getElementById("listenMsg").textContent="せいかい！";
    later(nextListen,listen.level==="fast"?450:750);
  }else{
+   recordLetterResult(listen.target,false);persist();
    el.classList.add("listen-wrong");document.getElementById("listenMsg").textContent="もう一度 よく聞こう！";
    later(()=>el.classList.remove("listen-wrong"),400);sayLetter(listen.target);
  }
@@ -717,10 +731,12 @@ function nextRocket(){rocket.locked=false;
 function answerRocket(x,el){
  if(rocket.locked)return;
  if(x===rocket.target){
+   recordLetterResult(rocket.target,true);
    rocket.locked=true;el.classList.add("correct");lockAnswerButtons(450);rocket.correct++;earn(1,2);persist();
    document.getElementById("rocketMsg").textContent=rocket.correct===rocket.maxRounds?"フルパワー！":"パワーアップ！";
    later(nextRocket,700);
  }else{
+   recordLetterResult(rocket.target,false);persist();
    el.classList.add("listen-wrong");document.getElementById("rocketMsg").textContent="もう一度 音を聞いてみよう！";
    later(()=>el.classList.remove("listen-wrong"),400);sayLetter(rocket.target);
  }
@@ -746,12 +762,14 @@ function nextMonster(){
 function answerMonster(x,el){
  if(monster.locked)return;
  if(x===monster.target){
+   recordLetterResult(monster.target,true);
    monster.locked=true;monster.combo++;lockAnswerButtons(450);monster.bestCombo=Math.max(monster.bestCombo,monster.combo);monster.power++;
    el.classList.add("correct");earn(2,3);
    let msg="ヒット！";
    if(monster.power>=3){monster.power=0;earn(2,4);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-body").classList.add("special-hit")}
    persist();document.getElementById("monsterMsg").textContent=msg;later(nextMonster,850);
  }else{
+   recordLetterResult(monster.target,false);persist();
    monster.hp=Math.max(0,monster.hp-1);monster.combo=0;monster.power=0;el.classList.add("listen-wrong");
    document.getElementById("monsterMsg").textContent="おしい！ 音をもう一度聞こう。";
    if(monster.hp===0){monster.locked=true;later(monsterRecover,700)}else{later(()=>el.classList.remove("listen-wrong"),400);sayLetter(monster.target)}
@@ -780,10 +798,12 @@ function nextTreasure(){
 function findTreasure(x,el){
  if(treasure.locked)return;
  if(x===treasure.target){
+   recordLetterResult(treasure.target,true);
    treasure.locked=true;treasure.found++;lockAnswerButtons(450);el.classList.add("treasure-found");earn(1,3);persist();
    document.getElementById("treasureMsg").textContent="みつけた！ たからをゲット！";
    later(nextTreasure,900);
  }else{
+   recordLetterResult(treasure.target,false);persist();
    el.classList.add("treasure-miss");document.getElementById("treasureMsg").textContent="そこじゃないみたい。もう一度聞こう！";
    later(()=>el.classList.remove("treasure-miss"),450);sayLetter(treasure.target);
  }
@@ -850,12 +870,14 @@ function answerBoss(x,el){
  if(boss.locked||boss.hp<=0)return;
  if(boss.type==="order")sayLetter(x);
  if(x===boss.target){
+   if(boss.type!=="order")recordLetterResult(boss.target,true);
    boss.locked=true;boss.hp--;boss.combo++;el.classList.add("correct");earn(2,4);
    let bonus=boss.combo>0&&boss.combo%3===0;if(bonus){boss.hp=Math.max(0,boss.hp-1);earn(3,5)}
    persist();document.querySelector(".boss-creature").classList.add("boss-hit");
    document.getElementById("bossMsg").textContent=bonus?"3れんぞく！ ダブルアタック！":"ヒット！";
    later(nextBoss,850);
  }else{
+   if(boss.type!=="order")recordLetterResult(boss.target,false);
    boss.playerHp=Math.max(0,boss.playerHp-1);boss.combo=0;el.classList.add("listen-wrong");persist();
    document.getElementById("bossMsg").textContent="おしい！ ボスのこうげき！";
    if(boss.playerHp===0){boss.locked=true;later(bossRetry,700)}else{later(()=>el.classList.remove("listen-wrong"),450);if(boss.type!=="order")sayLetter(boss.target)}
@@ -912,7 +934,7 @@ function longTermHub(){
 function openBook(){enterGameScreen("ABCずかん");
  
  let got=collectionCount();
- gameBody.innerHTML=longTermHub()+'<div class="book-top"><div><b>あつめたカード　'+got+' / 260</b><small>ゲームでスターを集めると、少しずつカードが見つかるよ。</small></div><div class="book-meter"><i style="width:'+(got/260*100)+'%"></i></div></div><div class="book-tabs">'+cardThemes.map((t,i)=>'<button class="book-tab '+(i===0?'active':'')+'" onclick="renderBookTheme('+i+',this)">'+(i===9?'？？？':t[0])+'</button>').join("")+'</div><div id="bookGrid"></div>';
+ let weak=weakLetters(5);gameBody.innerHTML=longTermHub()+'<div class="book-top"><div><b>あつめたカード　'+got+' / 260</b><small>ゲームでスターを集めると、少しずつカードが見つかるよ。</small>'+(weak.length?'<small class="review-hint">いまの復習おすすめ：'+weak.join('・')+'</small>':'')+'</div><div class="book-meter"><i style="width:'+(got/260*100)+'%"></i></div></div><div class="book-tabs">'+cardThemes.map((t,i)=>'<button class="book-tab '+(i===0?'active':'')+'" onclick="renderBookTheme('+i+',this)">'+(i===9?'？？？':t[0])+'</button>').join("")+'</div><div id="bookGrid"></div>';
  renderBookTheme(0,document.querySelector(".book-tab"));
  render();normalizeButtons();
 }
