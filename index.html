@@ -192,7 +192,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 .master-hotspot{position:absolute;background:transparent!important;border:0!important;box-shadow:none!important;min-height:0!important;padding:0!important;z-index:3}
 .master-hotspot:focus-visible{outline:5px solid #2479c9;outline-offset:2px;border-radius:18px}
 .master-live{position:absolute;z-index:4;font-weight:1000;color:#17214a;text-align:center;pointer-events:none;background:#fffdf8;border-radius:18px;line-height:1.18;padding:.18% .2%}
-.master-star{left:78.0%;top:2.45%;width:7.2%;font-size:clamp(15px,2vw,32px);padding:.35% .4%;border-radius:22px}
+.master-star{left:78.35%;top:2.72%;width:5.15%;font-size:clamp(15px,2vw,32px);padding:.12% 0;border-radius:12px}
 .master-coin{left:91.0%;top:2.65%;width:5.1%;font-size:clamp(15px,2vw,32px)}
 </style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
@@ -243,7 +243,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-star-counter-fix";
+const APP_BUILD="2026.09.26-star-counter-fit";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
