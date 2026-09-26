@@ -47,6 +47,12 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 @media(max-width:520px){.grid{grid-template-columns:1fr}.nav{grid-template-columns:repeat(2,1fr)}.game{min-height:120px}.hero{display:grid;grid-template-columns:1fr}.world{margin-top:8px}.cards,.karuta-board{grid-template-columns:repeat(3,1fr)}}
 .karuta-card,.memory-card,.listen-letter,.rocket-letter,.monster-letter,.treasure-letter,.train-letter,.boss-letter{font-family:NH,"Arial Rounded MT Bold","Trebuchet MS",sans-serif;min-height:64px}
 
+/* FINAL MASTER CONTRACT
+   The user-approved home reference is authoritative. Do not redesign it.
+   Bottom navigation is exactly 7 items. Daily mission stays on Home, not bottom nav.
+   Generated art may only be isolated text-free assets matching the approved watercolor + colored-pencil world.
+   Do not bake Japanese UI text, counters, buttons, or layouts into generated art.
+*/
 /* DO NOT GENERATE SCREEN MONTAGES OR ALTERNATE HOME DESIGNS.
    Visual assets must be isolated, text-free illustrations only, matching the approved user-supplied master.
    UI text, buttons, counters and layout stay HTML/CSS and must not be baked into generated images. */
@@ -98,7 +104,7 @@ const home=document.getElementById("home"),game=document.getElementById("game"),
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
 function ensureEconomy(){save.totalStarsEarned=Math.max(save.totalStarsEarned||0,save.stars||0);save.totalCoinsEarned=Math.max(save.totalCoinsEarned||0,save.coins||0);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
 function earn(starsN=0,coinsN=0){ensureEconomy();save.stars=(save.stars||0)+starsN;save.coins=(save.coins||0)+coinsN;save.totalStarsEarned=(save.totalStarsEarned||0)+Math.max(0,starsN);save.totalCoinsEarned=(save.totalCoinsEarned||0)+Math.max(0,coinsN);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor(save.totalStarsEarned/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
-function render(){ensureEconomy();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv}
+function render(){ensureEconomy();syncEarnedTitles();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv}
 let saveWarningShown=false;function persist(){try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
 const titles={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン",boss:"ボスバトル"};
 let sessionToken=0;function newSession(){sessionToken++;return sessionToken}function later(fn,ms){const t=sessionToken;return setTimeout(()=>{if(t===sessionToken)fn()},ms)}
@@ -107,11 +113,12 @@ function clearCount(id){return (save.clears&&save.clears[id])||0}
 function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;persist();return first}
 function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);persist();return true}
 function openGame(id){newSession();save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist();home.classList.add("hidden");game.classList.add("active");gameTitle.textContent=titles[id]; if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
-function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");render()}
+function enterGameScreen(title){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render()}
 let speechReady=false;
-function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;speechSynthesis.speak(u)}catch(e){}return true}
+function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
-function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}speechReady=true;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
+function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}speechReady=true;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(l);u.lang="en-US";u.rate=.78;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
 function showToast(msg){let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function sample(n){return shuffle(ABC).slice(0,n)}
