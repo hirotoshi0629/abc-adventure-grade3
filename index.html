@@ -152,8 +152,15 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-k";
+const APP_BUILD="2026.09.26-final-code";
 const SAVE_VERSION=3;
+function appHealthCheck(){
+ const requiredFns=["goHome","openGame","openAdventureMap","openBook","openEggs","openRewardMachine","openMyWorld","openTitles","openSettings"];
+ const fnOK=requiredFns.every(n=>typeof window[n]==="function");
+ const navOK=document.querySelectorAll(".bottom-nav button").length===7;
+ const gameOK=document.querySelectorAll(".game").length===8;
+ return {fnOK,navOK,gameOK,build:APP_BUILD};
+}
 function normalizeButtons(){document.querySelectorAll("button:not([type])").forEach(b=>b.type="button")}
 function verifyMasterContract(){
  const nav=document.querySelectorAll(".bottom-nav button");
@@ -166,7 +173,7 @@ function selfCheck(){
   save.stars=Math.max(0,save.stars||0);save.coins=Math.max(0,save.coins||0);
   save.worldLv=Math.max(1,Math.min(6,save.worldLv||1));
   if(save.activeBuddy&&typeof save.activeBuddy==="string"&&!buddies.some((b,i)=>b[0]===save.activeBuddy&&(save.buddies||[]).includes(i)))save.activeBuddy="";
-  if(save.daily&&(!Array.isArray(save.daily.claimed)||save.daily.claimed.length!==3))save.daily.claimed=[false,false,false];
+  if(save.daily){if(!Array.isArray(save.daily.claimed)||save.daily.claimed.length!==3)save.daily.claimed=[false,false,false];save.daily.startPlays=Math.max(0,Number(save.daily.startPlays)||0);save.daily.startStars=Math.max(0,Number(save.daily.startStars)||0);save.daily.startCoins=Math.max(0,Number(save.daily.startCoins)||0)}
   return true;
  }catch(e){return false}
 }
@@ -206,7 +213,7 @@ function lockedGame(id){let req={memory:2,listen:2,rocket:2,monster:3,treasure:4
 let openGameBusy=false;
 function openGame(id){if(openGameBusy)return;openGameBusy=true;later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
 function enterGameScreen(title){newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render()}
+function goHome(){newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
@@ -733,8 +740,8 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button></div></div>';
- let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;
+ gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="copySaveForTeacher()">記録データをコピー</button></div></div>';
+ let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK)?"OK":"要確認";}
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify(save);if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
@@ -745,7 +752,7 @@ window.addEventListener("error",offerRecovery);
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
-migrateSave();selfCheck();syncWorldLevel();ensureEconomy();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();
+migrateSave();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();
 let hiddenDuringPlay=false;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");if("speechSynthesis" in window)speechSynthesis.cancel();newSession()}else{if(hiddenDuringPlay){game.classList.remove("active");home.classList.remove("hidden");hiddenDuringPlay=false;showToast("ホームにもどりました")}render()}});
