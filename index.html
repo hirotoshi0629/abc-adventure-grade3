@@ -152,8 +152,9 @@ linear-gradient(160deg,#9ddfff 0 42%,#a8d978 43% 61%,#72cbe0 62% 100%)}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-j";
+const APP_BUILD="2026.09.26-k";
 const SAVE_VERSION=3;
+function normalizeButtons(){document.querySelectorAll("button:not([type])").forEach(b=>b.type="button")}
 function verifyMasterContract(){
  const nav=document.querySelectorAll(".bottom-nav button");
  if(nav.length!==7)return false;
@@ -173,10 +174,10 @@ function migrateSave(){
  save.version=SAVE_VERSION;
  save.stars=Math.max(0,Number(save.stars)||0);save.coins=Math.max(0,Number(save.coins)||0);
  save.worldLv=Math.max(1,Math.min(6,Number(save.worldLv)||1));
- save.plays=Math.max(0,Number(save.plays)||0);save.clears=save.clears||{};save.gamePlays=save.gamePlays||{};
+ save.plays=Math.max(0,Number(save.plays)||0);save.clears=save.clears||{};save.gamePlays=save.gamePlays||{};for(const k of ["karuta","memory","listen","rocket","monster","treasure","train","boss"]){save.clears[k]=Math.max(0,Number(save.clears[k])||0);save.gamePlays[k]=Math.max(0,Number(save.gamePlays[k])||0)}
  save.buddies=Array.isArray(save.buddies)?[...new Set(save.buddies.filter(i=>Number.isInteger(i)&&i>=0&&i<12))]:[];
  save.eggProgress=Math.max(0,Math.min(20,Number(save.eggProgress)||0));
- save.settings=save.settings||{sound:true,motion:true};save.rewardItems=save.rewardItems||{tree:0,flower:0,shard:0,bonusCards:0,sparkle:0};save.worldPlaced=save.worldPlaced||{tree:0,flower:0};
+ save.settings=save.settings||{sound:true,motion:true};save.rewardItems=save.rewardItems||{tree:0,flower:0,shard:0,bonusCards:0,sparkle:0};for(const k of ["tree","flower","shard","bonusCards","sparkle"])save.rewardItems[k]=Math.max(0,Number(save.rewardItems[k])||0);save.worldPlaced=save.worldPlaced||{tree:0,flower:0};save.worldPlaced.tree=Math.max(0,Number(save.worldPlaced.tree)||0);save.worldPlaced.flower=Math.max(0,Number(save.worldPlaced.flower)||0);
  if(save.settings.sound==null)save.settings.sound=true;if(save.settings.motion==null)save.settings.motion=true;
 }
 function ensureEconomy(){save.totalStarsEarned=Math.max(save.totalStarsEarned||0,save.stars||0);save.totalCoinsEarned=Math.max(save.totalCoinsEarned||0,save.coins||0);save.totalCardsFound=Math.max(save.totalCardsFound||0,Math.min(260,Math.floor((save.totalStarsEarned||0)/3)+(save.worldLv||1)*3+(save.rewardItems?.bonusCards||0)))}
@@ -195,15 +196,16 @@ function syncWorldLevel(){
  if((save.clears?.monster||0)>0)lv=4;
  if((save.clears?.treasure||0)>0)lv=5;
  if((save.clears?.train||0)>0)lv=6;
- save.worldLv=Math.max(save.worldLv||1,lv);
+ save.worldLv=Math.max(1,Math.min(6,Math.max(save.worldLv||1,lv)));
 }
 function markClear(id){save.clears=save.clears||{};let first=!save.clears[id];save.clears[id]=(save.clears[id]||0)+1;syncWorldLevel();return first}
 function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);return true}
 function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist()}
 function gameUnlocked(id){let req={karuta:1,memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6};return (save.worldLv||1)>=(req[id]||1)}
 function lockedGame(id){let req={memory:2,listen:2,rocket:2,monster:3,treasure:4,train:5,boss:6}[id]||1;enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>まだ きりの中……</h2><p>ぼうけんマップの道を進めて、ワールド Lv.'+req+'になると遊べるよ。</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
-function openGame(id){if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
-function enterGameScreen(title){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+let openGameBusy=false;
+function openGame(id){if(openGameBusy)return;openGameBusy=true;later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function enterGameScreen(title){newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
 function goHome(){newSession();if("speechSynthesis" in window)speechSynthesis.cancel();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
@@ -509,7 +511,7 @@ function openBook(){enterGameScreen("ABCずかん");
  let got=collectionCount();
  gameBody.innerHTML='<button class="back utility-back" onclick="goHome()">← ホームにもどる</button><div class="book-top"><div><b>あつめたカード　'+got+' / 260</b><small>ゲームでスターを集めると、少しずつカードが見つかるよ。</small></div><div class="book-meter"><i style="width:'+(got/260*100)+'%"></i></div></div><div class="book-tabs">'+cardThemes.map((t,i)=>'<button class="book-tab '+(i===0?'active':'')+'" onclick="renderBookTheme('+i+',this)">'+(i===9?'？？？':t[0])+'</button>').join("")+'</div><div id="bookGrid"></div>';
  renderBookTheme(0,document.querySelector(".book-tab"));
- render();
+ render();normalizeButtons();
 }
 function renderBookTheme(t,btn){
  document.querySelectorAll(".book-tab").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");
@@ -738,11 +740,13 @@ function openSettings(){enterGameScreen("せってい");
 async function copySaveForTeacher(){try{let t=JSON.stringify(save);if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound&&"speechSynthesis" in window){setTimeout(()=>sayLetter("A"),80)}openSettings()}
 function showNotice(x){alert(x+"は、ゲームの進みとつながる長期コレクション機能として実装します。")}
-window.addEventListener("error",()=>{try{showToast("うまく動かないときは、ホームにもどってもう一度ためしてね")}catch(e){}});
+function offerRecovery(){try{showToast("うまく動かないときは、ホームにもどってもう一度ためしてね")}catch(e){}}
+window.addEventListener("error",offerRecovery);
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
 migrateSave();selfCheck();syncWorldLevel();ensureEconomy();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();
-let hiddenDuringPlay=false;window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
+let hiddenDuringPlay=false;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
+window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");if("speechSynthesis" in window)speechSynthesis.cancel();newSession()}else{if(hiddenDuringPlay){game.classList.remove("active");home.classList.remove("hidden");hiddenDuringPlay=false;showToast("ホームにもどりました")}render()}});
 </script></body></html>
