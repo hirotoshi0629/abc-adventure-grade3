@@ -502,7 +502,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-pronunciation-pass6";
+const APP_BUILD="2026.09.26-recorded-audio-pass7";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -616,23 +616,58 @@ document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{onc
 if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
 const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"ell",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
 const LETTER_RATE={H:.66,M:.84,N:.78,O:.68,V:.68,W:.62};
+const ALPHABET_AUDIO={
+ A:{start:0,duration:1.4},B:{start:1.58,duration:1.588},C:{start:3.348,duration:1.582},D:{start:5.11,duration:1.997},
+ E:{start:7.287,duration:1.849},F:{start:9.316,duration:1.676},G:{start:11.172,duration:1.764},H:{start:13.116,duration:1.913},
+ I:{start:15.209,duration:1.331},J:{start:16.72,duration:1.426},K:{start:18.326,duration:1.217},L:{start:19.723,duration:1.565},
+ M:{start:21.468,duration:1.767},N:{start:23.415,duration:1.488},O:{start:25.083,duration:1.062},P:{start:26.325,duration:1.054},
+ Q:{start:27.559,duration:1.165},R:{start:28.904,duration:1.644},S:{start:30.728,duration:1.557},T:{start:32.465,duration:1.706},
+ U:{start:34.351,duration:1.644},V:{start:36.175,duration:1.699},W:{start:38.054,duration:1.739},X:{start:39.973,duration:1.61},
+ Y:{start:41.763,duration:1.556},Z:{start:43.499,duration:1.558}
+};
+const recordedAlphabetAudio=new Audio("assets/audio/alphabet-sprite.mp3?v=20260926-1");
+recordedAlphabetAudio.preload="auto";
+let recordedAudioTimer=0,recordedAudioUnlocked=false,recordedAudioFailed=false;
+function stopRecordedLetter(){clearTimeout(recordedAudioTimer);recordedAudioTimer=0;try{recordedAlphabetAudio.pause()}catch(e){}}
+async function primeRecordedAudio(){
+ if(recordedAudioUnlocked||recordedAudioFailed)return;
+ try{
+  recordedAlphabetAudio.muted=true;recordedAlphabetAudio.currentTime=0;
+  await recordedAlphabetAudio.play();recordedAlphabetAudio.pause();recordedAlphabetAudio.currentTime=0;recordedAlphabetAudio.muted=false;recordedAudioUnlocked=true;
+ }catch(e){recordedAlphabetAudio.muted=false}
+}
+document.addEventListener("pointerdown",()=>{primeRecordedAudio()},{once:true,passive:true});
 function preferredEnglishVoice(){
  let vs=speechSynthesis.getVoices()||[];
  const preferred=["Samantha","Ava","Allison","Susan","Karen","Moira","Google US English","Microsoft Aria","Microsoft Jenny","Microsoft Zira"];
  for(const name of preferred){let v=vs.find(x=>/^en-US$/i.test(x.lang)&&x.name.toLowerCase().includes(name.toLowerCase()));if(v)return v}
  return vs.find(x=>/^en-US$/i.test(x.lang)&&x.localService)||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang)&&x.localService)||vs.find(x=>/^en(-|_)/i.test(x.lang));
 }
-function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "音声なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
-function sayLetter(l){
- if(save.settings&&save.settings.sound===false)return;
- if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}
- l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;
- speechReady=true;try{speechSynthesis.cancel()}catch(e){}
+function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
+function fallbackSayLetter(l){
+ if(!("speechSynthesis" in window))return;
+ try{speechSynthesis.cancel()}catch(e){}
  let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=LETTER_RATE[l]||.74;u.pitch=l==="V"?.96:1;u.volume=1;
  let v=preferredEnglishVoice();if(v)u.voice=v;
  try{speechSynthesis.speak(u)}catch(e){}
 }
-function playMNCheck(){sayLetter("M");setTimeout(()=>sayLetter("N"),900)}
+function sayLetter(l){
+ if(save.settings&&save.settings.sound===false)return;
+ l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;
+ const seg=ALPHABET_AUDIO[l];
+ if(!seg||recordedAudioFailed){fallbackSayLetter(l);return}
+ stopRecordedLetter();try{if("speechSynthesis" in window)speechSynthesis.cancel()}catch(e){}
+ try{
+  recordedAlphabetAudio.currentTime=seg.start;
+  const p=recordedAlphabetAudio.play();
+  if(p&&typeof p.then==="function")p.then(()=>{
+   recordedAudioUnlocked=true;
+   recordedAudioTimer=setTimeout(()=>{try{recordedAlphabetAudio.pause()}catch(e){}},Math.ceil(seg.duration*1000)+40);
+  }).catch(()=>{recordedAudioFailed=true;fallbackSayLetter(l)});
+  else recordedAudioTimer=setTimeout(()=>{try{recordedAlphabetAudio.pause()}catch(e){}},Math.ceil(seg.duration*1000)+40);
+ }catch(e){recordedAudioFailed=true;fallbackSayLetter(l)}
+}
+function playMNCheck(){sayLetter("M");setTimeout(()=>sayLetter("N"),Math.ceil(ALPHABET_AUDIO.M.duration*1000)+300)}
 function lockAnswerButtons(ms=500){document.querySelectorAll("#gameBody button").forEach(b=>{if(!b.classList.contains("sound-btn")&&!b.classList.contains("back"))b.disabled=true});later(()=>document.querySelectorAll("#gameBody button").forEach(b=>b.disabled=false),ms)}
 function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
 function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
@@ -1191,16 +1226,16 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：'+currentEnglishVoiceName()+'</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
+ gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：録音済み A〜Z（予備：'+currentEnglishVoiceName()+'）</small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>動作チェック：<span id="healthLabel">確認中</span><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="runTeacherCheck()">端末チェック</button> <button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
  let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let hl=document.getElementById("healthLabel");if(hl){let h=appHealthCheck();hl.textContent=(h.fnOK&&h.navOK&&h.gameOK&&h.masterOK&&h.hotspotOK&&h.saveOK)?"OK":"要確認";}let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
 let soundAuditRun=0;
-function stopAlphabetSoundCheck(){soundAuditRun++;if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};let s=document.getElementById("soundAuditStatus");if(s)s.textContent="停止しました"}
+function stopAlphabetSoundCheck(){soundAuditRun++;stopRecordedLetter();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};let s=document.getElementById("soundAuditStatus");if(s)s.textContent="停止しました"}
 function playAlphabetSoundCheck(){
  let run=++soundAuditRun,i=0,s=document.getElementById("soundAuditStatus");
- function next(){if(run!==soundAuditRun||i>=ABC.length){if(run===soundAuditRun&&s)s.textContent="A〜Z の確認が終わりました";return}let L=ABC[i++];if(s)s.textContent=L+" を再生中　"+i+" / 26";sayLetter(L);setTimeout(next,1150)}
+ function next(){if(run!==soundAuditRun||i>=ABC.length){if(run===soundAuditRun&&s)s.textContent="A〜Z の確認が終わりました";return}let L=ABC[i++];if(s)s.textContent=L+" を再生中　"+i+" / 26";sayLetter(L);setTimeout(next,Math.ceil((ALPHABET_AUDIO[L]?.duration||1.3)*1000)+320)}
  next();
 }
 function openAlphabetSoundCheck(){
@@ -1210,9 +1245,9 @@ function openAlphabetSoundCheck(){
 }
 function runTeacherCheck(){
  let storage=false;try{let k="abc_test_"+Date.now();localStorage.setItem(k,"1");storage=localStorage.getItem(k)==="1";localStorage.removeItem(k)}catch(e){}
- let speech=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
+ let speech=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window),recorded=!!window.Audio&&!recordedAudioFailed;
  let h=appHealthCheck(),font=approvedFontReady(),voices=("speechSynthesis" in window)?speechSynthesis.getVoices():[],voice=voices.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||voices.find(x=>/^en-US$/i.test(x.lang))||voices.find(x=>/^en(-|_)/i.test(x.lang));
- let msg="端末チェック\n\nゲーム構成："+(h.fnOK&&h.navOK&&h.gameOK?"OK":"要確認")+"\n自動保存："+(storage?"OK":"要確認")+"\n音声機能："+(speech?"OK":"要確認")+"\n英語音声："+(voice?voice.name+" ("+voice.lang+")":"端末の既定音声")+"\n指定英字フォント："+(font?"読込済み":"端末未読込")+"\n\nBuild: "+APP_BUILD;
+ let msg="端末チェック\n\nゲーム構成："+(h.fnOK&&h.navOK&&h.gameOK?"OK":"要確認")+"\n自動保存："+(storage?"OK":"要確認")+"\n録音A〜Z："+(recorded?"OK":"要確認")+"\n予備の英語音声："+(voice?voice.name+" ("+voice.lang+")":"端末の既定音声")+"\n指定英字フォント："+(font?"読込済み":"端末未読込")+"\n\nBuild: "+APP_BUILD;
  alert(msg);
  if(speech&&save.settings?.sound)setTimeout(()=>sayLetter("A"),120);
 }
