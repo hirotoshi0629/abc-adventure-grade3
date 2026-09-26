@@ -251,7 +251,7 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 <style>
 @media (pointer:coarse){button,.master-hotspot{min-width:44px;min-height:44px}button{-webkit-tap-highlight-color:transparent}}
 button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
-<style>.clear-next{max-width:620px;margin:8px auto 14px;padding:10px 14px;border:2px solid #6f9f52;border-radius:16px;background:#f3ffe9;text-align:center}.clear-next b,.clear-next span{display:block;margin-bottom:6px}<style>.sound-audit{display:grid;grid-template-columns:repeat(13,minmax(44px,1fr));gap:6px;margin-top:8px}@media(max-width:760px){.sound-audit{grid-template-columns:repeat(7,minmax(44px,1fr))}}</style></head><body><main class="app">
+<style>.clear-next{max-width:620px;margin:8px auto 14px;padding:10px 14px;border:2px solid #6f9f52;border-radius:16px;background:#f3ffe9;text-align:center}.clear-next b,.clear-next span{display:block;margin-bottom:6px}<style>.sound-audit{display:grid;grid-template-columns:repeat(13,minmax(44px,1fr));gap:6px;margin-top:8px}@media(max-width:760px){.sound-audit{grid-template-columns:repeat(7,minmax(44px,1fr))}}<style>.sound-audit-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}</style></head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" alt="">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
@@ -309,7 +309,7 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-pronunciation-fix";
+const APP_BUILD="2026.09.26-audio-audit";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -408,8 +408,8 @@ function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false;
 function openGame(id){if(openGameBusy)return;openGameBusy=true;if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
-function enterGameScreen(title){let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function enterGameScreen(title){soundAuditRun++;let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){soundAuditRun++;let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
@@ -963,16 +963,23 @@ function openSettings(){enterGameScreen("せってい");
  render();
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
+let soundAuditRun=0;
+function stopAlphabetSoundCheck(){soundAuditRun++;if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};let s=document.getElementById("soundAuditStatus");if(s)s.textContent="停止しました"}
+function playAlphabetSoundCheck(){
+ let run=++soundAuditRun,i=0,s=document.getElementById("soundAuditStatus");
+ function next(){if(run!==soundAuditRun||i>=ABC.length){if(run===soundAuditRun&&s)s.textContent="A〜Z の確認が終わりました";return}let L=ABC[i++];if(s)s.textContent=L+" を再生中　"+i+" / 26";sayLetter(L);setTimeout(next,1150)}
+ next();
+}
 function openAlphabetSoundCheck(){
  enterGameScreen("A〜Z 音声チェック");
- gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="finish-box"><h2>文字をタッチして音を確認</h2><p>かるたと同じ音声です。</p><div class="sound-check-grid">'+ABC.map(x=>'<button class="sound-test" onclick="sayLetter(\''+x+'\')">'+x+'</button>').join("")+'</div></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="stopAlphabetSoundCheck();openSettings()">← せってい</button><div class="finish-box"><h2>A〜Z 音声チェック</h2><p>児童が聞くものと同じ共通音声です。1文字ずつ確認するか、26文字を順番に再生できます。</p><div class="sound-audit-actions"><button class="back" onclick="playAlphabetSoundCheck()">A〜Zを順番に聞く</button><button class="back" onclick="stopAlphabetSoundCheck()">停止</button></div><p id="soundAuditStatus">文字をタッチしても確認できます。</p><div class="sound-check-grid">'+ABC.map(x=>'<button class="sound-test" onclick="stopAlphabetSoundCheck();sayLetter(\''+x+'\')">'+x+'</button>').join("")+'</div></div>';
  normalizeButtons();
 }
 function runTeacherCheck(){
  let storage=false;try{let k="abc_test_"+Date.now();localStorage.setItem(k,"1");storage=localStorage.getItem(k)==="1";localStorage.removeItem(k)}catch(e){}
  let speech=("speechSynthesis" in window)&&("SpeechSynthesisUtterance" in window);
- let h=appHealthCheck(),font=approvedFontReady();
- let msg="端末チェック\n\nゲーム構成："+(h.fnOK&&h.navOK&&h.gameOK?"OK":"要確認")+"\n自動保存："+(storage?"OK":"要確認")+"\n音声機能："+(speech?"OK":"要確認")+"\n指定英字フォント："+(font?"読込済み":"端末未読込")+"\n\nBuild: "+APP_BUILD;
+ let h=appHealthCheck(),font=approvedFontReady(),voices=("speechSynthesis" in window)?speechSynthesis.getVoices():[],voice=voices.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||voices.find(x=>/^en-US$/i.test(x.lang))||voices.find(x=>/^en(-|_)/i.test(x.lang));
+ let msg="端末チェック\n\nゲーム構成："+(h.fnOK&&h.navOK&&h.gameOK?"OK":"要確認")+"\n自動保存："+(storage?"OK":"要確認")+"\n音声機能："+(speech?"OK":"要確認")+"\n英語音声："+(voice?voice.name+" ("+voice.lang+")":"端末の既定音声")+"\n指定英字フォント："+(font?"読込済み":"端末未読込")+"\n\nBuild: "+APP_BUILD;
  alert(msg);
  if(speech&&save.settings?.sound)setTimeout(()=>sayLetter("A"),120);
 }
