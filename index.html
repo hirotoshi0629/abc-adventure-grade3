@@ -497,7 +497,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-learning-pass5";
+const APP_BUILD="2026.09.26-pronunciation-pass6";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -610,7 +610,24 @@ function primeSpeech(){if(!("speechSynthesis" in window))return false;speechRead
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
 if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
 const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"ell",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
-function sayLetter(l){if(save.settings&&save.settings.sound===false)return;if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;speechReady=true;try{speechSynthesis.cancel()}catch(e){};let text=LETTER_SPEECH[l],u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=["H","O","V","W"].includes(l)?.60:l==="M"?.76:.72;u.pitch=l==="V"?.96:1;u.volume=1;let vs=speechSynthesis.getVoices();let v=vs.find(x=>/^en-US$/i.test(x.lang)&&/Samantha|Ava|Allison|Susan|Google US English|Microsoft/i.test(x.name))||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang));if(v)u.voice=v;try{speechSynthesis.speak(u)}catch(e){}}
+const LETTER_RATE={H:.66,M:.84,N:.78,O:.68,V:.68,W:.62};
+function preferredEnglishVoice(){
+ let vs=speechSynthesis.getVoices()||[];
+ const preferred=["Samantha","Ava","Allison","Susan","Karen","Moira","Google US English","Microsoft Aria","Microsoft Jenny","Microsoft Zira"];
+ for(const name of preferred){let v=vs.find(x=>/^en-US$/i.test(x.lang)&&x.name.toLowerCase().includes(name.toLowerCase()));if(v)return v}
+ return vs.find(x=>/^en-US$/i.test(x.lang)&&x.localService)||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang)&&x.localService)||vs.find(x=>/^en(-|_)/i.test(x.lang));
+}
+function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "音声なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
+function sayLetter(l){
+ if(save.settings&&save.settings.sound===false)return;
+ if(!("speechSynthesis" in window)){showToast("この端末では音声を使えません");return;}
+ l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;
+ speechReady=true;try{speechSynthesis.cancel()}catch(e){}
+ let u=new SpeechSynthesisUtterance(LETTER_SPEECH[l]);u.lang="en-US";u.rate=LETTER_RATE[l]||.74;u.pitch=l==="V"?.96:1;u.volume=1;
+ let v=preferredEnglishVoice();if(v)u.voice=v;
+ try{speechSynthesis.speak(u)}catch(e){}
+}
+function playMNCheck(){sayLetter("M");setTimeout(()=>sayLetter("N"),900)}
 function lockAnswerButtons(ms=500){document.querySelectorAll("#gameBody button").forEach(b=>{if(!b.classList.contains("sound-btn")&&!b.classList.contains("back"))b.disabled=true});later(()=>document.querySelectorAll("#gameBody button").forEach(b=>b.disabled=false),ms)}
 function announce(msg){let el=document.getElementById("appStatus");if(el){el.textContent="";setTimeout(()=>el.textContent=String(msg||""),20)}}
 function showToast(msg){announce(msg);let t=document.getElementById("appToast");if(!t){t=document.createElement("div");t.id="appToast";t.className="app-toast";document.body.appendChild(t)}t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1800)}
