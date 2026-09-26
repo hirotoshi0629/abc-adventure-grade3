@@ -309,7 +309,7 @@ button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-letter-names";
+const APP_BUILD="2026.09.26-memory16-navfix";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -407,9 +407,9 @@ function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.ga
 function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6}
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false;
-function openGame(id){if(openGameBusy)return;openGameBusy=true;if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};later(()=>openGameBusy=false,250);if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}
+function openGame(id){if(openGameBusy)return;openGameBusy=true;try{if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else gameBody.innerHTML='<div class="message">このゲームのステージを準備中！<br>ここから順番に遊べるようになります。</div>'}finally{openGameBusy=false}}
 function enterGameScreen(title){soundAuditRun++;let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){soundAuditRun++;let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function goHome(){openGameBusy=false;soundAuditRun++;let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 let speechReady=false;
 function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
 document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
@@ -483,12 +483,12 @@ function finishKaruta(){if(!beginFinishGuard("karuta"))return;markClear("karuta"
  let best=Math.max(...karuta.scores.slice(0,karuta.players));let winners=[];for(let i=0;i<karuta.players;i++)if(karuta.scores[i]===best)winners.push((i+1)+'P');
  gameBody.innerHTML='<div class="finish-box"><h2>かるた おわり！</h2><div class="reward-progress">'+rewardProgressText()+'</div>'+clearNextStep()+'<div class="big-star">★</div><p>'+winners.join("・")+'　'+best+'枚！</p><p>'+(first?'はじめてクリア！ スター +2・コイン +5':'クリアボーナス　コイン +3')+'</p><button class="back" onclick="beginKaruta('+karuta.players+')">もう一回</button> <button class="back" onclick="startKarutaSetup()">人数をかえる</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
-let memory={players:1,current:0,scores:[0,0,0],first:null,second:null,lock:false,matched:0,totalPairs:6};
+let memory={players:1,current:0,scores:[0,0,0],first:null,second:null,lock:false,matched:0,totalPairs:8};
 function startMemorySetup(){
- gameBody.innerHTML='<div class="howto-chip">① 人数をえらぶ　② 2まいめくる　③ 同じ文字ならゲット</div><div class="message">なん人で あそぶ？</div><div class="player-select">'+[1,2,3].map(n=>'<button class="player-btn" onclick="beginMemory('+n+')">'+n+'人</button>').join("")+'</div><p class="karuta-note">同じアルファベットを2まい見つけよう。1人は4ペア、2〜3人は6ペア。カードをめくると音も聞こえるよ！</p>';
+ gameBody.innerHTML='<div class="howto-chip">① 人数をえらぶ　② 2まいめくる　③ 同じ文字ならゲット</div><div class="message">なん人で あそぶ？</div><div class="player-select">'+[1,2,3].map(n=>'<button class="player-btn" onclick="beginMemory('+n+')">'+n+'人</button>').join("")+'</div><p class="karuta-note">同じアルファベットを2まい見つけよう。16まい（8ペア）であそぶよ。カードをめくると音も聞こえるよ！</p>';
 }
 function beginMemory(n){resetFinishGuard("memory");recordGameStart("memory");
- memory={players:n,current:0,scores:[0,0,0],first:null,second:null,lock:false,matched:0,totalPairs:n===1?4:6,moves:0};
+ memory={players:n,current:0,scores:[0,0,0],first:null,second:null,lock:false,matched:0,totalPairs:8,moves:0};
  let letters=sample(memory.totalPairs),deck=shuffle([...letters,...letters]);
  gameBody.innerHTML='<div class="memory-head"><div id="memoryTurn"></div><div id="memoryScores" class="score-row"></div></div><div class="memory-board">'+deck.map((x,i)=>'<button class="memory-card" data-letter="'+x+'" data-index="'+i+'" onclick="flipMemory(this)"><span class="memory-back">?</span><span class="memory-front">'+x+'</span></button>').join("")+'</div><div id="memoryMsg" class="message">カードを2まい めくろう！</div>';
  renderMemoryStatus();
