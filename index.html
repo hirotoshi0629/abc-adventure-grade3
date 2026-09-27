@@ -1305,6 +1305,10 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 /* Final override: keep the complete boss visible in the home card */
 .home .mg-boss .boss-art{background-image:url("assets/boss-kids.png?v=20260927-2")!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center center!important;background-color:#2d1d4f!important;}
 .home .mg-boss .boss-art img{display:none!important;}
+</style><style>
+/* Hard fix: render the complete boss as an img inside the fixed card area */
+.home .mg-boss .boss-art{background:#2d1d4f!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+.home .mg-boss .boss-art img{display:block!important;visibility:visible!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;}
 </style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
