@@ -1,7 +1,8 @@
-const CACHE_NAME="abc-adventure-grade3-v18";
+const CACHE_NAME="abc-adventure-grade3-v21";
 const CORE=[
  "./",
  "./index.html",
+ "./manifest.webmanifest",
  "./assets/homejpg/p0.txt",
  "./assets/abc-master-home-web.jpg",
  "./assets/audio/alphabet-sprite.mp3?v=20260926-3"
