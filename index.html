@@ -549,14 +549,24 @@ body.inner-screen .finish-box{
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const SAVE_KEY="abcAdventureSave",SAVE_BACKUP_KEY="abcAdventureSaveBackup",SAVE_PRE_RESTORE_KEY="abcAdventureSavePreRestore";
+function validSaveObject(v){return !!v&&typeof v==="object"&&!Array.isArray(v)}
 function loadSavedProgress(){
  const fallback={stars:0,coins:0,worldLv:1};
- try{let raw=localStorage.getItem(SAVE_KEY);if(raw)return JSON.parse(raw)}catch(e){}
- try{let raw=localStorage.getItem(SAVE_BACKUP_KEY);if(raw){let recovered=JSON.parse(raw);localStorage.setItem(SAVE_KEY,raw);return recovered}}catch(e){}
+ try{
+  let raw=localStorage.getItem(SAVE_KEY);
+  if(raw){let parsed=JSON.parse(raw);if(validSaveObject(parsed))return parsed}
+ }catch(e){}
+ try{
+  let raw=localStorage.getItem(SAVE_BACKUP_KEY);
+  if(raw){
+   let recovered=JSON.parse(raw);
+   if(validSaveObject(recovered)){localStorage.setItem(SAVE_KEY,raw);return recovered}
+  }
+ }catch(e){}
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-release-candidate-pass38";
+const APP_BUILD="2026.09.27-release-candidate-pass39";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -646,10 +656,15 @@ function saveProgressNow(){
  let raw=JSON.stringify(save),previous=null;
  try{
   let current=localStorage.getItem(SAVE_KEY);
-  if(current){JSON.parse(current);previous=current}
+  if(current){let parsed=JSON.parse(current);if(validSaveObject(parsed))previous=current}
  }catch(e){}
  if(previous)localStorage.setItem(SAVE_BACKUP_KEY,previous);
- else if(!localStorage.getItem(SAVE_BACKUP_KEY))localStorage.setItem(SAVE_BACKUP_KEY,raw);
+ else{
+  try{
+   let b=localStorage.getItem(SAVE_BACKUP_KEY);
+   if(!b||!validSaveObject(JSON.parse(b)))localStorage.setItem(SAVE_BACKUP_KEY,raw)
+  }catch(e){localStorage.setItem(SAVE_BACKUP_KEY,raw)}
+ }
  localStorage.setItem(SAVE_KEY,raw);
 }
 function persist(){try{saveProgressNow()}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
