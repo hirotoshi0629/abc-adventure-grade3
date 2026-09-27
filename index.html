@@ -555,7 +555,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-tap-guard-pass26";
+const APP_BUILD="2026.09.27-longterm-balance-pass27";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -775,9 +775,18 @@ function showToast(msg){announce(msg);let t=document.getElementById("appToast");
 function shuffle(a){let x=[...a];for(let i=x.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
 function sample(n){return shuffle(ABC).slice(0,n)}
 function letterDifficulty(L){let v=save.letterStats?.[L]||{ok:0,ng:0};return (v.ng||0)*3-(v.ok||0)}
-function weakLetters(limit=6){return [...ABC].sort((a,b)=>letterDifficulty(b)-letterDifficulty(a)).filter(L=>(save.letterStats?.[L]?.ng||0)>0).slice(0,limit)}
-function recordLetterResult(L,ok){L=String(L||"").toUpperCase();if(!/^[A-Z]$/.test(L))return;save.letterStats=save.letterStats||{};save.letterStats[L]=save.letterStats[L]||{ok:0,ng:0};save.letterStats[L][ok?"ok":"ng"]++}
-function recordSkillResult(kind,ok){save.skillStats=save.skillStats||{};save.skillStats[kind]=save.skillStats[kind]||{ok:0,ng:0};save.skillStats[kind][ok?"ok":"ng"]++}
+function weakLetters(limit=6){return [...ABC].sort((a,b)=>letterDifficulty(b)-letterDifficulty(a)).filter(L=>letterDifficulty(L)>0&&(save.letterStats?.[L]?.ng||0)>0).slice(0,limit)}
+function recordLetterResult(L,ok){
+ L=String(L||"").toUpperCase();if(!/^[A-Z]$/.test(L))return;
+ save.letterStats=save.letterStats||{};let v=save.letterStats[L]||{ok:0,ng:0};
+ if((v.ok||0)+(v.ng||0)>=12){v={ok:Math.floor((v.ok||0)/2),ng:Math.floor((v.ng||0)/2)}}
+ v[ok?"ok":"ng"]++;save.letterStats[L]=v
+}
+function recordSkillResult(kind,ok){
+ save.skillStats=save.skillStats||{};let v=save.skillStats[kind]||{ok:0,ng:0};
+ if((v.ok||0)+(v.ng||0)>=20){v={ok:Math.floor((v.ok||0)/2),ng:Math.floor((v.ng||0)/2)}}
+ v[ok?"ok":"ng"]++;save.skillStats[kind]=v
+}
 function makeTargetDeck(n){let weak=weakLetters(Math.min(6,n)),out=[];if(weak.length){let quota=Math.min(Math.ceil(n/2),weak.length);out.push(...shuffle(weak).slice(0,quota))}while(out.length<n){for(const L of shuffle(ABC)){if(out.length>=n)break;if(out.length&&out[out.length-1]===L)continue;out.push(L)}}return shuffle(out).slice(0,n)}
 function choicesWithTarget(target,n,preferred=[]){let pool=shuffle([...new Set(preferred.filter(x=>x!==target).concat(ABC.filter(x=>x!==target)))]);return shuffle([target,...pool.slice(0,n-1)])}
 let target="";
@@ -1065,12 +1074,14 @@ function finishBoss(){
  gameBody.innerHTML='<div class="finish-box boss-clear"><div class="reward-progress">'+rewardProgressText()+'</div>'+clearNextStep()+'<div class="boss-crystal">ABC</div><h2>ABCボスを たおした！</h2><p>'+(first?'はじめてクリア！　スター +6　コイン +15':'クリアボーナス　スター +5　コイン +15')+'</p><p>'+(first?'空のむこうに、新しい島のかげが見える……':'天空の城を もう一度まもった！')+'</p><div class="mystery-island">？？？</div><p>ひみつのかけら・なかま・島のひかり――何かがつながりそうだ。</p><button class="back" onclick="startBoss()">もう一度 ボスバトル</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
 function recommendedPractice(){
+ const ids=["karuta","memory","listen","rocket","monster","treasure","train"],names={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン"};
+ let left=ids.filter(id=>!(save.clears?.[id]>0));
+ if(practiceClearKinds()<5&&left.length){let id=left.sort((a,b)=>(save.gamePlays?.[a]||0)-(save.gamePlays?.[b]||0))[0];return {kind:"new",text:"つぎは "+names[id],action:"openGame('"+id+"')"}}
  let weak=weakLetters(3);
  if(weak.length)return {kind:"review",text:"ふくしゅう "+weak.join("・"),action:"listen.level='review';openGame('listen')"};
- let left=["karuta","memory","listen","rocket","monster","treasure","train"].filter(id=>!(save.clears?.[id]>0));
- if(practiceClearKinds()<5&&left.length){let id=left[0],names={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン"};return {kind:"new",text:"つぎは "+names[id],action:"openGame('"+id+"')"}}
  if(!(save.clears?.boss>0)&&gameUnlocked("boss"))return {kind:"boss",text:"ボスバトルへ",action:"openGame('boss')"};
- return {kind:"map",text:"ぼうけんマップを見る",action:"openAdventureMap()"}
+ let least=[...ids].sort((a,b)=>(save.gamePlays?.[a]||0)-(save.gamePlays?.[b]||0))[0];
+ return {kind:"variety",text:"今日は "+names[least],action:"openGame('"+least+"')"}
 }
 function recommendationButton(){let r=recommendedPractice();return '<button class="back recommended-action" onclick="'+r.action+'">'+r.text+'</button>'}
 function nextAdventureGoal(){
@@ -1327,11 +1338,17 @@ function ensureDaily(){
  let k=dayKey();if(!save.daily||save.daily.day!==k){save.daily={day:k,startPlays:save.plays||0,startStars:save.totalStarsEarned||save.stars||0,startCoins:save.totalCoinsEarned||save.coins||0,claimed:[false,false,false]};persist()}
 }
 function dailyData(){
- ensureDaily();return [
- ["ABCゲームで 1回遊ぼう",Math.min(1,Math.max(0,(save.plays||0)-save.daily.startPlays)),1,3,"star"],
- ["ABCゲームで 3回遊ぼう",Math.min(3,Math.max(0,(save.plays||0)-save.daily.startPlays)),3,8,"coin"],
- ["スターを 5こ集めよう",Math.min(5,Math.max(0,(save.totalStarsEarned||0)-save.daily.startStars)),5,4,"egg"]
- ]}
+ ensureDaily();
+ let d=new Date(),variant=(d.getFullYear()*372+(d.getMonth()+1)*31+d.getDate())%4;
+ let plays=Math.max(0,(save.plays||0)-save.daily.startPlays),stars=Math.max(0,(save.totalStarsEarned||0)-save.daily.startStars),coins=Math.max(0,(save.totalCoinsEarned||0)-save.daily.startCoins);
+ const sets=[
+  [["ABCゲームで 1回遊ぼう",Math.min(1,plays),1,3,"star"],["ABCゲームで 3回遊ぼう",Math.min(3,plays),3,8,"coin"],["スターを 5こ集めよう",Math.min(5,stars),5,4,"egg"]],
+  [["ABCゲームで 2回遊ぼう",Math.min(2,plays),2,4,"star"],["スターを 8こ集めよう",Math.min(8,stars),8,7,"coin"],["コインを 10まい集めよう",Math.min(10,coins),10,4,"egg"]],
+  [["ABCゲームで 1回遊ぼう",Math.min(1,plays),1,3,"star"],["スターを 6こ集めよう",Math.min(6,stars),6,6,"coin"],["ABCゲームで 4回遊ぼう",Math.min(4,plays),4,5,"egg"]],
+  [["スターを 3こ集めよう",Math.min(3,stars),3,3,"star"],["ABCゲームで 3回遊ぼう",Math.min(3,plays),3,7,"coin"],["コインを 12まい集めよう",Math.min(12,coins),12,5,"egg"]]
+ ];
+ return sets[variant]
+}
 function openDaily(){dailyClaimBusy=false;enterGameScreen("きょうのミッション");
  ensureDaily();
  let ds=dailyData();
@@ -1353,7 +1370,7 @@ function openTeacherLearningReport(){
  let weak=weakLetters(8);
  let games=["karuta","memory","listen","rocket","monster","treasure","train","boss"];
  let names={karuta:"かるた",memory:"神経衰弱",listen:"聞いてタッチ",rocket:"ロケット",monster:"モンスター",treasure:"トレジャー",train:"トレイン",boss:"ボス"};
- gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="teacher-report"><div class="report-summary"><div><b>'+totalOK+'</b><span>音の正解</span></div><div><b>'+totalNG+'</b><span>音のまちがい</span></div><div><b>'+memoryStat.ok+'</b><span>記憶ペア成功</span></div><div><b>'+orderStat.ok+'</b><span>順番問題正解</span></div></div><div class="report-card skill-report"><h3>学習の3つの見方</h3><div class="skill-report-grid"><div><b>音</b><span>○ '+totalOK+'　△ '+totalNG+'</span></div><div><b>記憶</b><span>○ '+memoryStat.ok+'　△ '+memoryStat.ng+'</span></div><div><b>順番</b><span>○ '+orderStat.ok+'　△ '+orderStat.ng+'</span></div></div></div><div class="report-card"><h3>いま復習したい文字</h3><p>'+(weak.length?weak.join('・'):'まだ苦手文字の記録はありません。')+'</p></div><div class="report-card"><h3>A〜Z 学習記録</h3><div class="letter-report-grid">'+ABC.map(L=>{let v=save.letterStats?.[L]||{ok:0,ng:0},score=(v.ng||0)*3-(v.ok||0),cls=score>2?'needs-review':score>0?'watch':'';return '<div class="letter-report '+cls+'"><b>'+L+'</b><span>○ '+(v.ok||0)+'</span><span>△ '+(v.ng||0)+'</span></div>'}).join('')+'</div></div><div class="report-card"><h3>ゲーム利用</h3><div class="game-report">'+games.map(id=>'<div><b>'+names[id]+'</b><span>プレイ '+(save.gamePlays?.[id]||0)+'</span><span>クリア '+(save.clears?.[id]||0)+'</span></div>').join('')+'</div></div><p class="report-note">この記録はこのiPadのブラウザ内に保存されています。児童を評価する点数ではなく、次の練習を考えるための目安です。</p></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="teacher-report"><div class="report-summary"><div><b>'+totalOK+'</b><span>音の正解</span></div><div><b>'+totalNG+'</b><span>音のまちがい</span></div><div><b>'+memoryStat.ok+'</b><span>記憶ペア成功</span></div><div><b>'+orderStat.ok+'</b><span>順番問題正解</span></div></div><div class="report-card skill-report"><h3>学習の3つの見方</h3><div class="skill-report-grid"><div><b>音</b><span>○ '+totalOK+'　△ '+totalNG+'</span></div><div><b>記憶</b><span>○ '+memoryStat.ok+'　△ '+memoryStat.ng+'</span></div><div><b>順番</b><span>○ '+orderStat.ok+'　△ '+orderStat.ng+'</span></div></div></div><div class="report-card"><h3>いま復習したい文字</h3><p>'+(weak.length?weak.join('・'):'まだ苦手文字の記録はありません。')+'</p></div><div class="report-card"><h3>A〜Z 学習記録</h3><div class="letter-report-grid">'+ABC.map(L=>{let v=save.letterStats?.[L]||{ok:0,ng:0},score=(v.ng||0)*3-(v.ok||0),cls=score>2?'needs-review':score>0?'watch':'';return '<div class="letter-report '+cls+'"><b>'+L+'</b><span>○ '+(v.ok||0)+'</span><span>△ '+(v.ng||0)+'</span></div>'}).join('')+'</div></div><div class="report-card"><h3>ゲーム利用</h3><div class="game-report">'+games.map(id=>'<div><b>'+names[id]+'</b><span>プレイ '+(save.gamePlays?.[id]||0)+'</span><span>クリア '+(save.clears?.[id]||0)+'</span></div>').join('')+'</div></div><p class="report-note">この記録はこのiPadのブラウザ内に保存されています。児童を評価する点数ではなく、次の練習を考えるための目安です。古い結果は少しずつ軽くなり、最近の学習をより強く反映します。</p></div>';
 }
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
