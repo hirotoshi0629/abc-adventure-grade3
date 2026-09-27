@@ -731,6 +731,73 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
  .boss-phase-banner{margin:3px auto 6px!important;padding:5px 10px!important}
 }
 
+
+/* 2026.09.27 REAL HOME — retire static screenshot home */
+#masterHome{display:none!important}
+body.master-mode #home{display:block!important}
+.home{display:block!important}
+body.inner-screen .home{display:none!important}
+
+.home{
+ max-width:1180px;margin:0 auto;padding:14px;
+ background:
+ linear-gradient(180deg,#b7ebff 0 24%,#eef9d0 55%,#c7ec8b 100%);
+ border-radius:26px;
+ box-shadow:0 10px 30px rgba(74,106,133,.16);
+}
+.home header{
+ background:rgba(255,255,255,.82);border:4px solid #fff;border-radius:22px;padding:10px 14px;
+ box-shadow:0 5px 0 rgba(104,75,42,.18)
+}
+.home .logo{
+ background:linear-gradient(#9f6633,#74431f);border-color:#ffd66f;color:#fff7d2
+}
+.home .hero{
+ min-height:210px;
+ background:
+ radial-gradient(circle at 78% 22%,rgba(255,255,255,.88),transparent 13%),
+ linear-gradient(135deg,#83dcff 0 54%,#fff1a8 55% 100%);
+ border:5px solid #fff;border-radius:28px;box-shadow:0 7px 0 #9c6a35;
+}
+.home .hero:after{
+ content:"ABC";position:absolute;right:8%;bottom:12%;font-family:"NHHandwriting","Arial Rounded MT Bold",sans-serif;
+ font-size:clamp(58px,9vw,120px);font-weight:1000;letter-spacing:8px;color:rgba(255,255,255,.6);
+ transform:rotate(-6deg);pointer-events:none
+}
+.home .hero>div,.home .world{position:relative;z-index:2}
+.home .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.home .game{
+ min-height:175px;padding:14px 14px 16px;border:5px solid #fff;border-radius:24px;
+ box-shadow:0 6px 0 rgba(91,63,37,.28),0 12px 20px rgba(81,113,136,.10);
+ transition:transform .12s ease,box-shadow .12s ease;overflow:hidden
+}
+.home .game:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(91,63,37,.28)}
+.home .game h3{font-size:clamp(18px,2vw,27px);line-height:1.2}
+.home .game small{display:block;max-width:90%;font-size:clamp(12px,1.25vw,16px)}
+.home .game:before{
+ content:"";position:absolute;right:-24px;bottom:-30px;width:110px;height:110px;border-radius:50%;
+ background:rgba(255,255,255,.38);box-shadow:-28px -18px 0 rgba(255,255,255,.16)
+}
+.home .g1{background:linear-gradient(145deg,#ffe88a,#ffc85e)}
+.home .g2{background:linear-gradient(145deg,#ffd0e8,#ff9ecb)}
+.home .g3{background:linear-gradient(145deg,#c9f0ff,#8edcff)}
+.home .g4{background:linear-gradient(145deg,#ddd0ff,#a995ff)}
+.home .g5{background:linear-gradient(145deg,#d7f89d,#9fdd6d)}
+.home .g6{background:linear-gradient(145deg,#ffe8a7,#ffc765)}
+.home .g7{background:linear-gradient(145deg,#bdf3ca,#7bdca0)}
+.home .g8{background:linear-gradient(145deg,#ffc9ae,#ff8b70)}
+.home .game-status{
+ position:absolute;left:10px;bottom:9px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.88);
+ border:2px solid rgba(95,65,38,.22);font-size:11px;font-weight:1000;z-index:3
+}
+.home .daily-home-button{background:linear-gradient(#fff7cf,#ffd85d);min-height:56px}
+.home .nav.bottom-nav{
+ background:linear-gradient(#a76b32,#7e4b24);border:4px solid #fff;box-shadow:0 5px 0 rgba(92,58,29,.25)
+}
+.home .nav.bottom-nav button{background:linear-gradient(#fff8d9,#f7dea0);border:2px solid #c99450}
+@media(max-width:900px){.home .grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home .game{min-height:150px}}
+@media(max-width:560px){.home{padding:8px}.home .hero{min-height:170px}.home .hero:after{font-size:64px}.home .game{min-height:140px;padding:11px}}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -814,7 +881,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.4.1-final-polish";
+const APP_BUILD="2026.09.27-redesign-v2.5.0-real-home";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -884,12 +951,11 @@ function syncMasterLocks(){
  let w=document.getElementById("masterWorldLevel");if(w)w.textContent="Lv."+Math.max(1,Number(save.worldLv)||1);
 }
 function initApprovedMasterHome(){
- let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
- if(!art||!wrap)return;
- const ready=()=>{wrap.classList.add("ready");document.body.classList.add("master-mode");wrap.style.display="block";syncMasterHome()};
- art.addEventListener("load",ready,{once:true});
- art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode");wrap.style.display="none";document.getElementById("home")?.classList.remove("hidden");showToast("ホーム画像を読み込めませんでした")},{once:true});
- if(art.complete&&art.naturalWidth>0)ready();
+ const wrap=document.getElementById("masterHome");
+ if(wrap){wrap.classList.remove("ready");wrap.style.display="none"}
+ document.body.classList.remove("master-mode");
+ document.getElementById("home")?.classList.remove("hidden");
+ render();
 }
 function syncMasterHome(){
  let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),c=document.getElementById("masterCards"),e=document.getElementById("masterEgg");
@@ -904,7 +970,17 @@ function syncMasterHome(){
  let rb=document.getElementById("masterGame-"+rec.id);if(rb){rb.classList.add("recommended-game");rb.setAttribute("aria-label",(rb.getAttribute("aria-label")||rec.text)+"・おすすめ")}
  syncMasterLocks()
 }
-function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let rec=recommendedPractice();document.querySelectorAll(".home .game").forEach(x=>x.classList.remove("recommended-game"));let rg=document.querySelector(".home .game[onclick*=\"'"+rec.id+"'\"]");if(rg)rg.classList.add("recommended-game");let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
+function syncHomeCardStatus(){
+ const ids=["karuta","memory","listen","rocket","monster","treasure","train","boss"];
+ document.querySelectorAll(".home .game").forEach((b,i)=>{
+  let id=ids[i];if(!id)return;
+  let badge=b.querySelector(".game-status");if(!badge){badge=document.createElement("span");badge.className="game-status";b.appendChild(badge)}
+  if(id==="boss"&&!gameUnlocked(id))badge.textContent=bossProgressText();
+  else if((save.clears?.[id]||0)>0)badge.textContent="クリア "+save.clears[id]+"回";
+  else badge.textContent="NEW";
+ });
+}
+function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();syncHomeCardStatus();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let rec=recommendedPractice();document.querySelectorAll(".home .game").forEach(x=>x.classList.remove("recommended-game"));let rg=document.querySelector(".home .game[onclick*=\"'"+rec.id+"'\"]");if(rg)rg.classList.add("recommended-game");let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;
 function saveProgressNow(){
  let raw=JSON.stringify(save),previous=null;
@@ -971,7 +1047,7 @@ function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div cla
 let openGameBusy=false,lastGameOpenAt=0;
 function openGame(id){let now=Date.now();if(openGameBusy||now-lastGameOpenAt<500)return;lastGameOpenAt=now;openGameBusy=true;try{if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]);if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else{showToast("ゲームを開けませんでした");goHome()}}finally{openGameBusy=false}}
 function enterGameScreen(title){clearVoicePractice();let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();wrongTapUntil=0;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){clearVoicePractice();let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function goHome(){clearVoicePractice();let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen","master-mode");if(mh)mh.style.display="none";newSession();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 const ALPHABET_AUDIO={
  A:{start:0.000,duration:3.094},B:{start:3.094,duration:2.709},C:{start:5.803,duration:3.671},D:{start:9.473,duration:2.972},
  E:{start:12.445,duration:2.973},F:{start:15.418,duration:3.141},G:{start:18.559,duration:2.949},H:{start:21.508,duration:2.901},
