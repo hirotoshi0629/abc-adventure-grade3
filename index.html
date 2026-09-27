@@ -637,6 +637,57 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 .no-motion .game-burst,.no-motion .game-burst.show{transition:none!important;transform:translate(-50%,-50%)!important}
 @media(prefers-reduced-motion:reduce){.game-burst,.game-burst.show{transition:none!important;transform:translate(-50%,-50%)!important}}
 
+
+/* 2026.09.27 monster identity + boss finale pass */
+.monster-art{border-radius:26% 34% 30% 38%;overflow:visible}
+.monster-art:before,.monster-art:after{
+ content:"";position:absolute;pointer-events:none;z-index:2;filter:drop-shadow(0 4px 3px rgba(31,51,62,.2))
+}
+.monster-art.mv0:before,.monster-art.mv8:before,.monster-art.mv16:before{left:8%;top:10%;width:28%;height:24%;background:#b8f4ff;border-radius:50% 50% 42% 58%;transform:rotate(-18deg)}
+.monster-art.mv0:after,.monster-art.mv8:after,.monster-art.mv16:after{right:7%;bottom:12%;width:25%;height:19%;background:#91dcff;border-radius:48% 52% 60% 40%;transform:rotate(22deg)}
+.monster-art.mv1:before,.monster-art.mv9:before,.monster-art.mv17:before{left:-5%;top:6%;width:38%;height:34%;background:#7ecf62;clip-path:polygon(50% 0,100% 75%,62% 63%,50% 100%,37% 62%,0 75%)}
+.monster-art.mv1:after,.monster-art.mv9:after,.monster-art.mv17:after{right:-2%;top:18%;width:34%;height:30%;background:#5fb64d;clip-path:polygon(50% 0,100% 75%,62% 63%,50% 100%,37% 62%,0 75%)}
+.monster-art.mv2:before,.monster-art.mv10:before,.monster-art.mv18:before{left:-7%;top:26%;width:38%;height:20%;background:#ffcf4b;clip-path:polygon(0 50%,100% 0,77% 46%,100% 100%)}
+.monster-art.mv2:after,.monster-art.mv10:after,.monster-art.mv18:after{right:-8%;top:22%;width:41%;height:24%;background:#ff7a45;clip-path:polygon(100% 50%,0 0,25% 46%,0 100%)}
+.monster-art.mv3:before,.monster-art.mv11:before,.monster-art.mv19:before{left:2%;top:-7%;width:24%;height:34%;background:#ffe689;clip-path:polygon(50% 0,100% 100%,0 100%);transform:rotate(-16deg)}
+.monster-art.mv3:after,.monster-art.mv11:after,.monster-art.mv19:after{right:2%;top:-7%;width:24%;height:34%;background:#ffe689;clip-path:polygon(50% 0,100% 100%,0 100%);transform:rotate(16deg)}
+.monster-art.mv4:before,.monster-art.mv12:before{left:-10%;top:18%;width:42%;height:34%;background:#c8ecff;clip-path:polygon(100% 50%,0 0,28% 50%,0 100%)}
+.monster-art.mv4:after,.monster-art.mv12:after{right:-10%;top:18%;width:42%;height:34%;background:#a9dcff;clip-path:polygon(0 50%,100% 0,72% 50%,100% 100%)}
+.monster-art.mv5:before,.monster-art.mv13:before{left:4%;bottom:-10%;width:30%;height:32%;background:#8a7a6b;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.monster-art.mv5:after,.monster-art.mv13:after{right:4%;bottom:-10%;width:30%;height:32%;background:#6e6258;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.monster-art.mv6:before,.monster-art.mv14:before{left:-12%;top:24%;width:46%;height:28%;background:#6f5a9e;clip-path:polygon(100% 50%,0 0,22% 50%,0 100%)}
+.monster-art.mv6:after,.monster-art.mv14:after{right:-12%;top:24%;width:46%;height:28%;background:#5d478f;clip-path:polygon(0 50%,100% 0,78% 50%,100% 100%)}
+.monster-art.mv7:before,.monster-art.mv15:before{left:7%;top:-6%;width:26%;height:28%;background:#fff;opacity:.8;border-radius:50%}
+.monster-art.mv7:after,.monster-art.mv15:after{right:7%;bottom:-5%;width:32%;height:18%;background:#fff;opacity:.72;border-radius:50%}
+.monster-watercolor:before{
+ content:"";position:absolute;inset:0;pointer-events:none;background:
+ radial-gradient(circle at 15% 18%,rgba(255,255,255,.58) 0 2%,transparent 2.5%),
+ radial-gradient(circle at 85% 22%,rgba(255,255,255,.45) 0 1.5%,transparent 2%),
+ radial-gradient(circle at 28% 70%,rgba(255,255,255,.4) 0 1.3%,transparent 1.8%);
+ z-index:1
+}
+.monster-nameplate{z-index:4!important}
+
+.boss-stage{position:relative;isolation:isolate;overflow:hidden}
+.boss-stage:before,.boss-stage:after{content:"";position:absolute;pointer-events:none;z-index:0}
+.boss-stage:before{inset:-20%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.10) 0 8deg,transparent 8deg 20deg);animation:bossAura 10s linear infinite}
+.boss-stage:after{left:50%;top:50%;width:420px;height:420px;transform:translate(-50%,-50%);border-radius:50%;border:6px solid rgba(255,236,135,.25);box-shadow:0 0 0 18px rgba(255,255,255,.05),0 0 70px rgba(255,227,99,.22)}
+.boss-stage>*{position:relative;z-index:2}
+.boss-stage.phase1 .boss-creature{transform:scale(.95)}
+.boss-stage.phase2 .boss-creature{transform:scale(1.04);filter:saturate(1.15)}
+.boss-stage.phase3 .boss-creature{transform:scale(1.10);filter:saturate(1.25) drop-shadow(0 0 18px rgba(255,129,87,.55))}
+.boss-stage.phase2 .boss-crown{background:#ff9f6d}
+.boss-stage.phase3 .boss-crown{background:#ff6d63;filter:drop-shadow(0 0 10px #ffd760)}
+.boss-stage.phase2 .boss-core{background:#ffc96b;transform:translateX(-50%) scale(1.08)}
+.boss-stage.phase3 .boss-core{background:#ff8c67;color:#fff;transform:translateX(-50%) scale(1.16);box-shadow:0 0 22px #ffd86d}
+.boss-stage.phase3 .boss-eye:after{background:#ff2e57;box-shadow:0 0 10px #ffb2bf}
+.boss-phase-banner{margin:8px auto 12px;max-width:560px;padding:9px 14px;border-radius:999px;border:3px solid #fff;background:rgba(255,249,218,.92);color:#513765;font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(66,45,82,.22)}
+.boss-phase-banner strong{font-size:1.08em}
+.boss-phase-banner.final{background:linear-gradient(#fff0bc,#ffaf7d);color:#7a2b2f;box-shadow:0 4px 0 #9d4a3c}
+@keyframes bossAura{to{transform:rotate(360deg)}}
+.no-motion .boss-stage:before{animation:none!important}
+@media(prefers-reduced-motion:reduce){.boss-stage:before{animation:none!important}}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -720,7 +771,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.3.0-game-feel";
+const APP_BUILD="2026.09.27-redesign-v2.3.1-monster-boss";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1222,7 +1273,7 @@ function nextBoss(){
    let ti=ABC.indexOf(boss.target),near=[ABC[ti-2],ABC[ti-1],ABC[ti+1],ABC[ti+2]].filter(Boolean).filter(x=>!seq.includes(x));choices=shuffle([boss.target,...shuffle([...new Set(near.concat(sample(8).filter(x=>!seq.includes(x)&&x!==boss.target)))]).slice(0,3)]);
    prompt='？に入る文字で バリアをやぶれ！';
  }
- gameBody.innerHTML='<div class="game-help">3つのステージにちょうせん！ 音・形・じゅんばんを使ってボスをたおそう！</div><div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+(boss.type==="speak"?'':'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\''+x+'\',this)">'+x+'</button>').join("")+'</div>')+'<div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">3つのステージにちょうせん！ 音・形・じゅんばんを使ってボスをたおそう！</div><div class="boss-phase-banner '+(phase===3?'final':'')+'"><strong>'+title+'</strong><br>'+(phase===1?'音を聞き分けろ！':phase===2?'自分の声でこうげき！':'文字のじゅんばんで とどめだ！')+'</div><div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+(boss.type==="speak"?'':'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\''+x+'\',this)">'+x+'</button>').join("")+'</div>')+'<div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
  if(boss.type==="sound")later(()=>sayLetter(boss.target),450);
 }
 function completeBossSpeak(){
