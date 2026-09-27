@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-mobile-lobby-cleanup-v2";
+const CACHE_NAME="abc-adventure-grade3-nav-fix-boss-card";
 const CORE=[
  "./",
  "./index.html",
