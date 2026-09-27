@@ -548,7 +548,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const SAVE_KEY="abcAdventureSave",SAVE_BACKUP_KEY="abcAdventureSaveBackup";
+const SAVE_KEY="abcAdventureSave",SAVE_BACKUP_KEY="abcAdventureSaveBackup",SAVE_PRE_RESTORE_KEY="abcAdventureSavePreRestore";
 function loadSavedProgress(){
  const fallback={stars:0,coins:0,worldLv:1};
  try{let raw=localStorage.getItem(SAVE_KEY);if(raw)return JSON.parse(raw)}catch(e){}
@@ -556,7 +556,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-release-candidate-pass32";
+const APP_BUILD="2026.09.27-release-candidate-pass33";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -643,8 +643,13 @@ function syncMasterHome(){let a=document.getElementById("masterStars"),b=documen
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;
 function saveProgressNow(){
- let raw=JSON.stringify(save);
- localStorage.setItem(SAVE_BACKUP_KEY,raw);
+ let raw=JSON.stringify(save),previous=null;
+ try{
+  let current=localStorage.getItem(SAVE_KEY);
+  if(current){JSON.parse(current);previous=current}
+ }catch(e){}
+ if(previous)localStorage.setItem(SAVE_BACKUP_KEY,previous);
+ else if(!localStorage.getItem(SAVE_BACKUP_KEY))localStorage.setItem(SAVE_BACKUP_KEY,raw);
  localStorage.setItem(SAVE_KEY,raw);
 }
 function persist(){try{saveProgressNow()}catch(e){if(!saveWarningShown){saveWarningShown=true;showToast("この端末では記録を保存できない場合があります")}}render()}
@@ -1379,7 +1384,7 @@ function openTeacherLearningReport(){
 }
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：録音済み A〜Z（予備：'+currentEnglishVoiceName()+'）<br><b>'+recordedAudioStatus()+'</b></small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存され、予備データも残します。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="openTeacherLearningReport()">学習レポート</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
+ gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：録音済み A〜Z（予備：'+currentEnglishVoiceName()+'）<br><b>'+recordedAudioStatus()+'</b></small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存され、1つ前の状態も予備データとして残します。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="openTeacherLearningReport()">学習レポート</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button></div></div>';
  let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
  render();
 }
@@ -1403,6 +1408,7 @@ async function restoreSaveForTeacher(){
   let parsed=JSON.parse(raw);
   if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");if(parsed.stars!=null&&!Number.isFinite(Number(parsed.stars)))throw new Error("bad");if(parsed.coins!=null&&!Number.isFinite(Number(parsed.coins)))throw new Error("bad");if(parsed.worldLv!=null&&!Number.isFinite(Number(parsed.worldLv)))throw new Error("bad");
   if(!confirm("この記録データに入れかえますか？"))return;
+  try{localStorage.setItem(SAVE_PRE_RESTORE_KEY,JSON.stringify(save))}catch(e){}
   delete parsed._export;save=parsed;migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();goHome();setTimeout(()=>showToast("記録データを復元しました"),80);
  }catch(e){showToast("記録データを読み取れませんでした")}
 }
