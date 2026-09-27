@@ -1242,6 +1242,50 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
  image-rendering:auto!important;transform:translateZ(0);
 }
 
+
+/* 2026.09.27 FINAL VISUAL FIX — boss + pronunciation spacing */
+.home .boss-art{
+  background:none!important;
+  overflow:hidden!important;
+}
+.home .boss-art img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center 46%!important;
+  image-rendering:auto!important;
+}
+.speak-practice-card{
+  padding:30px 20px 24px!important;
+}
+.speak-practice-card>small{
+  display:block!important;
+  margin:0 0 22px!important;
+  line-height:1.45!important;
+  font-size:20px!important;
+  font-weight:1000!important;
+  color:#765122!important;
+}
+.speak-big-letter{
+  line-height:.88!important;
+  margin:10px 0 14px!important;
+}
+.speak-small-letter{
+  line-height:1!important;
+  margin:0 0 12px!important;
+}
+@media(max-width:800px){
+  .speak-practice-card{padding:28px 14px 22px!important}
+  .speak-practice-card>small{margin-bottom:20px!important}
+  .speak-big-letter{
+    font-size:clamp(104px,22vw,150px)!important;
+    line-height:.9!important;
+    margin:8px 0 12px!important;
+  }
+  .speak-small-letter{font-size:54px!important}
+}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -1311,7 +1355,7 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
   <div class="game-copy"><h3>ABCトレイン</h3><small>たりない文字を選んで列車を完成！</small></div>
 </a>
 <a class="game g8 mobile-game mg-boss" data-game="boss" href="?game=boss" onclick="return launchGameLink(event,'boss')" aria-label="ボスバトルを開く">
-  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img src="assets/redesign/boss-dragon.jpg?v=20260927-hq2" alt="" draggable="false"></div>
+  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img src="assets/redesign/boss-dragon-hq.svg?v=20260927-3" alt="" draggable="false"></div>
   <div class="game-copy"><h3>ボスバトル</h3><small>音・発音・じゅんばんで最終決戦！</small></div>
 </a>
 </section>
@@ -1349,7 +1393,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-final-navigation-reset";
+const APP_BUILD="2026.09.27-boss-vector-pronunciation-spacing";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
