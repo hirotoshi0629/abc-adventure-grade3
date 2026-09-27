@@ -617,6 +617,26 @@ body.inner-screen .boss-letter{contain:layout paint}
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 }
 
+
+/* 2026.09.27 game-feel pass: short, non-blocking feedback */
+.game-burst{
+ position:fixed;z-index:9998;left:50%;top:42%;transform:translate(-50%,-50%) scale(.72);
+ min-width:180px;max-width:min(78vw,420px);padding:14px 22px;border:5px solid #fff;border-radius:24px;
+ background:linear-gradient(#fffbe7,#ffd95f);box-shadow:0 8px 0 #cc8a20,0 14px 28px rgba(35,69,118,.28);
+ color:#214a86;text-align:center;font-weight:1000;font-size:clamp(24px,4vw,40px);
+ opacity:0;pointer-events:none;transition:transform .2s cubic-bezier(.2,1.35,.4,1),opacity .16s;
+}
+.game-burst.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.game-burst small{display:block;margin-top:4px;font-size:.48em;color:#6b4a1d;letter-spacing:.02em}
+.game-burst.combo{background:linear-gradient(#fff0ff,#d8b6ff);box-shadow:0 8px 0 #8757c9,0 14px 28px rgba(72,47,120,.28);color:#593092}
+.game-burst.power{background:linear-gradient(#e6fbff,#72d9ff);box-shadow:0 8px 0 #258eb9,0 14px 28px rgba(29,105,145,.28);color:#14517b}
+.game-burst.treasure{background:linear-gradient(#fff8d6,#ffc85a);box-shadow:0 8px 0 #b87620,0 14px 28px rgba(120,77,24,.28);color:#704214}
+.game-burst.boss{background:linear-gradient(#ffe7ef,#ff8fae);box-shadow:0 8px 0 #a94367,0 14px 28px rgba(108,38,66,.3);color:#712445}
+body.burst-flash .game-body{animation:burstFlash .24s ease}
+@keyframes burstFlash{0%{filter:brightness(1)}50%{filter:brightness(1.08)}100%{filter:brightness(1)}}
+.no-motion .game-burst,.no-motion .game-burst.show{transition:none!important;transform:translate(-50%,-50%)!important}
+@media(prefers-reduced-motion:reduce){.game-burst,.game-burst.show{transition:none!important;transform:translate(-50%,-50%)!important}}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -700,7 +720,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.2.3-ipad-css-fix";
+const APP_BUILD="2026.09.27-redesign-v2.3.0-game-feel";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -821,6 +841,15 @@ function showAdventureCelebration(title,sub){
  let el=document.createElement("div");el.id="adventureCelebration";el.className="adventure-celebration";
  el.innerHTML='<div class="celebrate-card"><div class="celebrate-stars">★ ★ ★</div><b>'+title+'</b><span>'+sub+'</span></div>';
  document.body.appendChild(el);setTimeout(()=>el.classList.add("show"),20);setTimeout(()=>{el.classList.remove("show");setTimeout(()=>el.remove(),300)},1700);
+}
+function showGameBurst(text,sub="",kind=""){
+ if(save.settings&&save.settings.motion===false){announce(text+(sub?" "+sub:""));return}
+ let old=document.getElementById("gameBurst");if(old)old.remove();
+ let el=document.createElement("div");el.id="gameBurst";el.className="game-burst"+(kind?" "+kind:"");
+ el.innerHTML='<b>'+text+'</b>'+(sub?'<small>'+sub+'</small>':'');
+ document.body.appendChild(el);document.body.classList.add("burst-flash");
+ requestAnimationFrame(()=>el.classList.add("show"));
+ setTimeout(()=>{el.classList.remove("show");document.body.classList.remove("burst-flash");setTimeout(()=>el.remove(),220)},560);
 }
 function markClear(id){
  save.clears=save.clears||{};let first=!save.clears[id],before=save.worldLv||1;
@@ -959,7 +988,7 @@ function answerListen(x,el){
  if(listen.locked)return;
  if(x===listen.target){
    recordLetterResult(listen.target,true);
-   listen.locked=true;el.classList.add("correct");lockAnswerButtons(450);listen.correct++;earn(1,listen.level==="similar"?4:3);persist();
+   listen.locked=true;el.classList.add("correct");lockAnswerButtons(450);listen.correct++;earn(1,listen.level==="similar"?4:3);persist();showGameBurst(listen.correct===10?"PERFECT!":"NICE!","せいかい "+listen.correct+" / 10",listen.correct===10?"combo":"");
    document.getElementById("listenMsg").textContent="せいかい！";
    later(nextListen,listen.level==="fast"?450:750);
  }else{
@@ -988,7 +1017,7 @@ function nextKaruta(){
 function takeKaruta(x,el){
  if(karuta.locked)return;
  if(x!==karuta.target){if(!acceptWrongTap(el))return;recordLetterResult(karuta.target,false);persist();el.classList.add("wrong");later(()=>el.classList.remove("wrong"),350);sayLetter(karuta.target);return}
- recordLetterResult(karuta.target,true);karuta.locked=true;el.classList.add("hit");lockAnswerButtons(400);
+ recordLetterResult(karuta.target,true);karuta.locked=true;el.classList.add("hit");lockAnswerButtons(400);showGameBurst("GET!","文字をゲット！","power");
  if(karuta.players===1){karuta.scores[0]++;earn(1,2);persist();later(nextKaruta,750);return}
  document.getElementById("karutaMsg").innerHTML='だれが とった？<div class="claim-row">'+Array.from({length:karuta.players},(_,i)=>'<button class="claim p'+(i+1)+'" onclick="claimKaruta('+i+')">'+(i+1)+'P</button>').join("")+'</div>';
 }
@@ -1019,7 +1048,7 @@ function flipMemory(card){
  memory.second=card;memory.lock=true;memory.moves++;
  if(memory.first.dataset.letter===memory.second.dataset.letter){
    recordSkillResult("memory",true);
-   memory.first.classList.add("matched");memory.second.classList.add("matched");memory.scores[memory.current]++;memory.matched++;
+   memory.first.classList.add("matched");memory.second.classList.add("matched");memory.scores[memory.current]++;memory.matched++;showGameBurst("MATCH!","ペア "+memory.matched+" / "+memory.totalPairs,"combo");
    earn(1,2);persist();
    memory.first=null;memory.second=null;memory.lock=false;renderMemoryStatus();
    document.getElementById("memoryMsg").textContent="そろった！ もう一回できるよ！";
@@ -1077,7 +1106,7 @@ function answerRocket(x,el){
  if(rocket.locked)return;
  if(x===rocket.target){
    recordLetterResult(rocket.target,true);
-   rocket.locked=true;el.classList.add("correct");lockAnswerButtons(450);rocket.correct++;earn(1,2);persist();
+   rocket.locked=true;el.classList.add("correct");lockAnswerButtons(450);rocket.correct++;earn(1,2);persist();showGameBurst(rocket.correct===rocket.maxRounds?"FULL POWER!":"POWER UP!","ロケットパワー "+rocket.correct+" / "+rocket.maxRounds,"power");
    document.getElementById("rocketMsg").textContent=rocket.correct===rocket.maxRounds?"フルパワー！":"パワーアップ！";
    later(nextRocket,700);
  }else{
@@ -1118,7 +1147,7 @@ function answerMonster(x,el){
    el.classList.add("correct");earn(2,3);
    let msg="ヒット！";
    if(monster.power>=3){monster.power=0;earn(2,4);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-art")?.classList.add("special-hit")}
-   persist();document.getElementById("monsterMsg").textContent=msg;later(nextMonster,850);
+   persist();showGameBurst(msg.includes("スーパービーム")?"SUPER BEAM!":"HIT!",msg.includes("スーパービーム")?"3れんぞくボーナス！":"れんぞく "+monster.combo,msg.includes("スーパービーム")?"combo":"power");document.getElementById("monsterMsg").textContent=msg;later(nextMonster,850);
  }else{
    if(!acceptWrongTap(el))return;
    recordLetterResult(monster.target,false);persist();
@@ -1146,7 +1175,7 @@ function nextTreasure(){
  gameBody.innerHTML='<div class="game-help">宝箱に出た文字を見る → 声に出す → 自分の声とお手本をくらべよう！</div><div class="treasure-wrap redesign-split"><div class="illustration-stage treasure-watercolor"><div class="treasure-letter-card">'+treasure.target+'</div></div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="message"><b class="speak-letter">'+treasure.target+'</b><br>この文字を声に出してみよう！</div>'+voiceControls(treasure.target,"completeTreasureSpeak()")+'</div></div>';
 }
 function completeTreasureSpeak(){
- if(treasure.locked)return;treasure.locked=true;treasure.found++;recordSkillResult("speaking",true);earn(1,3);persist();clearVoicePractice();voiceStatus("できた！");
+ if(treasure.locked)return;treasure.locked=true;treasure.found++;recordSkillResult("speaking",true);earn(1,3);persist();showGameBurst("TREASURE!","たから "+treasure.found+" / "+treasure.maxRounds,"treasure");clearVoicePractice();voiceStatus("できた！");
  later(nextTreasure,650);
 }
 function finishTreasure(){if(!beginFinishGuard("treasure"))return;markClear("treasure");
@@ -1164,7 +1193,7 @@ function nextTrain(){
  gameBody.innerHTML='<div class="game-help">文字のじゅんばんを見る → ？に入る文字を声に出す → お手本で確認！</div><div class="train-scene redesign-split"><div class="illustration-stage train-watercolor"><div class="train-overlay-seq">'+train.shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div></div><div class="train-panel"><div class="listen-status"><b>STATION '+train.round+' / '+train.maxRounds+'</b><span>せいかい '+train.correct+'</span></div><div class="message">？に入るアルファベットを声に出そう！</div><div class="train-sequence">'+train.shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div>'+voiceControls(train.target,"completeTrainSpeak()")+'</div></div>';
 }
 function completeTrainSpeak(){
- if(train.locked)return;train.locked=true;train.correct++;recordSkillResult("speaking",true);recordSkillResult("order",true);earn(1,2);persist();clearVoicePractice();
+ if(train.locked)return;train.locked=true;train.correct++;recordSkillResult("speaking",true);recordSkillResult("order",true);earn(1,2);persist();showGameBurst("ALL ABOARD!","れっしゃ "+train.correct+" / "+train.maxRounds,"power");clearVoicePractice();
  later(nextTrain,650);
 }
 function finishTrain(){if(!beginFinishGuard("train"))return;markClear("train");
@@ -1197,7 +1226,7 @@ function nextBoss(){
  if(boss.type==="sound")later(()=>sayLetter(boss.target),450);
 }
 function completeBossSpeak(){
- if(boss.locked||boss.type!=="speak")return;boss.locked=true;boss.hp--;boss.combo++;recordSkillResult("speaking",true);earn(2,4);persist();clearVoicePractice();
+ if(boss.locked||boss.type!=="speak")return;boss.locked=true;boss.hp--;boss.combo++;recordSkillResult("speaking",true);earn(2,4);persist();showGameBurst("VOICE ATTACK!","ボスHP あと "+boss.hp,"boss");clearVoicePractice();
  let msg=document.getElementById("bossMsg");if(msg)msg.textContent="声のこうげき！ ヒット！";
  later(nextBoss,800);
 }
@@ -1208,7 +1237,7 @@ function answerBoss(x,el){
    if(boss.type!=="order")recordLetterResult(boss.target,true);else recordSkillResult("order",true);
    boss.locked=true;boss.hp--;boss.combo++;el.classList.add("correct");earn(2,4);
    let bonus=boss.combo>0&&boss.combo%3===0;if(bonus){boss.hp=Math.max(0,boss.hp-1);earn(3,5)}
-   persist();document.querySelector(".boss-creature").classList.add("boss-hit");
+   persist();showGameBurst(bonus?"DOUBLE ATTACK!":"HIT!","ボスHP あと "+boss.hp,bonus?"combo":"boss");document.querySelector(".boss-creature").classList.add("boss-hit");
    document.getElementById("bossMsg").textContent=bonus?"3れんぞく！ ダブルアタック！":"ヒット！";
    later(nextBoss,850);
  }else{
