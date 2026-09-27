@@ -312,6 +312,8 @@ body.inner-screen .correct{animation:kgPop .28s ease}
 .device-check-page{max-width:820px;margin:0 auto}.device-check-hero{padding:18px;border-radius:22px;text-align:center;border:5px solid #fff;box-shadow:0 6px 0 #6d9dbc44}.device-check-hero.all-ok{background:#dff5bd;color:#326a24}.device-check-hero.needs-check{background:#fff0b8;color:#7c5700}.device-check-hero b{display:block;font-size:28px}.device-check-hero span{display:block;margin-top:5px;font-weight:900}.device-check-list{display:grid;gap:9px;margin:16px 0}.device-check-row{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:13px 15px;border-radius:16px;border:3px solid #dbeaf2;background:#fff}.device-check-row.ok strong{color:#2f7a33}.device-check-row.ng{background:#fff0ee;border-color:#efb0aa}.device-check-row.ng strong{color:#b74138}.device-check-row span{text-align:right;font-weight:800;color:#53606b}.device-check-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}@media(max-width:650px){.device-check-row{align-items:flex-start;flex-direction:column}.device-check-row span{text-align:left}}
 
 .recommended-action{background:linear-gradient(#fff19a,#ffc94a)!important;color:#5d4200!important;box-shadow:0 5px 0 #c68c18!important;font-weight:1000!important}.map-recommend{text-align:center;margin-top:14px}.longterm-recommend{grid-column:1/-1;text-align:center;margin-bottom:4px}
+
+.skill-report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.skill-report-grid>div{padding:12px;border-radius:14px;background:#f6fbff;border:2px solid #d4e8f4;text-align:center}.skill-report-grid b{display:block;font-size:22px;color:#2d6da3}.skill-report-grid span{display:block;margin-top:5px;font-weight:900}@media(max-width:650px){.skill-report-grid{grid-template-columns:1fr}}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -523,7 +525,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.26-offline-pass18";
+const APP_BUILD="2026.09.27-learning-audit-pass19";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -561,6 +563,8 @@ function migrateSave(){
  save.plays=Math.max(0,Number(save.plays)||0);save.clears=save.clears||{};save.gamePlays=save.gamePlays||{};for(const k of ["karuta","memory","listen","rocket","monster","treasure","train","boss"]){save.clears[k]=Math.max(0,Number(save.clears[k])||0);save.gamePlays[k]=Math.max(0,Number(save.gamePlays[k])||0)}
  save.buddies=Array.isArray(save.buddies)?[...new Set(save.buddies.filter(i=>Number.isInteger(i)&&i>=0&&i<12))]:[];
  save.letterStats=save.letterStats&&typeof save.letterStats==="object"?save.letterStats:{};for(const L of ABC){let v=save.letterStats[L]||{};save.letterStats[L]={ok:Math.max(0,Number(v.ok)||0),ng:Math.max(0,Number(v.ng)||0)};}
+ save.skillStats=save.skillStats&&typeof save.skillStats==="object"?save.skillStats:{};
+ for(const k of ["memory","order"]){let v=save.skillStats[k]||{};save.skillStats[k]={ok:Math.max(0,Number(v.ok)||0),ng:Math.max(0,Number(v.ng)||0)};}
  save.eggProgress=Math.max(0,Math.min(20,Number(save.eggProgress)||0));
  save.settings=save.settings||{sound:true,motion:true};save.rewardItems=save.rewardItems||{tree:0,flower:0,shard:0,bonusCards:0,sparkle:0};for(const k of ["tree","flower","shard","bonusCards","sparkle"])save.rewardItems[k]=Math.max(0,Number(save.rewardItems[k])||0);save.worldPlaced=save.worldPlaced||{tree:0,flower:0};save.worldPlaced.tree=Math.max(0,Number(save.worldPlaced.tree)||0);save.worldPlaced.flower=Math.max(0,Number(save.worldPlaced.flower)||0);
  if(save.settings.sound==null)save.settings.sound=true;if(save.settings.motion==null)save.settings.motion=true;
@@ -730,6 +734,7 @@ function sample(n){return shuffle(ABC).slice(0,n)}
 function letterDifficulty(L){let v=save.letterStats?.[L]||{ok:0,ng:0};return (v.ng||0)*3-(v.ok||0)}
 function weakLetters(limit=6){return [...ABC].sort((a,b)=>letterDifficulty(b)-letterDifficulty(a)).filter(L=>(save.letterStats?.[L]?.ng||0)>0).slice(0,limit)}
 function recordLetterResult(L,ok){L=String(L||"").toUpperCase();if(!/^[A-Z]$/.test(L))return;save.letterStats=save.letterStats||{};save.letterStats[L]=save.letterStats[L]||{ok:0,ng:0};save.letterStats[L][ok?"ok":"ng"]++}
+function recordSkillResult(kind,ok){save.skillStats=save.skillStats||{};save.skillStats[kind]=save.skillStats[kind]||{ok:0,ng:0};save.skillStats[kind][ok?"ok":"ng"]++}
 function makeTargetDeck(n){let weak=weakLetters(Math.min(6,n)),out=[];if(weak.length){let quota=Math.min(Math.ceil(n/2),weak.length);out.push(...shuffle(weak).slice(0,quota))}while(out.length<n){for(const L of shuffle(ABC)){if(out.length>=n)break;if(out.length&&out[out.length-1]===L)continue;out.push(L)}}return shuffle(out).slice(0,n)}
 function choicesWithTarget(target,n,preferred=[]){let pool=shuffle([...new Set(preferred.filter(x=>x!==target).concat(ABC.filter(x=>x!==target)))]);return shuffle([target,...pool.slice(0,n-1)])}
 let target="";
@@ -818,12 +823,14 @@ function flipMemory(card){
  if(!memory.first){memory.first=card;return}
  memory.second=card;memory.lock=true;memory.moves++;
  if(memory.first.dataset.letter===memory.second.dataset.letter){
+   recordSkillResult("memory",true);
    memory.first.classList.add("matched");memory.second.classList.add("matched");memory.scores[memory.current]++;memory.matched++;
    earn(1,2);persist();
    memory.first=null;memory.second=null;memory.lock=false;renderMemoryStatus();
    document.getElementById("memoryMsg").textContent="そろった！ もう一回できるよ！";
    if(memory.matched===memory.totalPairs)later(finishMemory,650);
  }else{
+   recordSkillResult("memory",false);persist();
    document.getElementById("memoryMsg").textContent="おしい！ つぎの人へ。";
    later(()=>{if(!memory.first||!memory.second)return;memory.first.classList.remove("open");memory.second.classList.remove("open");memory.first=null;memory.second=null;if(memory.players>1)memory.current=(memory.current+1)%memory.players;memory.lock=false;renderMemoryStatus();document.getElementById("memoryMsg").textContent="カードを2まい めくろう！";},900);
  }
@@ -942,12 +949,14 @@ function answerTrain(x,el){
  if(train.locked)return;
  sayLetter(x);
  if(x===train.target){
+   recordSkillResult("order",true);
    train.locked=true;train.correct++;lockAnswerButtons(450);el.classList.add("correct");earn(1,2);persist();
    let m=document.querySelector(".missing-car b");if(m)m.textContent=train.target;
    document.getElementById("trainMsg").textContent="せいかい！ 列車が出発！";
    document.querySelector(".train-cars").classList.add("depart");document.querySelector(".train-engine").classList.add("depart-engine");
    later(nextTrain,1000);
  }else{
+   recordSkillResult("order",false);persist();
    el.classList.add("listen-wrong");document.getElementById("trainMsg").textContent="おしい！ 前とうしろの文字を見て、順番に言ってみよう。";
    later(()=>el.classList.remove("listen-wrong"),450);
  }
@@ -984,14 +993,14 @@ function answerBoss(x,el){
  if(boss.locked||boss.hp<=0)return;
  if(boss.type==="order")sayLetter(x);
  if(x===boss.target){
-   if(boss.type!=="order")recordLetterResult(boss.target,true);
+   if(boss.type!=="order")recordLetterResult(boss.target,true);else recordSkillResult("order",true);
    boss.locked=true;boss.hp--;boss.combo++;el.classList.add("correct");earn(2,4);
    let bonus=boss.combo>0&&boss.combo%3===0;if(bonus){boss.hp=Math.max(0,boss.hp-1);earn(3,5)}
    persist();document.querySelector(".boss-creature").classList.add("boss-hit");
    document.getElementById("bossMsg").textContent=bonus?"3れんぞく！ ダブルアタック！":"ヒット！";
    later(nextBoss,850);
  }else{
-   if(boss.type!=="order")recordLetterResult(boss.target,false);
+   if(boss.type!=="order")recordLetterResult(boss.target,false);else recordSkillResult("order",false);
    boss.playerHp=Math.max(0,boss.playerHp-1);boss.combo=0;el.classList.add("listen-wrong");persist();
    document.getElementById("bossMsg").textContent="おしい！ ボスのこうげき！";
    if(boss.playerHp===0){boss.locked=true;later(bossRetry,700)}else{later(()=>el.classList.remove("listen-wrong"),450);if(boss.type!=="order")sayLetter(boss.target)}
@@ -1291,10 +1300,11 @@ function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:tru
 function openTeacherLearningReport(){
  enterGameScreen("学習レポート");
  let totalOK=0,totalNG=0;for(const L of ABC){let v=save.letterStats?.[L]||{ok:0,ng:0};totalOK+=v.ok||0;totalNG+=v.ng||0}
+ let memoryStat=save.skillStats?.memory||{ok:0,ng:0},orderStat=save.skillStats?.order||{ok:0,ng:0};
  let weak=weakLetters(8);
  let games=["karuta","memory","listen","rocket","monster","treasure","train","boss"];
  let names={karuta:"かるた",memory:"神経衰弱",listen:"聞いてタッチ",rocket:"ロケット",monster:"モンスター",treasure:"トレジャー",train:"トレイン",boss:"ボス"};
- gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="teacher-report"><div class="report-summary"><div><b>'+totalOK+'</b><span>音の正解</span></div><div><b>'+totalNG+'</b><span>音のまちがい</span></div><div><b>'+practiceClearKinds()+'</b><span>クリア種類</span></div><div><b>Lv.'+(save.worldLv||1)+'</b><span>ワールド</span></div></div><div class="report-card"><h3>いま復習したい文字</h3><p>'+(weak.length?weak.join('・'):'まだ苦手文字の記録はありません。')+'</p></div><div class="report-card"><h3>A〜Z 学習記録</h3><div class="letter-report-grid">'+ABC.map(L=>{let v=save.letterStats?.[L]||{ok:0,ng:0},score=(v.ng||0)*3-(v.ok||0),cls=score>2?'needs-review':score>0?'watch':'';return '<div class="letter-report '+cls+'"><b>'+L+'</b><span>○ '+(v.ok||0)+'</span><span>△ '+(v.ng||0)+'</span></div>'}).join('')+'</div></div><div class="report-card"><h3>ゲーム利用</h3><div class="game-report">'+games.map(id=>'<div><b>'+names[id]+'</b><span>プレイ '+(save.gamePlays?.[id]||0)+'</span><span>クリア '+(save.clears?.[id]||0)+'</span></div>').join('')+'</div></div><p class="report-note">この記録はこのiPadのブラウザ内に保存されています。児童を評価する点数ではなく、次の練習を考えるための目安です。</p></div>';
+ gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="teacher-report"><div class="report-summary"><div><b>'+totalOK+'</b><span>音の正解</span></div><div><b>'+totalNG+'</b><span>音のまちがい</span></div><div><b>'+memoryStat.ok+'</b><span>記憶ペア成功</span></div><div><b>'+orderStat.ok+'</b><span>順番問題正解</span></div></div><div class="report-card skill-report"><h3>学習の3つの見方</h3><div class="skill-report-grid"><div><b>音</b><span>○ '+totalOK+'　△ '+totalNG+'</span></div><div><b>記憶</b><span>○ '+memoryStat.ok+'　△ '+memoryStat.ng+'</span></div><div><b>順番</b><span>○ '+orderStat.ok+'　△ '+orderStat.ng+'</span></div></div></div><div class="report-card"><h3>いま復習したい文字</h3><p>'+(weak.length?weak.join('・'):'まだ苦手文字の記録はありません。')+'</p></div><div class="report-card"><h3>A〜Z 学習記録</h3><div class="letter-report-grid">'+ABC.map(L=>{let v=save.letterStats?.[L]||{ok:0,ng:0},score=(v.ng||0)*3-(v.ok||0),cls=score>2?'needs-review':score>0?'watch':'';return '<div class="letter-report '+cls+'"><b>'+L+'</b><span>○ '+(v.ok||0)+'</span><span>△ '+(v.ng||0)+'</span></div>'}).join('')+'</div></div><div class="report-card"><h3>ゲーム利用</h3><div class="game-report">'+games.map(id=>'<div><b>'+names[id]+'</b><span>プレイ '+(save.gamePlays?.[id]||0)+'</span><span>クリア '+(save.clears?.[id]||0)+'</span></div>').join('')+'</div></div><p class="report-note">この記録はこのiPadのブラウザ内に保存されています。児童を評価する点数ではなく、次の練習を考えるための目安です。</p></div>';
 }
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
