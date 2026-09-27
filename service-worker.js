@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-redesign-v2.3.1-monster-boss";
+const CACHE_NAME="abc-adventure-grade3-redesign-v2.4.0-guided-flow";
 const CORE=[
  "./",
  "./index.html",
