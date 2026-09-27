@@ -1301,6 +1301,10 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 /* Use the same refreshed boss art on the home game card */
 .boss-art{display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(145deg,#2d1d4f,#6d2a65)!important}
 .boss-art img{width:92%;height:92%;object-fit:contain;display:block}
+</style><style>
+/* Final override: keep the complete boss visible in the home card */
+.home .mg-boss .boss-art{background-image:url("assets/boss-kids.png?v=20260927-2")!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center center!important;background-color:#2d1d4f!important;}
+.home .mg-boss .boss-art img{display:none!important;}
 </style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
