@@ -1207,7 +1207,7 @@ body.inner-screen #game.screen.active{
 .home .boss-art{
  background-image:
    linear-gradient(rgba(25,10,45,.04),rgba(25,10,45,.04)),
-   url("assets/redesign/boss-dragon.jpg?v=20260927-1")!important;
+   url("assets/redesign/boss-dragon.jpg?v=20260927-2")!important;
  background-size:cover!important;
  background-position:center 42%!important;
 }
@@ -1355,7 +1355,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-boss-image-hard-nav-fix";
+const APP_BUILD="2026.09.27-runtime-fix-boss-crisp";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1518,7 +1518,7 @@ function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||
 function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;save.lastGame=id;persist()}
 function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6}
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
-let openGameBusy=false,lastGameOpenAt=0;
+let openGameBusy=false,lastGameOpenAt=0,soundAuditRun=0;
 function openGame(id){let now=Date.now();if(openGameBusy||now-lastGameOpenAt<500)return;lastGameOpenAt=now;openGameBusy=true;try{if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]);if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else{showToast("ゲームを開けませんでした");goHome()}}finally{openGameBusy=false}}
 function enterGameScreen(title){
  clearVoicePractice();
