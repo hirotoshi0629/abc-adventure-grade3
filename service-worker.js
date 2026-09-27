@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-boss-image-hard-nav-fix";
+const CACHE_NAME="abc-adventure-grade3-runtime-fix-boss-crisp";
 const CORE=[
  "./",
  "./index.html",
@@ -11,7 +11,7 @@ const CORE=[
  "./assets/redesign/treasure.jpg",
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
- "./assets/redesign/boss-dragon.jpg?v=20260927-1"
+ "./assets/redesign/boss-dragon.jpg?v=20260927-2"
 ];
 self.addEventListener("install",event=>{
  event.waitUntil((async()=>{
