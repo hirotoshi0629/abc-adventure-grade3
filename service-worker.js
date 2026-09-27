@@ -1,10 +1,9 @@
-const CACHE_NAME="abc-adventure-grade3-final-v1";
+const CACHE_NAME="abc-adventure-grade3-final-v1.0.1-home-hotfix";
 const CORE=[
  "./",
  "./index.html",
  "./manifest.webmanifest",
- "./assets/homejpg/p0.txt",
- "./assets/abc-master-home-web.jpg",
+ "./assets/abc-master-home-web.jpg?v=20260927-hotfix1",
  "./assets/audio/alphabet-sprite.mp3?v=20260926-3"
 ];
 self.addEventListener("install",event=>{
