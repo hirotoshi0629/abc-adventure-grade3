@@ -1219,6 +1219,29 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 body:not(.inner-screen) #game{display:none!important}
 .home .mobile-game{pointer-events:auto!important;z-index:3!important}
 
+
+/* 2026.09.27 FINAL NAVIGATION RESET */
+#masterHome{display:none!important}
+body:not(.inner-screen) #home.mobile-lobby{display:block!important;visibility:visible!important;pointer-events:auto!important}
+body.inner-screen #home.mobile-lobby{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body:not(.inner-screen) #game{display:none!important;visibility:hidden!important}
+body.inner-screen #game.active{display:block!important;visibility:visible!important;pointer-events:auto!important}
+.home .mobile-game{
+ position:relative!important;z-index:10!important;pointer-events:auto!important;
+ text-decoration:none!important;color:inherit!important;cursor:pointer!important;
+}
+.home .mobile-game *{pointer-events:none!important}
+.mobile-dock{pointer-events:auto!important}
+.mobile-dock button,.quick-card,.quest-main,.quest-daily,.resource-chip,.section-title>button{
+ pointer-events:auto!important;position:relative!important;z-index:10!important;
+}
+.home .boss-art{background:none!important}
+.home .boss-art img{
+ display:block!important;width:100%!important;height:100%!important;
+ object-fit:cover!important;object-position:center 42%!important;
+ image-rendering:auto!important;transform:translateZ(0);
+}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -1226,36 +1249,7 @@ body:not(.inner-screen) #game{display:none!important}
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="ABCアドベンチャー">
 </head><body><main class="app">
-<div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
-<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg?v=20260927-crisp-restore2" alt="ABCアドベンチャー ホーム">
-<span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
-<span id="masterDailyProgress" class="master-daily-progress">0/3</span><button id="masterDailyHotspot" class="master-hotspot" style="left:49.7%;top:33.0%;width:32.5%;height:8.3%" onclick="openDaily()" aria-label="きょうのミッション"></button>
-<button class="master-hotspot" style="left:82.0%;top:9.5%;width:16.5%;height:32.5%" onclick="openMyWorld()" aria-label="マイワールド"></button>
-<button class="master-hotspot" style="left:1.0%;top:44.8%;width:24.2%;height:22.3%" id="masterGame-karuta" data-master-game="karuta" onclick="masterOpenGame('karuta')" aria-label="ABCかるた"></button>
-<button class="master-hotspot" style="left:25.8%;top:44.8%;width:24.2%;height:22.3%" id="masterGame-memory" data-master-game="memory" onclick="masterOpenGame('memory')" aria-label="ABC神経衰弱"></button>
-<button class="master-hotspot" style="left:50.5%;top:44.8%;width:23.7%;height:22.3%" id="masterGame-listen" data-master-game="listen" onclick="masterOpenGame('listen')" aria-label="聞いてタッチ"></button>
-<button id="masterReviewQuick" class="master-review-quick" onclick="listen.level='review';masterOpenGame('listen')" aria-label="苦手な文字を復習"></button>
-<button class="master-hotspot" style="left:74.7%;top:44.8%;width:24.3%;height:22.3%" id="masterGame-rocket" data-master-game="rocket" onclick="masterOpenGame('rocket')" aria-label="ABCロケット"></button>
-<button class="master-hotspot" style="left:1.0%;top:68.1%;width:24.2%;height:22.5%" id="masterGame-monster" data-master-game="monster" onclick="masterOpenGame('monster')" aria-label="アルファベットモンスター"></button>
-<button class="master-hotspot" style="left:25.8%;top:68.1%;width:24.2%;height:22.5%" id="masterGame-treasure" data-master-game="treasure" onclick="masterOpenGame('treasure')" aria-label="ABCトレジャーハント"></button>
-<button class="master-hotspot" style="left:50.5%;top:68.1%;width:23.7%;height:22.5%" id="masterGame-train" data-master-game="train" onclick="masterOpenGame('train')" aria-label="ABCトレイン"></button>
-<button class="master-hotspot" style="left:74.7%;top:68.1%;width:24.3%;height:22.5%" id="masterGame-boss" data-master-game="boss" onclick="masterOpenGame('boss')" aria-label="ボスバトル"></button>
-<div id="masterLock-memory" class="master-lock" style="left:25.8%;top:44.8%;width:24.2%;height:22.3%"><span>まだ きりの中</span></div>
-<div id="masterLock-listen" class="master-lock" style="left:50.5%;top:44.8%;width:23.7%;height:22.3%"><span>まだ きりの中</span></div>
-<div id="masterLock-rocket" class="master-lock" style="left:74.7%;top:44.8%;width:24.3%;height:22.3%"><span>まだ きりの中</span></div>
-<div id="masterLock-monster" class="master-lock" style="left:1.0%;top:68.1%;width:24.2%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-treasure" class="master-lock" style="left:25.8%;top:68.1%;width:24.2%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-train" class="master-lock" style="left:50.5%;top:68.1%;width:23.7%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterLock-boss" class="master-lock" style="left:74.7%;top:68.1%;width:24.3%;height:22.5%"><span>まだ きりの中</span></div>
-<div id="masterWorldLevel" class="master-world-level">Lv.1</div>
-<button class="master-hotspot" style="left:0%;top:91.2%;width:14.3%;height:8.8%" onclick="goHome()" aria-label="ホーム"></button>
-<button class="master-hotspot" style="left:14.3%;top:91.2%;width:14.3%;height:8.8%" onclick="openAdventureMap()" aria-label="ぼうけんマップ"></button>
-<button class="master-hotspot" style="left:28.6%;top:91.2%;width:14.3%;height:8.8%" onclick="openBook()" aria-label="ABCずかん"></button>
-<button class="master-hotspot" style="left:42.9%;top:91.2%;width:14.3%;height:8.8%" onclick="openEggs()" aria-label="たまご・なかま"></button>
-<button class="master-hotspot" style="left:57.2%;top:91.2%;width:14.3%;height:8.8%" onclick="openRewardMachine()" aria-label="ごほうびマシン"></button>
-<button class="master-hotspot" style="left:71.5%;top:91.2%;width:14.3%;height:8.8%" onclick="openTitles()" aria-label="しょうごう"></button>
-<button class="master-hotspot" style="left:85.8%;top:91.2%;width:14.2%;height:8.8%" onclick="openSettings()" aria-label="せってい"></button>
-</div><div id="home" class="home mobile-lobby">
+<div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
   <div class="lobby-brand"><span class="brand-abc">ABC</span><div><b>アドベンチャー</b><small>ALPHABET QUEST</small></div></div>
   <div class="lobby-resources">
@@ -1288,38 +1282,38 @@ body:not(.inner-screen) #game{display:none!important}
 <div class="section-title"><div><span>GAME SELECT</span><h2>どのゲームで あそぶ？</h2></div><button onclick="openBook()">ABCずかん</button></div>
 
 <section class="grid lobby-game-grid">
-<button class="game g1 mobile-game mg-karuta" data-game="karuta" onclick="openGame('karuta')" aria-label="ABCかるたを開く">
+<a class="game g1 mobile-game mg-karuta" data-game="karuta" href="?game=karuta" onclick="return launchGameLink(event,'karuta')" aria-label="ABCかるたを開く">
   <span class="game-tag">LISTEN</span><div class="game-art art-karuta"><i>A</i><i>B</i><i>C</i></div>
   <div class="game-copy"><h3>ABCかるた</h3><small>音を聞いて文字をタッチ！</small></div>
-</button>
-<button class="game g2 mobile-game mg-memory" data-game="memory" onclick="openGame('memory')" aria-label="ABC神経衰弱を開く">
+</a>
+<a class="game g2 mobile-game mg-memory" data-game="memory" href="?game=memory" onclick="return launchGameLink(event,'memory')" aria-label="ABC神経衰弱を開く">
   <span class="game-tag">MEMORY</span><div class="game-art art-memory"><i>?</i><i>B</i><i>?</i><i>B</i></div>
   <div class="game-copy"><h3>ABC神経衰弱</h3><small>16枚のカードでペアを見つけよう！</small></div>
-</button>
-<button class="game g3 mobile-game mg-listen" data-game="listen" onclick="openGame('listen')" aria-label="聞いてタッチを開く">
+</a>
+<a class="game g3 mobile-game mg-listen" data-game="listen" href="?game=listen" onclick="return launchGameLink(event,'listen')" aria-label="聞いてタッチを開く">
   <span class="game-tag">HEARING</span><div class="game-art art-listen"><span class="speaker-shape">♪</span><b>F</b><b>M</b><b>R</b></div>
   <div class="game-copy"><h3>聞いてタッチ！</h3><small>4つのレベルで聞き分けチャレンジ！</small></div>
-</button>
-<button class="game g4 mobile-game mg-rocket" data-game="rocket" onclick="openGame('rocket')" aria-label="ABCロケットを開く">
+</a>
+<a class="game g4 mobile-game mg-rocket" data-game="rocket" href="?game=rocket" onclick="return launchGameLink(event,'rocket')" aria-label="ABCロケットを開く">
   <span class="game-tag">SPACE</span><div class="game-art image-art rocket-art"></div>
   <div class="game-copy"><h3>ABCロケット</h3><small>正しい文字を選んで宇宙へ！</small></div>
-</button>
-<button class="game g5 mobile-game mg-monster" data-game="monster" onclick="openGame('monster')" aria-label="アルファベットモンスターを開く">
+</a>
+<a class="game g5 mobile-game mg-monster" data-game="monster" href="?game=monster" onclick="return launchGameLink(event,'monster')" aria-label="アルファベットモンスターを開く">
   <span class="game-tag">BATTLE</span><div class="game-art image-art monster-art-home"></div>
   <div class="game-copy"><h3>アルファベットモンスター</h3><small>20種類のモンスターとバトル！</small></div>
-</button>
-<button class="game g6 mobile-game mg-treasure" data-game="treasure" onclick="openGame('treasure')" aria-label="ABCトレジャーハントを開く">
+</a>
+<a class="game g6 mobile-game mg-treasure" data-game="treasure" href="?game=treasure" onclick="return launchGameLink(event,'treasure')" aria-label="ABCトレジャーハントを開く">
   <span class="game-tag">TREASURE</span><div class="game-art image-art treasure-art"></div>
   <div class="game-copy"><h3>ABCトレジャーハント</h3><small>かくれた文字を見つけよう！</small></div>
-</button>
-<button class="game g7 mobile-game mg-train" data-game="train" onclick="openGame('train')" aria-label="ABCトレインを開く">
+</a>
+<a class="game g7 mobile-game mg-train" data-game="train" href="?game=train" onclick="return launchGameLink(event,'train')" aria-label="ABCトレインを開く">
   <span class="game-tag">ORDER</span><div class="game-art image-art train-art"></div>
   <div class="game-copy"><h3>ABCトレイン</h3><small>たりない文字を選んで列車を完成！</small></div>
-</button>
-<button class="game g8 mobile-game mg-boss" data-game="boss" onclick="openGame('boss')" aria-label="ボスバトルを開く">
-  <span class="game-tag">BOSS</span><div class="game-art image-art boss-art"></div>
+</a>
+<a class="game g8 mobile-game mg-boss" data-game="boss" href="?game=boss" onclick="return launchGameLink(event,'boss')" aria-label="ボスバトルを開く">
+  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img src="assets/redesign/boss-dragon.jpg?v=20260927-hq2" alt="" draggable="false"></div>
   <div class="game-copy"><h3>ボスバトル</h3><small>音・発音・じゅんばんで最終決戦！</small></div>
-</button>
+</a>
 </section>
 
 <nav class="nav bottom-nav mobile-dock" aria-label="メインメニュー">
@@ -1355,7 +1349,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-runtime-fix-boss-crisp";
+const APP_BUILD="2026.09.27-final-navigation-reset";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1519,7 +1513,35 @@ function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.ga
 function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6}
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false,lastGameOpenAt=0,soundAuditRun=0;
-function openGame(id){let now=Date.now();if(openGameBusy||now-lastGameOpenAt<500)return;lastGameOpenAt=now;openGameBusy=true;try{if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]);if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else{showToast("ゲームを開けませんでした");goHome()}}finally{openGameBusy=false}}
+function launchGame(id){
+ if(!titles[id])return false;
+ if(id==="boss"&&!gameUnlocked(id)){lockedGame(id);return true;}
+ enterGameScreen(titles[id]);
+ if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio();
+ if(id==="karuta")startKarutaSetup();
+ else if(id==="memory")startMemorySetup();
+ else if(id==="listen")startListen();
+ else if(id==="rocket")startRocket();
+ else if(id==="monster")startMonster();
+ else if(id==="treasure")startTreasure();
+ else if(id==="train")startTrain();
+ else if(id==="boss")startBoss();
+ return true;
+}
+function openGame(id){
+ try{return launchGame(id)}
+ catch(err){
+  console.error("Game launch failed",id,err);
+  try{showToast("ゲームを開き直します")}catch(e){}
+  return false;
+ }
+}
+function launchGameLink(event,id){
+ if(event){event.preventDefault();event.stopPropagation()}
+ const ok=openGame(id);
+ if(!ok&&event?.currentTarget?.href)location.href=event.currentTarget.href;
+ return false;
+}
 function enterGameScreen(title){
  clearVoicePractice();
  let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();
@@ -2346,27 +2368,17 @@ window.addEventListener("error",offerRecovery);
 document.addEventListener("contextmenu",e=>{if(e.target.closest("button"))e.preventDefault()});
 window.addEventListener("offline",()=>showToast("インターネットにつながっていません"));
 window.addEventListener("online",()=>showToast("インターネットにつながりました"));
-migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();document.addEventListener("click",e=>{
- const card=e.target.closest?.(".mobile-game[data-game]");
- if(!card)return;
- const id=card.dataset.game;
- if(!id)return;
- e.preventDefault();e.stopPropagation();
- try{openGame(id)}catch(err){
-  console.error("Game launch failed",id,err);
-  showToast("ゲームを開き直します");
-  enterGameScreen(titles[id]||"ABCアドベンチャー");
-  if(id==="karuta")startKarutaSetup();
-  else if(id==="memory")startMemorySetup();
-  else if(id==="listen")startListen();
-  else if(id==="rocket")startRocket();
-  else if(id==="monster")startMonster();
-  else if(id==="treasure")startTreasure();
-  else if(id==="train")startTrain();
-  else if(id==="boss")gameUnlocked("boss")?startBoss():lockedGame("boss");
- }
-},true);
-initApprovedMasterHome();setTimeout(()=>openFirstGuide(),120);
+migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();
+initApprovedMasterHome();
+const requestedGame=new URLSearchParams(location.search).get("game");
+if(requestedGame&&titles[requestedGame]){
+ setTimeout(()=>{
+   const opened=openGame(requestedGame);
+   if(opened&&history.replaceState)history.replaceState(null,"",location.pathname+location.hash);
+ },80);
+}else{
+ setTimeout(()=>openFirstGuide(),120);
+}
 let hiddenDuringPlay=false,hiddenAt=0;window.addEventListener("beforeunload",()=>{try{saveProgressNow()}catch(e){}});
 window.addEventListener("pagehide",()=>{try{saveProgressNow()}catch(e){}});
 document.addEventListener("visibilitychange",()=>{
