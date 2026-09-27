@@ -491,7 +491,7 @@ body.inner-screen .finish-box{
 <meta name="apple-mobile-web-app-title" content="ABCアドベンチャー">
 </head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
-<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg" data-kids-home="assets/homejpg/p0.txt" alt="">
+<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg?v=20260927-hotfix1" alt="ABCアドベンチャー ホーム">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
 <span id="masterDailyProgress" class="master-daily-progress">0/3</span><button id="masterDailyHotspot" class="master-hotspot" style="left:49.7%;top:33.0%;width:32.5%;height:8.3%" onclick="openDaily()" aria-label="きょうのミッション"></button>
 <button class="master-hotspot" style="left:82.0%;top:9.5%;width:16.5%;height:32.5%" onclick="openMyWorld()" aria-label="マイワールド"></button>
@@ -566,7 +566,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-final-v1.0.0";
+const APP_BUILD="2026.09.27-final-v1.0.1-home-hotfix";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -574,7 +574,7 @@ function appHealthCheck(){
  const fnOK=requiredFns.every(n=>typeof window[n]==="function");
  const navOK=document.querySelectorAll(".bottom-nav button").length===7;
  const gameOK=document.querySelectorAll(".game").length===8;
- const masterOK=!!document.getElementById("masterHome")&&!!document.querySelector('#masterHomeArt[data-kids-home="assets/homejpg/p0.txt"]');
+ const masterOK=!!document.getElementById("masterHome")&&!!document.querySelector('#masterHomeArt[src^="assets/abc-master-home-web.jpg"]');
  const hotspotOK=document.querySelectorAll("[data-master-game]").length===8&&!!document.getElementById("masterDailyHotspot");
  const saveOK=selfCheck();
  const audioOK=recordedAudioFailed?false:(recordedAlphabetAudio.readyState<1?true:recordedAudioHealthy());
@@ -635,19 +635,13 @@ function syncMasterLocks(){
  });
  let w=document.getElementById("masterWorldLevel");if(w)w.textContent="Lv."+Math.max(1,Number(save.worldLv)||1);
 }
-async function loadKidsHomeArt(){
- let art=document.getElementById("masterHomeArt");if(!art)return false;
- let src=art.dataset.kidsHome;if(!src)return false;
- try{let r=await fetch(src,{cache:"force-cache"});if(!r.ok)throw new Error("home art");let b=(await r.text()).trim();if(!b.startsWith("/9j/"))throw new Error("home art data");art.src="data:image/jpeg;base64,"+b;return true}catch(e){console.warn("Kids home art fallback",e);return false}
-}
 function initApprovedMasterHome(){
  let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
  if(!art||!wrap)return;
  const ready=()=>{wrap.classList.add("ready");document.body.classList.add("master-mode");wrap.style.display="block";syncMasterHome()};
- art.addEventListener("load",ready);
- art.addEventListener("error",()=>{if(!wrap.classList.contains("ready")){wrap.classList.remove("ready");document.body.classList.remove("master-mode")}}, {once:true});
+ art.addEventListener("load",ready,{once:true});
+ art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode");wrap.style.display="none";document.getElementById("home")?.classList.remove("hidden");showToast("ホーム画像を読み込めませんでした")},{once:true});
  if(art.complete&&art.naturalWidth>0)ready();
- loadKidsHomeArt();
 }
 function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}let d=document.getElementById("masterDailyProgress");if(d){let ds=dailyData(),done=ds.filter((x,i)=>x[1]>=x[2]||save.daily.claimed[i]).length;d.textContent=done+"/3"}let rq=document.getElementById("masterReviewQuick");if(rq){let w=weakLetters(3);rq.classList.toggle("show",w.length>0);rq.textContent=w.length?"ふくしゅう "+w.join("・"):"";rq.setAttribute("aria-label",w.length?"苦手な文字 "+w.join("、")+" を復習":"苦手な文字を復習")}syncMasterLocks()}
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
