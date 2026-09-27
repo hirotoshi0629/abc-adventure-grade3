@@ -318,6 +318,9 @@ button,.map-node,.master-hotspot{touch-action:manipulation;-webkit-tap-highlight
 body.inner-screen .karuta-card,body.inner-screen .memory-card,body.inner-screen .listen-card,body.inner-screen .rocket-letter,body.inner-screen .monster-letter,body.inner-screen .hidden-letter,body.inner-screen .train-letter,body.inner-screen .boss-letter{-webkit-user-select:none;user-select:none}
 .game-topbar{padding-top:max(12px,env(safe-area-inset-top))}
 button:focus-visible,.map-node:focus-visible{outline:4px solid #173f80;outline-offset:3px}
+
+body.inner-screen .game-body{-webkit-user-select:none;user-select:none}
+body.inner-screen .teacher-report,body.inner-screen .settings-page{ -webkit-user-select:text;user-select:text }
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -529,7 +532,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");let save;try{save=JSON.parse(localStorage.getItem("abcAdventureSave")||'{"stars":0,"coins":0,"worldLv":1}')}catch(e){save={stars:0,coins:0,worldLv:1}};
-const APP_BUILD="2026.09.27-ipad-stability-pass22";
+const APP_BUILD="2026.09.27-resume-pass23";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1349,7 +1352,17 @@ window.addEventListener("online",()=>showToast("インターネットにつな�
 migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();if(!verifyMasterContract())console.warn("Master navigation contract mismatch");render();normalizeButtons();initApprovedMasterHome();setTimeout(()=>openFirstGuide(),120);
 let hiddenDuringPlay=false,hiddenAt=0;window.addEventListener("beforeunload",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
 window.addEventListener("pagehide",()=>{try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}});
-document.addEventListener("visibilitychange",()=>{if(document.hidden){hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();stopRecordedLetter();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};newSession()}else{let away=Date.now()-hiddenAt;if(hiddenDuringPlay&&away>1200){goHome();showToast("ホームにもどりました")}hiddenDuringPlay=false;render()}});
+document.addEventListener("visibilitychange",()=>{
+ if(document.hidden){
+  hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();
+  stopRecordedLetter();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}
+  try{localStorage.setItem("abcAdventureSave",JSON.stringify(save))}catch(e){}
+ }else{
+  let away=Date.now()-hiddenAt;
+  if(hiddenDuringPlay){primeRecordedAudio();if(away>1200)showToast("つづきからできるよ")}
+  hiddenDuringPlay=false;render();normalizeButtons()
+ }
+});
 </script><script>
 if("serviceWorker" in navigator){
  window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js",{updateViaCache:"none"}).then(r=>r.update()).catch(e=>console.warn("SW",e)));
