@@ -337,6 +337,32 @@ body.inner-screen .teacher-report,body.inner-screen .settings-page{ -webkit-user
 }
 button:disabled{cursor:default;filter:saturate(.78)}
 
+
+/* 2026 full visual redesign */
+.master-status-bar{position:absolute;z-index:8;right:2.5%;top:1.2%;width:34.5%;height:7.2%;display:grid;grid-template-columns:repeat(4,1fr);gap:.45%;padding:.45%;background:rgba(231,247,255,.97);border-radius:18px;border:2px solid rgba(255,255,255,.95);box-shadow:0 3px 10px #275a8b33}
+.master-status-chip{min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;background:#fffaf0;border:2px solid #b47a32;border-radius:14px;font-size:clamp(11px,1.3vw,21px);font-weight:1000;color:#142752;white-space:nowrap}
+.master-status-chip i{font-style:normal;font-size:.78em;color:#d67a09}.master-status-chip b{font-size:1.08em}
+.master-live,.master-star,.master-coin{display:none!important}
+.redesign-split{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(360px,.9fr)!important;gap:18px!important;max-width:1120px!important;margin:0 auto!important}
+.illustration-stage{position:relative;min-height:540px;border-radius:26px;border:6px solid #fff;box-shadow:0 8px 0 #8aa56c55;background-size:cover;background-position:center;overflow:hidden}
+.rocket-watercolor{background-image:url("assets/redesign/rocket.jpg")}
+.train-watercolor{background-image:url("assets/redesign/train.jpg")}
+.treasure-watercolor{background-image:url("assets/redesign/treasure.jpg")}
+.world-watercolor{position:relative;max-width:1120px;min-height:600px;margin:14px auto;border:6px solid #fff;border-radius:28px;background:url("assets/redesign/world.jpg") center/cover no-repeat;box-shadow:0 8px 0 #9f784055;overflow:hidden}
+.illustration-badge,.world-level-badge,.world-buddy-badge,.world-whisper-card{position:absolute;background:rgba(255,253,239,.94);border:3px solid #c68a35;border-radius:16px;padding:8px 13px;font-weight:1000;color:#173b6a;box-shadow:0 3px 8px #0002}
+.illustration-badge{right:14px;top:14px}.world-level-badge{left:18px;top:18px}.world-buddy-badge{right:18px;top:18px}.world-whisper-card{left:50%;bottom:14px;transform:translateX(-50%);width:min(84%,680px);text-align:center}
+.train-overlay-seq{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(255,250,231,.93);padding:10px 15px;border-radius:18px;border:3px solid #bd8235}
+.train-overlay-seq span,.train-sequence span{font-family:"NHHandwriting",sans-serif;font-size:clamp(34px,5vw,62px);font-weight:500}.train-overlay-seq em{font-style:normal;font-size:24px}
+.treasure-letter-card{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-4deg);min-width:170px;padding:20px 38px;text-align:center;background:#fffdf0;border:7px solid #e8b73d;border-radius:24px;box-shadow:0 10px 20px #51320f55;font-family:"NHHandwriting",sans-serif;font-size:clamp(86px,12vw,150px);color:#153b70}
+.speak-letter,.boss-speak-letter{font-family:"NHHandwriting",sans-serif;font-size:clamp(72px,9vw,130px);color:#163d72;line-height:1}
+.voice-practice{margin:12px auto;padding:14px;border:3px solid #dfb35f;border-radius:20px;background:#fffdf4}.voice-buttons,.voice-check{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:8px 0}.voice-practice button{min-height:50px;padding:10px 15px;border-radius:15px;font-weight:1000}.voice-rec{background:#ff6f6f!important;color:#fff!important}.voice-next{background:#69c85c!important;color:#fff!important}.voice-msg{text-align:center;font-weight:900;color:#315179;padding:8px}
+.monster-watercolor{position:relative;min-height:540px;background:linear-gradient(180deg,#c9f0ff,#effbc9);overflow:hidden;border-radius:24px}
+.monster-art{position:absolute;left:9%;top:10%;width:74%;height:62%;background-image:url("assets/redesign/monster-sheet.jpg");background-size:300% 300%;background-repeat:no-repeat;filter:drop-shadow(0 10px 5px #25383b33);transition:transform .18s}
+.monster-art.mv0{background-position:0% 0%}.monster-art.mv1{background-position:50% 0%}.monster-art.mv2{background-position:100% 0%}.monster-art.mv3{background-position:0% 50%}.monster-art.mv4{background-position:50% 50%}.monster-art.mv5{background-position:100% 50%}.monster-art.mv6{background-position:0% 100%}.monster-art.mv7{background-position:100% 100%}
+.monster-art.special-hit{transform:scale(.94) rotate(-3deg);filter:drop-shadow(0 0 22px #fff25f)}
+.monster-nameplate{position:absolute;left:50%;bottom:24%;transform:translateX(-50%);background:#704119;color:#fff7cf;border:3px solid #f0c66d;border-radius:999px;padding:7px 18px;font-weight:1000;z-index:3}
+.monster-watercolor .monster-hp{position:absolute;left:7%;right:7%;bottom:12%;z-index:3}.monster-watercolor .hero-status{position:absolute;left:7%;right:7%;bottom:3%;z-index:3}
+@media(max-width:820px){.redesign-split{grid-template-columns:1fr!important}.illustration-stage,.monster-watercolor,.world-watercolor{min-height:420px}.master-status-bar{width:38%;right:1.5%}.master-status-chip{font-size:clamp(9px,1.4vw,15px)}}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -492,7 +518,7 @@ body.inner-screen .finish-box{
 </head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
 <img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg?v=20260927-hotfix1" alt="ABCアドベンチャー ホーム">
-<span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
+<div class="master-status-bar" aria-label="学習ステータス"><span class="master-status-chip"><i>★</i><b id="masterStars">0</b></span><span class="master-status-chip"><i>●</i><b id="masterCoins">0</b></span><span class="master-status-chip"><i>ABC</i><b id="masterCards">0</b></span><span class="master-status-chip"><i>EGG</i><b id="masterEgg">0</b></span></div>
 <span id="masterDailyProgress" class="master-daily-progress">0/3</span><button id="masterDailyHotspot" class="master-hotspot" style="left:49.7%;top:33.0%;width:32.5%;height:8.3%" onclick="openDaily()" aria-label="きょうのミッション"></button>
 <button class="master-hotspot" style="left:82.0%;top:9.5%;width:16.5%;height:32.5%" onclick="openMyWorld()" aria-label="マイワールド"></button>
 <button class="master-hotspot" style="left:1.0%;top:44.8%;width:24.2%;height:22.3%" id="masterGame-karuta" data-master-game="karuta" onclick="masterOpenGame('karuta')" aria-label="ABCかるた"></button>
@@ -566,7 +592,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-final-v1.0.1-home-hotfix";
+const APP_BUILD="2026.09.27-redesign-v2.0.0-alpha";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -605,7 +631,7 @@ function migrateSave(){
  save.buddies=Array.isArray(save.buddies)?[...new Set(save.buddies.filter(i=>Number.isInteger(i)&&i>=0&&i<12))]:[];
  save.letterStats=save.letterStats&&typeof save.letterStats==="object"?save.letterStats:{};for(const L of ABC){let v=save.letterStats[L]||{};save.letterStats[L]={ok:Math.max(0,Number(v.ok)||0),ng:Math.max(0,Number(v.ng)||0)};}
  save.skillStats=save.skillStats&&typeof save.skillStats==="object"?save.skillStats:{};
- for(const k of ["memory","order"]){let v=save.skillStats[k]||{};save.skillStats[k]={ok:Math.max(0,Number(v.ok)||0),ng:Math.max(0,Number(v.ng)||0)};}
+ for(const k of ["memory","order","speaking"]){let v=save.skillStats[k]||{};save.skillStats[k]={ok:Math.max(0,Number(v.ok)||0),ng:Math.max(0,Number(v.ng)||0)};}
  save.eggProgress=Math.max(0,Math.min(20,Number(save.eggProgress)||0));
  save.settings=save.settings||{sound:true,motion:true};save.rewardItems=save.rewardItems||{tree:0,flower:0,shard:0,bonusCards:0,sparkle:0};for(const k of ["tree","flower","shard","bonusCards","sparkle"])save.rewardItems[k]=Math.max(0,Number(save.rewardItems[k])||0);save.worldPlaced=save.worldPlaced||{tree:0,flower:0};save.worldPlaced.tree=Math.max(0,Number(save.worldPlaced.tree)||0);save.worldPlaced.flower=Math.max(0,Number(save.worldPlaced.flower)||0);
  if(save.settings.sound==null)save.settings.sound=true;if(save.settings.motion==null)save.settings.motion=true;
@@ -643,7 +669,17 @@ function initApprovedMasterHome(){
  art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode");wrap.style.display="none";document.getElementById("home")?.classList.remove("hidden");showToast("ホーム画像を読み込めませんでした")},{once:true});
  if(art.complete&&art.naturalWidth>0)ready();
 }
-function syncMasterHome(){let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0);if(a){a.textContent=sv;a.setAttribute("aria-label","スター "+sv)}if(b){b.textContent=cv;b.setAttribute("aria-label","コイン "+cv)}let d=document.getElementById("masterDailyProgress");if(d){let ds=dailyData(),done=ds.filter((x,i)=>x[1]>=x[2]||save.daily.claimed[i]).length;d.textContent=done+"/3"}let rq=document.getElementById("masterReviewQuick");if(rq){let w=weakLetters(3);rq.classList.toggle("show",w.length>0);rq.textContent=w.length?"ふくしゅう "+w.join("・"):"";rq.setAttribute("aria-label",w.length?"苦手な文字 "+w.join("、")+" を復習":"苦手な文字を復習")}syncMasterLocks()}
+function syncMasterHome(){
+ let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),c=document.getElementById("masterCards"),e=document.getElementById("masterEgg");
+ let sv=Math.max(0,Number(save.stars)||0),cv=Math.max(0,Number(save.coins)||0),cards=collectionCount(),egg=Math.min(20,Math.max(0,Number(save.eggProgress)||0));
+ if(a){a.textContent=sv;a.parentElement?.setAttribute("aria-label","スター "+sv)}
+ if(b){b.textContent=cv;b.parentElement?.setAttribute("aria-label","コイン "+cv)}
+ if(c){c.textContent=cards;c.parentElement?.setAttribute("aria-label","ABCカード "+cards)}
+ if(e){e.textContent=egg;e.parentElement?.setAttribute("aria-label","たまごパワー "+egg)}
+ let d=document.getElementById("masterDailyProgress");if(d){let ds=dailyData(),done=ds.filter((x,i)=>x[1]>=x[2]||save.daily.claimed[i]).length;d.textContent=done+"/3"}
+ let rq=document.getElementById("masterReviewQuick");if(rq){let w=weakLetters(3);rq.classList.toggle("show",w.length>0);rq.textContent=w.length?"ふくしゅう "+w.join("・"):"";rq.setAttribute("aria-label",w.length?"苦手な文字 "+w.join("、")+" を復習":"苦手な文字を復習")}
+ syncMasterLocks()
+}
 function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;
 function saveProgressNow(){
@@ -701,8 +737,8 @@ function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false,lastGameOpenAt=0;
 function openGame(id){let now=Date.now();if(openGameBusy||now-lastGameOpenAt<500)return;lastGameOpenAt=now;openGameBusy=true;try{if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]);if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else{showToast("ゲームを開けませんでした");goHome()}}finally{openGameBusy=false}}
-function enterGameScreen(title){let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();wrongTapUntil=0;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
+function enterGameScreen(title){clearVoicePractice();let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();wrongTapUntil=0;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){clearVoicePractice();let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 const ALPHABET_AUDIO={
  A:{start:0.000,duration:3.094},B:{start:3.094,duration:2.709},C:{start:5.803,duration:3.671},D:{start:9.473,duration:2.972},
  E:{start:12.445,duration:2.973},F:{start:15.418,duration:3.141},G:{start:18.559,duration:2.949},H:{start:21.508,duration:2.901},
@@ -890,14 +926,43 @@ function finishMemory(){if(!beginFinishGuard("memory"))return;markClear("memory"
  let active=memory.scores.slice(0,memory.players),best=Math.max(...active),w=[];active.forEach((v,i)=>{if(v===best)w.push((i+1)+"P")});
  gameBody.innerHTML='<div class="finish-box"><h2>ぜんぶ そろった！</h2><div class="reward-progress">'+rewardProgressText()+'</div>'+clearNextStep()+'<div class="memory-celebrate">A B C</div><p>'+(memory.players===1?memory.totalPairs+'ペア クリア！　めくった回数 '+memory.moves+'回':w.join("・")+'　'+best+'ペア！')+'</p><p>'+(first?'はじめてクリア！ スター +2・コイン +5':'クリアボーナス　コイン +3')+'</p><button class="back" onclick="beginMemory('+memory.players+')">もう一回</button> <button class="back" onclick="startMemorySetup()">人数をかえる</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
+let voicePractice={rec:null,stream:null,chunks:[],url:""};
+function clearVoicePractice(){
+ try{if(voicePractice.rec&&voicePractice.rec.state==="recording")voicePractice.rec.stop()}catch(e){}
+ try{voicePractice.stream?.getTracks().forEach(t=>t.stop())}catch(e){}
+ if(voicePractice.url){try{URL.revokeObjectURL(voicePractice.url)}catch(e){}}
+ voicePractice={rec:null,stream:null,chunks:[],url:""}
+}
+function voiceStatus(msg){let e=document.getElementById("voicePracticeMsg");if(e)e.textContent=msg}
+function unlockVoiceModel(){let b=document.getElementById("voiceModelBtn");if(b)b.disabled=false;voiceStatus("声に出せたね。お手本とくらべよう！")}
+async function startVoiceCapture(){
+ clearVoicePractice();
+ if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==="undefined"){voiceStatus("マイクが使えないときは、声に出してから「声に出した！」を押してね。");unlockVoiceModel();return}
+ try{
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});voicePractice.stream=stream;voicePractice.chunks=[];
+  const rec=new MediaRecorder(stream);voicePractice.rec=rec;
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)voicePractice.chunks.push(e.data)};
+  rec.onstop=()=>{
+   try{voicePractice.stream?.getTracks().forEach(t=>t.stop())}catch(e){}
+   if(voicePractice.chunks.length){let blob=new Blob(voicePractice.chunks,{type:rec.mimeType||"audio/webm"});voicePractice.url=URL.createObjectURL(blob);let p=document.getElementById("voicePlayBtn");if(p)p.disabled=false}
+   unlockVoiceModel();
+  };
+  rec.start();let st=document.getElementById("voiceStopBtn");if(st)st.disabled=false;voiceStatus("録音中… アルファベットをはっきり言おう！");
+ }catch(e){voiceStatus("マイクを使えません。声に出してから「声に出した！」を押してね。");unlockVoiceModel()}
+}
+function stopVoiceCapture(){try{if(voicePractice.rec?.state==="recording")voicePractice.rec.stop()}catch(e){}}
+function playVoiceCapture(){if(!voicePractice.url)return;try{new Audio(voicePractice.url).play()}catch(e){}}
+function playVoiceModel(letter){sayLetter(letter);let b=document.getElementById("voiceDoneBtn");if(b)b.disabled=false;voiceStatus("自分の声とお手本をくらべたら、「できた！次へ」を押そう。")}
+function voiceControls(letter,doneFn){
+ return '<div class="voice-practice"><div class="voice-buttons"><button class="voice-rec" onclick="startVoiceCapture()">● 録音する</button><button id="voiceStopBtn" onclick="stopVoiceCapture()" disabled>■ とめる</button><button id="voicePlayBtn" onclick="playVoiceCapture()" disabled>▶ 自分の声</button><button onclick="unlockVoiceModel()">声に出した！</button></div><div class="voice-check"><button id="voiceModelBtn" class="sound-btn" onclick="playVoiceModel(\''+letter+'\')" disabled>お手本を聞く</button><button id="voiceDoneBtn" class="voice-next" onclick="'+doneFn+'" disabled>できた！ 次へ</button></div><div id="voicePracticeMsg" class="voice-msg">まず、文字を見て声に出そう。録音しても、録音なしでもOK！</div></div>'
+}
 let rocket={round:0,correct:0,target:"",maxRounds:8};
 function startRocket(){resetFinishGuard("rocket");recordGameStart("rocket");gameTitle.textContent="ABCロケット";rocket={round:0,correct:0,target:"",maxRounds:8,targets:makeTargetDeck(8)};nextRocket()}
 function nextRocket(){rocket.locked=false;
  rocket.round++;
  if(rocket.round>rocket.maxRounds){finishRocket();return}
  rocket.target=rocket.targets[rocket.round-1];let choices=choicesWithTarget(rocket.target,4);
- let height=Math.min(88,(rocket.correct/rocket.maxRounds)*82+4);
- gameBody.innerHTML='<div class="game-help">音を聞く → 同じ文字をえらぶ → ロケットをとばそう！</div><div class="rocket-game"><div class="rocket-sky"><div class="rocket-stars">A　B　C　D　E　F</div><div class="rocket-orbit">ABC PLANET</div><div class="rocket-craft" style="bottom:'+height+'%"><span class="rocket-window" aria-hidden="true"></span><span class="rocket-flame" aria-hidden="true"></span></div><div class="rocket-cloud c1"></div><div class="rocket-cloud c2"></div><div class="rocket-ground"></div></div><div class="rocket-panel"><div class="listen-status"><b>'+rocket.round+' / '+rocket.maxRounds+'</b><span>パワー '+rocket.correct+'</span></div><div class="message">聞こえた文字をえらんで、ロケットにパワーをためよう！ <button class="sound-btn" onclick="sayLetter(rocket.target)" aria-label="アルファベットの音をもう一度聞く">もう一度聞く</button></div><div class="rocket-choices">'+choices.map(x=>'<button class="rocket-letter" onclick="answerRocket(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="rocketMsg" class="message"></div></div></div>';
+ gameBody.innerHTML='<div class="game-help">音を聞く → 同じ文字をえらぶ → ロケットをとばそう！</div><div class="rocket-game redesign-split"><div class="illustration-stage rocket-watercolor"><div class="illustration-badge">POWER '+rocket.correct+' / '+rocket.maxRounds+'</div></div><div class="rocket-panel"><div class="listen-status"><b>'+rocket.round+' / '+rocket.maxRounds+'</b><span>パワー '+rocket.correct+'</span></div><div class="message">聞こえた文字をえらんで、ロケットにパワーをためよう！ <button class="sound-btn" onclick="sayLetter(rocket.target)">もう一度聞く</button></div><div class="rocket-choices">'+choices.map(x=>'<button class="rocket-letter" onclick="answerRocket(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="rocketMsg" class="message"></div></div></div>';
  later(()=>sayLetter(rocket.target),400);
 }
 function answerRocket(x,el){
@@ -926,10 +991,10 @@ function startMonster(){resetFinishGuard("monster");recordGameStart("monster");g
 function nextMonster(){
  monster.round++;
  if(monster.round>monster.maxRounds){finishMonster();return}
- monster.locked=false;
- monster.target=monster.targets[monster.round-1];let choices=choicesWithTarget(monster.target,4);
- let faces=["M","G","R","Z"],face=faces[(monster.round-1)%faces.length];
- gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap"><div class="battle-stage"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-name">LETTER MONSTER</div><div class="monster-body mtype'+((monster.round-1)%4+1)+'"><div class="monster-horns"></div><div class="monster-eyes"><i></i><i></i></div><div class="monster-mouth"></div><div class="monster-mark">'+face+'</div></div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)" aria-label="アルファベットの音をもう一度聞く">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
+ monster.locked=false;monster.target=monster.targets[monster.round-1];let choices=choicesWithTarget(monster.target,4);
+ const names=["しずくスライム","もりのピコ","ほのおキツネ","ひかりビースト","こおりウルフ","いわゴーレム","よるのバット","しろふわゴースト"];
+ let mi=(monster.round-1)%8;
+ gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
  later(()=>sayLetter(monster.target),450);
 }
 function answerMonster(x,el){
@@ -939,7 +1004,7 @@ function answerMonster(x,el){
    monster.locked=true;monster.combo++;lockAnswerButtons(450);monster.bestCombo=Math.max(monster.bestCombo,monster.combo);monster.power++;
    el.classList.add("correct");earn(2,3);
    let msg="ヒット！";
-   if(monster.power>=3){monster.power=0;earn(2,4);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-body").classList.add("special-hit")}
+   if(monster.power>=3){monster.power=0;earn(2,4);msg="ABC スーパービーム！ ボーナス！";document.querySelector(".monster-art")?.classList.add("special-hit")}
    persist();document.getElementById("monsterMsg").textContent=msg;later(nextMonster,850);
  }else{
    if(!acceptWrongTap(el))return;
@@ -964,24 +1029,12 @@ function startTreasure(){resetFinishGuard("treasure");recordGameStart("treasure"
 function nextTreasure(){
  treasure.round++;
  if(treasure.round>treasure.maxRounds){finishTreasure();return}
- treasure.locked=false;
- treasure.target=treasure.targets[treasure.round-1];let letters=choicesWithTarget(treasure.target,10);
- gameBody.innerHTML='<div class="game-help">音を聞く → 地図から文字をさがす → たからを集めよう！</div><div class="treasure-wrap"><div class="treasure-map"><div class="map-sea"></div><div class="island island-a"></div><div class="island island-b"></div><div class="palm p1tree"><i></i><i></i><i></i></div><div class="palm p2tree"><i></i><i></i><i></i></div><div class="mountain"></div><div class="river"></div><div class="path-dots">• • • • • • • •</div><div class="chest"></div>'+letters.map((x,i)=>'<button class="hidden-letter" style="left:'+treasureSpots[i].x+'%;top:'+treasureSpots[i].y+'%" onclick="findTreasure(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="treasure-scroll"><p>海ぞくからのミッション</p><div class="message">聞こえた文字を 地図からさがそう！</div><button class="sound-btn big-sound" onclick="sayLetter(treasure.target)">音を聞く</button></div><div id="treasureMsg" class="message">地図を よーく見てね。</div></div></div>';
- later(()=>sayLetter(treasure.target),450);
+ treasure.locked=false;treasure.target=treasure.targets[treasure.round-1];
+ gameBody.innerHTML='<div class="game-help">宝箱に出た文字を見る → 声に出す → 自分の声とお手本をくらべよう！</div><div class="treasure-wrap redesign-split"><div class="illustration-stage treasure-watercolor"><div class="treasure-letter-card">'+treasure.target+'</div></div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="message"><b class="speak-letter">'+treasure.target+'</b><br>この文字を声に出してみよう！</div>'+voiceControls(treasure.target,"completeTreasureSpeak()")+'</div></div>';
 }
-function findTreasure(x,el){
- if(treasure.locked)return;
- if(x===treasure.target){
-   recordLetterResult(treasure.target,true);
-   treasure.locked=true;treasure.found++;lockAnswerButtons(450);el.classList.add("treasure-found");earn(1,3);persist();
-   document.getElementById("treasureMsg").textContent="みつけた！ たからをゲット！";
-   later(nextTreasure,900);
- }else{
-   if(!acceptWrongTap(el))return;
-   recordLetterResult(treasure.target,false);persist();
-   el.classList.add("treasure-miss");document.getElementById("treasureMsg").textContent="そこじゃないみたい。もう一度聞こう！";
-   later(()=>el.classList.remove("treasure-miss"),450);sayLetter(treasure.target);
- }
+function completeTreasureSpeak(){
+ if(treasure.locked)return;treasure.locked=true;treasure.found++;recordSkillResult("speaking",true);earn(1,3);persist();clearVoicePractice();voiceStatus("できた！");
+ later(nextTreasure,650);
 }
 function finishTreasure(){if(!beginFinishGuard("treasure"))return;markClear("treasure");
  let first=firstClearBonus("treasure",3,10);if(!first)earn(0,8);persist();
@@ -994,27 +1047,12 @@ function nextTrain(){
  if(train.round>train.maxRounds){finishTrain();return}
  train.locked=false;
  let start=train.starts[train.round-1],seq=ABC.slice(start,start+4),missing=train.round%2?1:2;
- train.target=seq[missing];
- let shown=seq.map((x,i)=>i===missing?"?":x);
- let ti=ABC.indexOf(train.target),near=[ABC[ti-2],ABC[ti-1],ABC[ti+1],ABC[ti+2]].filter(Boolean).filter(x=>!seq.includes(x));let wrong=shuffle([...new Set(near.concat(sample(8).filter(x=>!seq.includes(x)&&x!==train.target)))]).slice(0,3),choices=shuffle([train.target,...wrong]);
- gameBody.innerHTML='<div class="game-help">文字のじゅんばんを見る → ？に入る文字をえらぼう！</div><div class="train-scene"><div class="train-sky"><div class="train-cloud tc1"></div><div class="train-cloud tc2"></div><div class="train-hills"></div><div class="train-track"></div><div class="train-engine"><span></span></div><div class="train-cars">'+shown.map((x,i)=>'<div class="train-car '+(i===missing?'missing-car':'')+'"><b>'+x+'</b><i></i><i></i></div>').join("")+'</div></div><div class="train-panel"><div class="listen-status"><b>STATION '+train.round+' / '+train.maxRounds+'</b><span>せいかい '+train.correct+'</span></div><div class="message">？に入るアルファベットは どれ？</div><div class="train-sequence">'+shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div><div class="train-choices">'+choices.map(x=>'<button class="train-letter" onclick="answerTrain(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="trainMsg" class="message">順番を よく考えよう！</div></div></div>';
+ train.target=seq[missing];train.shown=seq.map((x,i)=>i===missing?"?":x);
+ gameBody.innerHTML='<div class="game-help">文字のじゅんばんを見る → ？に入る文字を声に出す → お手本で確認！</div><div class="train-scene redesign-split"><div class="illustration-stage train-watercolor"><div class="train-overlay-seq">'+train.shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div></div><div class="train-panel"><div class="listen-status"><b>STATION '+train.round+' / '+train.maxRounds+'</b><span>せいかい '+train.correct+'</span></div><div class="message">？に入るアルファベットを声に出そう！</div><div class="train-sequence">'+train.shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div>'+voiceControls(train.target,"completeTrainSpeak()")+'</div></div>';
 }
-function answerTrain(x,el){
- if(train.locked)return;
- sayLetter(x);
- if(x===train.target){
-   recordSkillResult("order",true);
-   train.locked=true;train.correct++;lockAnswerButtons(450);el.classList.add("correct");earn(1,2);persist();
-   let m=document.querySelector(".missing-car b");if(m)m.textContent=train.target;
-   document.getElementById("trainMsg").textContent="せいかい！ 列車が出発！";
-   document.querySelector(".train-cars").classList.add("depart");document.querySelector(".train-engine").classList.add("depart-engine");
-   later(nextTrain,1000);
- }else{
-   if(!acceptWrongTap(el))return;
-   recordSkillResult("order",false);persist();
-   el.classList.add("listen-wrong");document.getElementById("trainMsg").textContent="おしい！ 前とうしろの文字を見て、順番に言ってみよう。";
-   later(()=>el.classList.remove("listen-wrong"),450);
- }
+function completeTrainSpeak(){
+ if(train.locked)return;train.locked=true;train.correct++;recordSkillResult("speaking",true);recordSkillResult("order",true);earn(1,2);persist();clearVoicePractice();
+ later(nextTrain,650);
 }
 function finishTrain(){if(!beginFinishGuard("train"))return;markClear("train");
  let first=firstClearBonus("train",4,10);if(!first)earn(0,8);persist();
@@ -1026,23 +1064,29 @@ function nextBoss(){
  if(boss.hp<=0||boss.round>=boss.maxRounds){finishBoss();return}
  boss.round++;boss.locked=false;
  let phase=boss.round<=3?1:boss.round<=6?2:3;
- boss.type=phase===1?"sound":phase===2?"shape":"order";
- let title=phase===1?"PHASE 1　こえのこうげき":phase===2?"PHASE 2　まぎらわしのこうげき":"FINAL PHASE　じゅんばんのこうげき";
+ boss.type=phase===1?"sound":phase===2?"speak":"order";
+ let title=phase===1?"PHASE 1　きいてえらぶ":phase===2?"PHASE 2　見て発声！":"FINAL PHASE　じゅんばん";
  let prompt="",choices=[],display="";
  if(boss.type==="sound"){
    boss.target=boss.targets[boss.round-1];choices=choicesWithTarget(boss.target,4);
    prompt='ボスが さけんだ文字をえらべ！ <button class="sound-btn" onclick="sayLetter(boss.target)">もう一度聞く</button>';
- }else if(boss.type==="shape"){
-   boss.target=boss.targets[boss.round-1];let g=similarGroups.find(x=>x.includes(boss.target))||[];choices=choicesWithTarget(boss.target,4,g);
-   prompt='音と形を よく見てえらべ！ <button class="sound-btn" onclick="sayLetter(boss.target)">音を聞く</button>';
+ }else if(boss.type==="speak"){
+   boss.target=boss.targets[boss.round-1];
+   prompt='<b class="boss-speak-letter">'+boss.target+'</b><br>この文字を声に出して、ボスに声のこうげき！';
+   display=voiceControls(boss.target,"completeBossSpeak()");
  }else{
    let s=Math.floor(Math.random()*23),seq=ABC.slice(s,s+4),m=1+Math.floor(Math.random()*2);boss.target=seq[m];
    display='<div class="boss-seq">'+seq.map((x,i)=>'<span>'+(i===m?'?':x)+'</span>').join('<em>→</em>')+'</div>';
    let ti=ABC.indexOf(boss.target),near=[ABC[ti-2],ABC[ti-1],ABC[ti+1],ABC[ti+2]].filter(Boolean).filter(x=>!seq.includes(x));choices=shuffle([boss.target,...shuffle([...new Set(near.concat(sample(8).filter(x=>!seq.includes(x)&&x!==boss.target)))]).slice(0,3)]);
    prompt='？に入る文字で バリアをやぶれ！';
  }
- gameBody.innerHTML='<div class="game-help">3つのステージにちょうせん！ 音・形・じゅんばんを使ってボスをたおそう！</div><div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display+'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
- if(boss.type!=="order")later(()=>sayLetter(boss.target),450);
+ gameBody.innerHTML='<div class="game-help">3つのステージにちょうせん！ 音・形・じゅんばんを使ってボスをたおそう！</div><div class="boss-wrap"><div class="boss-stage phase'+phase+'"><div class="boss-title">'+title+'</div><div class="boss-hp-label">BOSS</div><div class="boss-hpbar"><i style="width:'+(boss.hp/9*100)+'%"></i></div><div class="boss-creature"><div class="boss-crown"></div><div class="boss-eye e1"></div><div class="boss-eye e2"></div><div class="boss-core">ABC</div><div class="boss-arm a1"></div><div class="boss-arm a2"></div></div><div class="boss-player">あなたのHP　'+Array.from({length:5},(_,i)=>i<boss.playerHp?"●":"○").join(" ")+'　　れんぞく '+boss.combo+'</div></div><div class="boss-panel"><div class="message">'+prompt+'</div>'+display++(boss.type==="speak"?'':'<div class="boss-choices">'+choices.map(x=>'<button class="boss-letter" onclick="answerBoss(\''+x+'\',this)">'+x+'</button>').join("")+'</div>')+'<div id="bossMsg" class="message">ボスのHPを ぜんぶへらそう！</div></div></div>';
+ if(boss.type==="sound")later(()=>sayLetter(boss.target),450);
+}
+function completeBossSpeak(){
+ if(boss.locked||boss.type!=="speak")return;boss.locked=true;boss.hp--;boss.combo++;recordSkillResult("speaking",true);earn(2,4);persist();clearVoicePractice();
+ let msg=document.getElementById("bossMsg");if(msg)msg.textContent="声のこうげき！ ヒット！";
+ later(nextBoss,800);
 }
 function answerBoss(x,el){
  if(boss.locked||boss.hp<=0)return;
@@ -1232,9 +1276,8 @@ function ensureWorldSave(){
  if(!save.worldPlaced)save.worldPlaced={tree:0,flower:0};
 }
 function openMyWorld(){worldPlaceBusy=false;enterGameScreen("マイワールド");ensureMilestoneShards();ensureWorldSave();persist();
- let lv=save.worldLv||1,trees=save.worldPlaced.tree||0,flowers=save.worldPlaced.flower||0;
- let buddy=buddies.find(b=>b[0]===save.activeBuddy);
- gameBody.innerHTML=longTermHub()+'<div class="myworld-head"><div><b>ABCワールド Lv.'+lv+'</b><small>ちがう練習をクリアするほど、島が少しずつにぎやかになるよ。</small><span class="world-spirit">島のひかり：'+worldSpiritLabel()+'</span></div><div class="world-stock">もっているもの　木 '+save.rewardItems.tree+'　お花 '+save.rewardItems.flower+'</div></div><div class="world-canvas lv'+Math.min(lv,6)+'"><div class="world-sun"></div><div class="world-cloud wc1"></div><div class="world-cloud wc2"></div><div class="world-island"><div class="world-river"></div>'+worldBuildings(lv)+worldDecor("tree",trees)+worldDecor("flower",flowers)+(buddy?'<div class="world-buddy"><div class="buddy-creature buddy-c'+(buddies.indexOf(buddy)%6)+'"><span class="buddy-ear l"></span><span class="buddy-ear r"></span><i></i><i></i><em>'+buddy[2]+'</em></div><b>'+buddy[0]+'</b></div>':'')+'</div><div class="far-island">'+(lv>=6?'？？？':'')+'</div><div class="world-whisper">'+(save.secretDiscovered?'ひみつの島への道が見えている。でも、その奥にはまだ大きな門が……':worldSpirit()>=90?'空のむこうで、大きな光が動いた……':worldSpirit()>=55?'遠くの島が、少しずつ近づいている気がする……':worldSpirit()>=30?'海のむこうに、何か光っている……':'島を育てると、まだ知らない場所が見つかるかも……')+'</div></div><div class="world-actions"><div><h3>島をかざろう</h3><button onclick="placeWorldItem(\'tree\')" '+(save.rewardItems.tree<1?'disabled':'')+'>木を1本おく</button><button onclick="placeWorldItem(\'flower\')" '+(save.rewardItems.flower<1?'disabled':'')+'>お花を1つおく</button></div><div class="world-growth"><b>島の成長</b>'+worldGrowthRows(lv)+'</div></div>';
+ let lv=save.worldLv||1,trees=save.worldPlaced.tree||0,flowers=save.worldPlaced.flower||0,buddy=buddies.find(b=>b[0]===save.activeBuddy);
+ gameBody.innerHTML=longTermHub()+'<div class="myworld-head"><div><b>ABCワールド Lv.'+lv+'</b><small>遊ぶほど、島が少しずつ育っていくよ。</small><span class="world-spirit">島のひかり：'+worldSpiritLabel()+'</span></div><div class="world-stock">木 '+save.rewardItems.tree+'　お花 '+save.rewardItems.flower+'</div></div><div class="world-watercolor"><div class="world-level-badge">WORLD Lv.'+lv+'</div>'+(buddy?'<div class="world-buddy-badge">いっしょに冒険中：'+buddy[0]+'</div>':'')+'<div class="world-whisper-card">'+(save.secretDiscovered?'ひみつの島への道が見えている！':worldSpirit()>=55?'遠くの島が、少しずつ近づいている気がする……':'島を育てると、まだ知らない場所が見つかるかも……')+'</div></div><div class="world-actions"><div><h3>島を育てよう</h3><button onclick="placeWorldItem(\'tree\')" '+(save.rewardItems.tree<1?'disabled':'')+'>木を1本ふやす</button><button onclick="placeWorldItem(\'flower\')" '+(save.rewardItems.flower<1?'disabled':'')+'>お花を1つふやす</button><p>かざり：木 '+trees+'本・お花 '+flowers+'こ</p></div><div class="world-growth"><b>島の成長</b>'+worldGrowthRows(lv)+'</div></div>';
  render();normalizeButtons();
 }
 function worldBuildings(lv){
