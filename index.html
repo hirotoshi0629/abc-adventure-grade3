@@ -566,7 +566,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-release-candidate-pass41";
+const APP_BUILD="2026.09.27-release-candidate-pass42";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -706,15 +706,9 @@ function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.ga
 function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6}
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false,lastGameOpenAt=0;
-function openGame(id){let now=Date.now();if(openGameBusy||now-lastGameOpenAt<500)return;lastGameOpenAt=now;openGameBusy=true;try{if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]);if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else{showToast("ゲームを開けませんでした");goHome()}}finally{openGameBusy=false}}
-function enterGameScreen(title){let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();wrongTapUntil=0;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
-function goHome(){let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
-let speechReady=false;
-function primeSpeech(){if(!("speechSynthesis" in window))return false;speechReady=true;try{let u=new SpeechSynthesisUtterance(" ");u.volume=0;try{speechSynthesis.speak(u)}catch(e){}}catch(e){}return true}
-document.addEventListener("pointerdown",()=>{if(!speechReady)primeSpeech()},{once:true,passive:true});
-if("speechSynthesis" in window)speechSynthesis.addEventListener?.("voiceschanged",()=>{speechReady=false});
-const LETTER_SPEECH={A:"ay",B:"bee",C:"see",D:"dee",E:"ee",F:"eff",G:"gee",H:"aitch",I:"eye",J:"jay",K:"kay",L:"ell",M:"em",N:"en",O:"oh",P:"pee",Q:"cue",R:"are",S:"ess",T:"tee",U:"you",V:"vee",W:"double you",X:"ex",Y:"why",Z:"zee"};
-const LETTER_RATE={H:.66,M:.84,N:.78,O:.68,V:.68,W:.62};
+function openGame(id){let now=Date.now();if(openGameBusy||now-lastGameOpenAt<500)return;lastGameOpenAt=now;openGameBusy=true;try{if(!gameUnlocked(id)){lockedGame(id);return;}enterGameScreen(titles[id]);if(["karuta","memory","listen","rocket","monster","treasure","boss"].includes(id))primeRecordedAudio(); if(id==="karuta") startKarutaSetup(); else if(id==="memory") startMemorySetup(); else if(id==="listen") startListen(); else if(id==="rocket") startRocket(); else if(id==="monster") startMonster(); else if(id==="treasure") startTreasure(); else if(id==="train") startTrain(); else if(id==="boss") startBoss(); else{showToast("ゲームを開けませんでした");goHome()}}finally{openGameBusy=false}}
+function enterGameScreen(title){let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();wrongTapUntil=0;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");if(mh)mh.style.display="none";document.body.classList.remove("master-mode");document.body.classList.add("inner-screen");newSession();home.classList.add("hidden");game.classList.add("active");if(title)gameTitle.textContent=title;window.scrollTo(0,0)}
+function goHome(){let ce=document.getElementById("adventureCelebration");if(ce)ce.remove();openGameBusy=false;soundAuditRun++;stopRecordedLetter?.();let mh=document.getElementById("masterHome");document.body.classList.remove("inner-screen");if(mh&&mh.classList.contains("ready")){mh.style.display="block";document.body.classList.add("master-mode")};newSession();game.classList.remove("active");home.classList.remove("hidden");window.scrollTo(0,0);render();normalizeButtons()}
 const ALPHABET_AUDIO={
  A:{start:0.000,duration:3.094},B:{start:3.094,duration:2.709},C:{start:5.803,duration:3.671},D:{start:9.473,duration:2.972},
  E:{start:12.445,duration:2.973},F:{start:15.418,duration:3.141},G:{start:18.559,duration:2.949},H:{start:21.508,duration:2.901},
@@ -739,13 +733,6 @@ async function primeRecordedAudio(){
  }catch(e){recordedAlphabetAudio.muted=false;if(e&&e.name!=="NotAllowedError")recordedAudioFailed=true}
 }
 document.addEventListener("pointerdown",()=>{primeRecordedAudio()},{once:true,passive:true});
-function preferredEnglishVoice(){
- let vs=speechSynthesis.getVoices()||[];
- const preferred=["Samantha","Ava","Allison","Susan","Karen","Moira","Google US English","Microsoft Aria","Microsoft Jenny","Microsoft Zira"];
- for(const name of preferred){let v=vs.find(x=>/^en-US$/i.test(x.lang)&&x.name.toLowerCase().includes(name.toLowerCase()));if(v)return v}
- return vs.find(x=>/^en-US$/i.test(x.lang)&&x.localService)||vs.find(x=>/^en-US$/i.test(x.lang))||vs.find(x=>/^en(-|_)/i.test(x.lang)&&x.localService)||vs.find(x=>/^en(-|_)/i.test(x.lang));
-}
-function currentEnglishVoiceName(){if(!("speechSynthesis" in window))return "なし";let v=preferredEnglishVoice();return v?v.name+" ("+v.lang+")":"端末の英語音声"}
 const EXPECTED_RECORDED_AUDIO_END=67.10;
 function recordedAudioHealthy(){let d=Number(recordedAlphabetAudio.duration);return !recordedAudioFailed&&Number.isFinite(d)&&d>=EXPECTED_RECORDED_AUDIO_END}
 function validateRecordedAudio(){let d=Number(recordedAlphabetAudio.duration);if(Number.isFinite(d)&&d<EXPECTED_RECORDED_AUDIO_END){recordedAudioFailed=true;console.warn("Recorded alphabet audio is shorter than expected:",d)}}
@@ -760,7 +747,7 @@ function sayLetter(l){
  l=String(l||"").trim().toUpperCase();if(!/^[A-Z]$/.test(l))return;
  const seg=ALPHABET_AUDIO[l];
  if(!seg||recordedAudioFailed){fallbackSayLetter(l);return}
- stopRecordedLetter();try{if("speechSynthesis" in window)speechSynthesis.cancel()}catch(e){}
+ stopRecordedLetter();
  try{
   recordedAlphabetAudio.currentTime=seg.start;
   const p=recordedAlphabetAudio.play();
@@ -1414,7 +1401,7 @@ function openSettings(){enterGameScreen("せってい");
 }
 async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
 let soundAuditRun=0;
-function stopAlphabetSoundCheck(){soundAuditRun++;stopRecordedLetter();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){};let s=document.getElementById("soundAuditStatus");if(s)s.textContent="停止しました"}
+function stopAlphabetSoundCheck(){soundAuditRun++;stopRecordedLetter();let s=document.getElementById("soundAuditStatus");if(s)s.textContent="停止しました"}
 function playAlphabetSoundCheck(){
  let run=++soundAuditRun,i=0,s=document.getElementById("soundAuditStatus");
  function next(){if(run!==soundAuditRun||i>=ABC.length){if(run===soundAuditRun&&s)s.textContent="A〜Z の確認が終わりました";return}let L=ABC[i++];if(s)s.textContent=L+" を再生中　"+i+" / 26";sayLetter(L);setTimeout(next,Math.ceil((ALPHABET_AUDIO[L]?.duration||1.3)*1000)+320)}
@@ -1448,7 +1435,7 @@ window.addEventListener("pagehide",()=>{try{saveProgressNow()}catch(e){}});
 document.addEventListener("visibilitychange",()=>{
  if(document.hidden){
   hiddenDuringPlay=game.classList.contains("active");hiddenAt=Date.now();
-  stopRecordedLetter();if("speechSynthesis" in window)try{speechSynthesis.cancel()}catch(e){}
+  stopRecordedLetter();
   try{saveProgressNow()}catch(e){}
  }else{
   let away=Date.now()-hiddenAt;
