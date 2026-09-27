@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-crisp-home-kids-ui-features";
+const CACHE_NAME="abc-adventure-grade3-mobile-game-lobby-rebuild";
 const CORE=[
  "./",
  "./index.html",
