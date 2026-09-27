@@ -688,6 +688,30 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 .no-motion .boss-stage:before{animation:none!important}
 @media(prefers-reduced-motion:reduce){.boss-stage:before{animation:none!important}}
 
+
+/* 2026.09.27 guided-flow pass */
+.master-hotspot.recommended-game{
+ outline:7px solid rgba(255,214,54,.9)!important;
+ outline-offset:-7px!important;
+ border-radius:22px!important;
+ animation:recommendedPulse 1.25s ease-in-out infinite alternate;
+}
+.game.recommended-game{
+ outline:6px solid #ffd633!important;
+ outline-offset:2px!important;
+ box-shadow:0 5px 0 rgba(92,61,30,.35),0 0 0 10px rgba(255,214,51,.22)!important;
+}
+.game.recommended-game:after{
+ content:"おすすめ";position:absolute;right:8px;top:8px;padding:5px 9px;border-radius:999px;
+ background:#ffcf31;color:#553500;border:2px solid #fff;font-size:12px;font-weight:1000;z-index:5
+}
+.clear-next .recommended-action{font-size:1.05em;min-width:190px}
+.clear-next-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:8px}
+.next-goal{display:block;width:100%;padding:7px 10px;border-radius:12px;background:#fff6ae;color:#6c4900;text-align:center}
+@keyframes recommendedPulse{from{filter:brightness(1)}to{filter:brightness(1.08)}}
+.no-motion .master-hotspot.recommended-game{animation:none!important}
+@media(prefers-reduced-motion:reduce){.master-hotspot.recommended-game{animation:none!important}}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -771,7 +795,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.3.1-monster-boss";
+const APP_BUILD="2026.09.27-redesign-v2.4.0-guided-flow";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -857,9 +881,11 @@ function syncMasterHome(){
  if(e){e.textContent=egg;e.parentElement?.setAttribute("aria-label","たまごパワー "+egg)}
  let d=document.getElementById("masterDailyProgress");if(d){let ds=dailyData(),done=ds.filter((x,i)=>x[1]>=x[2]||save.daily.claimed[i]).length;d.textContent=done+"/3"}
  let rq=document.getElementById("masterReviewQuick");if(rq){let w=weakLetters(3);rq.classList.toggle("show",w.length>0);rq.textContent=w.length?"ふくしゅう "+w.join("・"):"";rq.setAttribute("aria-label",w.length?"苦手な文字 "+w.join("、")+" を復習":"苦手な文字を復習")}
+ let rec=recommendedPractice();document.querySelectorAll("[data-master-game]").forEach(x=>x.classList.remove("recommended-game"));
+ let rb=document.getElementById("masterGame-"+rec.id);if(rb){rb.classList.add("recommended-game");rb.setAttribute("aria-label",(rb.getAttribute("aria-label")||rec.text)+"・おすすめ")}
  syncMasterLocks()
 }
-function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
+function render(){ensureEconomy();syncEarnedTitles();refreshDailyForToday();document.body.classList.toggle("no-motion",!!(save.settings&&save.settings.motion===false));if(stars)stars.textContent=save.stars;if(coins)coins.textContent=save.coins;if(worldLv)worldLv.textContent=save.worldLv;syncMasterHome();refreshGameLocks();let rec=recommendedPractice();document.querySelectorAll(".home .game").forEach(x=>x.classList.remove("recommended-game"));let rg=document.querySelector(".home .game[onclick*=\"'"+rec.id+"'\"]");if(rg)rg.classList.add("recommended-game");let dh=document.getElementById("dailyHomeProgress");if(dh){let n=(save.daily?.claimed||[]).filter(Boolean).length;dh.textContent=n?("クリア "+n+" / 3"):"3つのミッションにちょうせん！"}}
 let saveWarningShown=false;
 function saveProgressNow(){
  let raw=JSON.stringify(save),previous=null;
@@ -913,14 +939,14 @@ function reviewShortcut(){
  let w=weakLetters(5);return w.length?'<button class="back review-shortcut" onclick="listen.level=\'review\';openGame(\'listen\')">ふくしゅう '+w.slice(0,3).join("・")+'</button>':''
 }
 function clearNextStep(){
- let k=practiceClearKinds(),review=reviewShortcut();
- if(k<5)return '<div class="clear-next"><b>つぎの目標</b><span>あと '+(5-k)+'しゅるいクリアで ボスへの道がひらく！</span><button class="back" onclick="openAdventureMap()">ぼうけんマップ</button>'+review+'</div>';
- if(!(save.clears?.boss>0))return '<div class="clear-next"><b>つぎの目標</b><span>ボスへの道がひらいた！</span><button class="back" onclick="openGame(\'boss\')">ボスバトルへ</button>'+review+'</div>';
- let sec=secretState();return '<div class="clear-next"><b>つぎの目標</b><span>'+(sec.open?'？？？の島への道が見えている！':'ボスの先の？？？をさがそう。なかま・島・かけらがカギ！')+'</span><button class="back" onclick="openAdventureMap()">ぼうけんマップ</button>'+review+'</div>';
+ let k=practiceClearKinds(),r=recommendedPractice();
+ if(k<5)return '<div class="clear-next"><b>つぎの目標</b><span>あと '+(5-k)+'しゅるいクリアで ボスへの道がひらく！</span><div class="clear-next-actions">'+recommendationButton()+'<button class="back" onclick="openAdventureMap()">ぼうけんマップ</button></div></div>';
+ if(!(save.clears?.boss>0))return '<div class="clear-next"><b>つぎの目標</b><span>ボスへの道がひらいた！</span><div class="clear-next-actions">'+recommendationButton()+'<button class="back" onclick="openAdventureMap()">ぼうけんマップ</button></div></div>';
+ let sec=secretState();return '<div class="clear-next"><b>つぎの目標</b><span>'+(sec.open?'？？？の島への道が見えている！':'ボスの先の？？？をさがそう。なかま・島・かけらがカギ！')+'</span><div class="clear-next-actions"><button class="back recommended-action" onclick="openAdventureMap()">ぼうけんマップへ</button>'+((r.kind==="review")?recommendationButton():'')+'</div></div>';
 }
 function rewardProgressText(){ensureEconomy();let cards=collectionCount(),egg=Math.min(20,save.eggProgress||0);return 'ABCカード '+cards+' / 260　・　たまごパワー '+egg+' / 20　・　ワールド Lv.'+(save.worldLv||1)}
 function firstClearBonus(id,starsN,coinsN){save.firstBonuses=save.firstBonuses||{};if(save.firstBonuses[id])return false;save.firstBonuses[id]=true;earn(starsN,coinsN);return true}
-function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;persist()}
+function recordGameStart(id){save.plays=(save.plays||0)+1;save.gamePlays=save.gamePlays||{};save.gamePlays[id]=(save.gamePlays[id]||0)+1;save.lastGame=id;persist()}
 function gameUnlocked(id){if(id!=="boss")return true;return (save.worldLv||1)>=6}
 function lockedGame(id){enterGameScreen(titles[id]);gameBody.innerHTML='<div class="finish-box"><h2>ボスへの道は まだ きりの中……</h2><p>7つの練習から、ちがう種類を5つクリアするとマイワールドが Lv.6 になってボスへ進めるよ！</p><button class="back" onclick="openAdventureMap()">ぼうけんマップを見る</button> <button class="back" onclick="goHome()">ホーム</button></div>'}
 let openGameBusy=false,lastGameOpenAt=0;
@@ -1314,13 +1340,18 @@ function finishBoss(){
 }
 function recommendedPractice(){
  const ids=["karuta","memory","listen","rocket","monster","treasure","train"],names={karuta:"ABCかるた",memory:"ABC神経衰弱",listen:"聞いてタッチ！",rocket:"ABCロケット",monster:"アルファベットモンスター",treasure:"ABCトレジャーハント",train:"ABCトレイン"};
- let left=ids.filter(id=>!(save.clears?.[id]>0));
- if(practiceClearKinds()<5&&left.length){let id=left.sort((a,b)=>(save.gamePlays?.[a]||0)-(save.gamePlays?.[b]||0))[0];return {kind:"new",text:"つぎは "+names[id],action:"openGame('"+id+"')"}}
+ let last=save.lastGame||"",left=ids.filter(id=>!(save.clears?.[id]>0));
+ if(practiceClearKinds()<5&&left.length){
+   let pool=left.filter(id=>id!==last);if(!pool.length)pool=left;
+   let id=pool.sort((a,b)=>(save.gamePlays?.[a]||0)-(save.gamePlays?.[b]||0))[0];
+   return {kind:"new",id,text:"つぎは "+names[id],action:"openGame('"+id+"')"}
+ }
+ if(!(save.clears?.boss>0)&&gameUnlocked("boss"))return {kind:"boss",id:"boss",text:"ボスバトルへ",action:"openGame('boss')"};
  let weak=weakLetters(3);
- if(weak.length)return {kind:"review",text:"ふくしゅう "+weak.join("・"),action:"listen.level='review';openGame('listen')"};
- if(!(save.clears?.boss>0)&&gameUnlocked("boss"))return {kind:"boss",text:"ボスバトルへ",action:"openGame('boss')"};
- let least=[...ids].sort((a,b)=>(save.gamePlays?.[a]||0)-(save.gamePlays?.[b]||0))[0];
- return {kind:"variety",text:"今日は "+names[least],action:"openGame('"+least+"')"}
+ if(weak.length)return {kind:"review",id:"listen",text:"ふくしゅう "+weak.join("・"),action:"listen.level='review';openGame('listen')"};
+ let pool=ids.filter(id=>id!==last);if(!pool.length)pool=ids;
+ let least=[...pool].sort((a,b)=>(save.gamePlays?.[a]||0)-(save.gamePlays?.[b]||0))[0];
+ return {kind:"variety",id:least,text:"今日は "+names[least],action:"openGame('"+least+"')"}
 }
 function recommendationButton(){let r=recommendedPractice();return '<button class="back recommended-action" onclick="'+r.action+'">'+r.text+'</button>'}
 function nextAdventureGoal(){
