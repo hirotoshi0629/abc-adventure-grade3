@@ -1292,7 +1292,12 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="ABCアドベンチャー">
-</head><body><main class="app">
+<style>
+/* Kids mobile-game boss art refresh */
+.boss-creature{background-image:url("assets/boss-kids.png?v=20260927-2");background-repeat:no-repeat;background-position:center;background-size:contain;background-color:transparent;border:0;box-shadow:none;border-radius:0;width:min(360px,92%);height:320px;margin:24px auto 12px;}
+.boss-creature>*{display:none!important}
+@media(max-width:800px){.boss-creature{height:250px;margin:8px auto -4px}}
+</style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
   <div class="lobby-brand"><span class="brand-abc">ABC</span><div><b>アドベンチャー</b><small>ALPHABET QUEST</small></div></div>
