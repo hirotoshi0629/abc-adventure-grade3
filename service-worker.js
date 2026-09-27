@@ -1,10 +1,16 @@
-const CACHE_NAME="abc-adventure-grade3-final-v1.0.1-home-hotfix";
+const CACHE_NAME="abc-adventure-grade3-redesign-v2";
 const CORE=[
  "./",
  "./index.html",
  "./manifest.webmanifest",
  "./assets/abc-master-home-web.jpg?v=20260927-hotfix1",
- "./assets/audio/alphabet-sprite.mp3?v=20260926-3"
+ "./assets/audio/alphabet-sprite.mp3?v=20260926-3",
+ "./assets/redesign/monster-sheet.jpg",
+ "./assets/redesign/monster.jpg",
+ "./assets/redesign/world.jpg",
+ "./assets/redesign/treasure.jpg",
+ "./assets/redesign/rocket.jpg",
+ "./assets/redesign/train.jpg"
 ];
 self.addEventListener("install",event=>{
  event.waitUntil((async()=>{
