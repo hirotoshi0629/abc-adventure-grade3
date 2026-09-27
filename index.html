@@ -1344,6 +1344,10 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
   padding:0!important;
   opacity:1!important;
 }
+</style><style id="boss-home-final-svg-v6">
+.home a.game.mg-boss div.game-art.boss-art{background:#2d1d4f!important;background-image:none!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;height:145px!important;min-height:145px!important;padding:0!important}
+.home a.game.mg-boss div.game-art.boss-art::before,.home a.game.mg-boss div.game-art.boss-art::after{content:none!important;display:none!important}
+.home a.game.mg-boss .boss-home-svg{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;overflow:visible!important}
 </style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
@@ -1407,7 +1411,21 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
   <div class="game-copy"><h3>ABCトレイン</h3><small>たりない文字を選んで列車を完成！</small></div>
 </a>
 <a class="game g8 mobile-game mg-boss" data-game="boss" href="?game=boss" onclick="return launchGameLink(event,'boss')" aria-label="ボスバトルを開く">
-  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img class="boss-home-image" src="assets/boss-kids.png?v=20260928-1" alt="ABCドラゴン" draggable="false"></div>
+  <span class="game-tag">BOSS</span><div class="game-art boss-art"><svg class="boss-home-svg" viewBox="0 0 320 180" role="img" aria-label="ABCドラゴン" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="rb" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#ff4b58"/><stop offset="1" stop-color="#b91f62"/></linearGradient><linearGradient id="belly" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ffe98a"/><stop offset="1" stop-color="#f4a33d"/></linearGradient></defs>
+<g stroke="#40234f" stroke-width="5" stroke-linejoin="round">
+<path fill="#783bb4" d="M78 82 20 35l9 66 34-17 20 19zm164 0 58-47-9 66-34-17-20 19z"/>
+<path fill="#ffb738" d="M110 40 134 8l26 28 26-28 24 32-12 21H122z"/>
+<path fill="url(#rb)" d="M90 72Q95 33 160 28q65 5 70 44l-12 77q-8 25-58 25t-58-25z"/>
+<path fill="#4e2a86" d="M112 45Q130 5 146 24l14 20 14-20Q190 5 208 45l-9 43h-88z"/>
+<ellipse fill="#fff" cx="132" cy="78" rx="17" ry="22"/><ellipse fill="#fff" cx="188" cy="78" rx="17" ry="22"/>
+<circle fill="#43205f" cx="135" cy="82" r="8"/><circle fill="#43205f" cx="185" cy="82" r="8"/>
+<path fill="#ff7c8c" d="M128 104Q160 128 192 104q-5 35-32 35t-32-35z"/>
+<path fill="#fff" d="m139 107 8 14 8-14 8 14 8-14 8 14 8-14"/>
+<path fill="url(#belly)" d="M132 135q28-14 56 0l-6 36h-44z"/>
+<path fill="#ff8a36" d="M62 164q10-28 34-20l25 17-14 17-25-8zM258 164q-10-28-34-20l-25 17 14 17 25-8z"/>
+<path fill="#ffd34e" d="M40 48 50 30l10 18 18 3-13 13 3 19-18-9-18 9 3-19-13-13zM280 48l10-18 10 18 18 3-13 13 3 19-18-9-18 9 3-19-13-13z"/>
+</g></svg></div>
   <div class="game-copy"><h3>ボスバトル</h3><small>音・発音・じゅんばんで最終決戦！</small></div>
 </a>
 </section>
