@@ -1297,6 +1297,10 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 .boss-creature{background-image:url("assets/boss-kids.png?v=20260927-2");background-repeat:no-repeat;background-position:center;background-size:contain;background-color:transparent;border:0;box-shadow:none;border-radius:0;width:min(360px,92%);height:320px;margin:24px auto 12px;}
 .boss-creature>*{display:none!important}
 @media(max-width:800px){.boss-creature{height:250px;margin:8px auto -4px}}
+</style><style>
+/* Use the same refreshed boss art on the home game card */
+.boss-art{display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(145deg,#2d1d4f,#6d2a65)!important}
+.boss-art img{width:92%;height:92%;object-fit:contain;display:block}
 </style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
@@ -1360,7 +1364,7 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
   <div class="game-copy"><h3>ABCトレイン</h3><small>たりない文字を選んで列車を完成！</small></div>
 </a>
 <a class="game g8 mobile-game mg-boss" data-game="boss" href="?game=boss" onclick="return launchGameLink(event,'boss')" aria-label="ボスバトルを開く">
-  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img src="assets/redesign/boss-dragon-hq.svg?v=20260927-3" alt="" draggable="false"></div>
+  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img src="assets/boss-kids.png?v=20260927-2" alt="" draggable="false"></div>
   <div class="game-copy"><h3>ボスバトル</h3><small>音・発音・じゅんばんで最終決戦！</small></div>
 </a>
 </section>
