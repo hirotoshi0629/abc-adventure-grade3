@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-final-navigation-reset";
+const CACHE_NAME="abc-adventure-grade3-boss-vector-pronunciation-spacing";
 const CORE=[
  "./",
  "./index.html",
@@ -11,7 +11,7 @@ const CORE=[
  "./assets/redesign/treasure.jpg",
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
- "./assets/redesign/boss-dragon.jpg?v=20260927-hq2"
+ "./assets/redesign/boss-dragon-hq.svg?v=20260927-3"
 ];
 self.addEventListener("install",event=>{
  event.waitUntil((async()=>{
