@@ -1009,7 +1009,7 @@ body.inner-screen .voice-next{
 <meta name="apple-mobile-web-app-title" content="ABCアドベンチャー">
 </head><body><main class="app">
 <div id="masterHome" class="master-home" aria-label="ABCアドベンチャー ホーム">
-<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg?v=20260927-hotfix1" data-kids-home="assets/homejpg/p0.txt?v=20260927-restore1" alt="ABCアドベンチャー ホーム">
+<img id="masterHomeArt" class="master-home-art" src="assets/abc-master-home-web.jpg?v=20260927-crisp-restore2" alt="ABCアドベンチャー ホーム">
 <span class="master-live master-star" id="masterStars" aria-label="スター 0">0</span><span class="master-live master-coin" id="masterCoins" aria-label="コイン 0">0</span>
 <span id="masterDailyProgress" class="master-daily-progress">0/3</span><button id="masterDailyHotspot" class="master-hotspot" style="left:49.7%;top:33.0%;width:32.5%;height:8.3%" onclick="openDaily()" aria-label="きょうのミッション"></button>
 <button class="master-hotspot" style="left:82.0%;top:9.5%;width:16.5%;height:32.5%" onclick="openMyWorld()" aria-label="マイワールド"></button>
@@ -1084,7 +1084,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-kids-ui-restored-plus-features";
+const APP_BUILD="2026.09.27-crisp-home-kids-ui-features";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1153,23 +1153,13 @@ function syncMasterLocks(){
  });
  let w=document.getElementById("masterWorldLevel");if(w)w.textContent="Lv."+Math.max(1,Number(save.worldLv)||1);
 }
-async function loadKidsHomeArt(){
- let art=document.getElementById("masterHomeArt");if(!art)return false;
- let src=art.dataset.kidsHome;if(!src)return false;
- try{
-  let r=await fetch(src,{cache:"no-store"});if(!r.ok)throw new Error("home art");
-  let b=(await r.text()).trim();if(!b.startsWith("/9j/"))throw new Error("home art data");
-  art.src="data:image/jpeg;base64,"+b;return true
- }catch(e){console.warn("Kids home art fallback",e);return false}
-}
 function initApprovedMasterHome(){
  let art=document.getElementById("masterHomeArt"),wrap=document.getElementById("masterHome");
  if(!art||!wrap)return;
  const ready=()=>{wrap.classList.add("ready");document.body.classList.add("master-mode");wrap.style.display="block";syncMasterHome()};
- art.addEventListener("load",ready);
- art.addEventListener("error",()=>{if(!wrap.classList.contains("ready")){wrap.classList.remove("ready");document.body.classList.remove("master-mode");wrap.style.display="none";document.getElementById("home")?.classList.remove("hidden")}}, {once:true});
+ art.addEventListener("load",ready,{once:true});
+ art.addEventListener("error",()=>{wrap.classList.remove("ready");document.body.classList.remove("master-mode");wrap.style.display="none";document.getElementById("home")?.classList.remove("hidden");showToast("ホーム画像を読み込めませんでした")},{once:true});
  if(art.complete&&art.naturalWidth>0)ready();
- loadKidsHomeArt();
 }
 function syncMasterHome(){
  let a=document.getElementById("masterStars"),b=document.getElementById("masterCoins"),c=document.getElementById("masterCards"),e=document.getElementById("masterEgg");
