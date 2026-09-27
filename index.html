@@ -1309,6 +1309,41 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 /* Hard fix: render the complete boss as an img inside the fixed card area */
 .home .mg-boss .boss-art{background:#2d1d4f!important;overflow:hidden!important;display:flex!important;align-items:center!important;justify-content:center!important;}
 .home .mg-boss .boss-art img{display:block!important;visibility:visible!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center center!important;}
+</style>
+<style id="boss-home-final-fix-v5">
+/* v5: ボス画像をカード内に完全表示。旧背景・疑似要素・切り抜きを無効化 */
+.home a.game.mg-boss div.game-art.boss-art{
+  background:#2d1d4f!important;
+  background-image:none!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  height:145px!important;
+  min-height:145px!important;
+  padding:0!important;
+}
+.home a.game.mg-boss div.game-art.boss-art::before,
+.home a.game.mg-boss div.game-art.boss-art::after{
+  content:none!important;
+  display:none!important;
+}
+.home a.game.mg-boss div.game-art.boss-art img.boss-home-image{
+  display:block!important;
+  visibility:visible!important;
+  position:static!important;
+  inset:auto!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:1!important;
+}
 </style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
@@ -1372,7 +1407,7 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
   <div class="game-copy"><h3>ABCトレイン</h3><small>たりない文字を選んで列車を完成！</small></div>
 </a>
 <a class="game g8 mobile-game mg-boss" data-game="boss" href="?game=boss" onclick="return launchGameLink(event,'boss')" aria-label="ボスバトルを開く">
-  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img src="assets/boss-kids.png?v=20260927-2" alt="" draggable="false"></div>
+  <span class="game-tag">BOSS</span><div class="game-art boss-art"><img class="boss-home-image" src="assets/boss-kids.png?v=20260928-1" alt="ABCドラゴン" draggable="false"></div>
   <div class="game-copy"><h3>ボスバトル</h3><small>音・発音・じゅんばんで最終決戦！</small></div>
 </a>
 </section>
