@@ -1,9 +1,10 @@
-const CACHE_NAME="abc-adventure-grade3-redesign-v2.5.0-real-home";
+const CACHE_NAME="abc-adventure-grade3-kids-ui-restored-plus-features";
 const CORE=[
  "./",
  "./index.html",
  "./manifest.webmanifest",
  "./assets/abc-master-home-web.jpg?v=20260927-hotfix1",
+ "./assets/homejpg/p0.txt?v=20260927-restore1",
  "./assets/audio/alphabet-sprite.mp3?v=20260926-3",
  "./assets/redesign/monster-sheet.jpg",
  "./assets/redesign/monster.jpg",
