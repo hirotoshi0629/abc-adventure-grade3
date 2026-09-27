@@ -309,12 +309,7 @@ body.inner-screen .correct{animation:kgPop .28s ease}
 .master-review-quick.show{display:block}.master-review-quick:active{transform:translateY(2px)}
 .review-mode-note{max-width:650px;margin:14px auto 0;padding:10px 14px;border:3px solid #fff;border-radius:16px;background:#f1e5ff;color:#583b88;font-weight:900;box-shadow:0 4px 0 #bea1df55}
 
-.teacher-report{max-width:1000px;margin:0 auto}.report-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}.report-summary>div,.report-card{background:#fff;border:4px solid #d8ecf7;border-radius:20px;padding:14px;box-shadow:0 5px 0 #77a8c833}.report-summary b{display:block;font-size:30px;color:#2b6ca3}.report-summary span{font-weight:900}.report-card{margin:14px 0}.letter-report-grid{display:grid;grid-template-columns:repeat(13,1fr);gap:6px}.letter-report{padding:8px 4px;border-radius:12px;background:#eef9ff;text-align:center;border:2px solid #c8e5f3}.letter-report b{display:block;font-family:"NHHandwriting",sans-serif;font-size:28px}.letter-report span{display:block;font-size:12px;font-weight:900}.letter-report.watch{background:#fff3bd;border-color:#e8bd4c}.letter-report.needs-review{background:#ffd9d7;border-color:#df746e}.game-report{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.game-report>div{background:#f6fbff;border-radius:12px;padding:9px}.game-report b,.game-report span{display:block}.report-note{font-size:13px;color:#52606d}@media(max-width:820px){.report-summary{grid-template-columns:repeat(2,1fr)}.letter-report-grid{grid-template-columns:repeat(7,1fr)}.game-report{grid-template-columns:repeat(2,1fr)}}
-
-
 .recommended-action{background:linear-gradient(#fff19a,#ffc94a)!important;color:#5d4200!important;box-shadow:0 5px 0 #c68c18!important;font-weight:1000!important}.map-recommend{text-align:center;margin-top:14px}.longterm-recommend{grid-column:1/-1;text-align:center;margin-bottom:4px}
-
-.skill-report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.skill-report-grid>div{padding:12px;border-radius:14px;background:#f6fbff;border:2px solid #d4e8f4;text-align:center}.skill-report-grid b{display:block;font-size:22px;color:#2d6da3}.skill-report-grid span{display:block;margin-top:5px;font-weight:900}@media(max-width:650px){.skill-report-grid{grid-template-columns:1fr}}
 
 button,.map-node,.master-hotspot{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 body.inner-screen .karuta-card,body.inner-screen .memory-card,body.inner-screen .listen-card,body.inner-screen .rocket-letter,body.inner-screen .monster-letter,body.inner-screen .hidden-letter,body.inner-screen .train-letter,body.inner-screen .boss-letter{-webkit-user-select:none;user-select:none}
@@ -322,7 +317,7 @@ body.inner-screen .karuta-card,body.inner-screen .memory-card,body.inner-screen 
 button:focus-visible,.map-node:focus-visible{outline:4px solid #173f80;outline-offset:3px}
 
 body.inner-screen .game-body{-webkit-user-select:none;user-select:none}
-body.inner-screen .teacher-report,body.inner-screen .settings-page{ -webkit-user-select:text;user-select:text }
+body.inner-screen .settings-page{-webkit-user-select:text;user-select:text}
 
 @media(max-height:760px) and (orientation:landscape){
  body.inner-screen .game-help{margin:4px auto 7px!important;padding:6px 10px!important;font-size:14px!important}
@@ -357,9 +352,12 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .speak-letter,.boss-speak-letter{font-family:"NHHandwriting",sans-serif;font-size:clamp(72px,9vw,130px);color:#163d72;line-height:1}
 .voice-practice{margin:12px auto;padding:14px;border:3px solid #dfb35f;border-radius:20px;background:#fffdf4}.voice-buttons,.voice-check{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:8px 0}.voice-practice button{min-height:50px;padding:10px 15px;border-radius:15px;font-weight:1000}.voice-rec{background:#ff6f6f!important;color:#fff!important}.voice-next{background:#69c85c!important;color:#fff!important}.voice-msg{text-align:center;font-weight:900;color:#315179;padding:8px}
 .monster-watercolor{position:relative;min-height:540px;background:linear-gradient(180deg,#c9f0ff,#effbc9);overflow:hidden;border-radius:24px}
-.monster-art{position:absolute;left:9%;top:10%;width:74%;height:62%;background-image:url("assets/redesign/monster-sheet.jpg");background-size:300% 300%;background-repeat:no-repeat;filter:drop-shadow(0 10px 5px #25383b33);transition:transform .18s}
-.monster-art.mv0{background-position:0% 0%}.monster-art.mv1{background-position:50% 0%}.monster-art.mv2{background-position:100% 0%}.monster-art.mv3{background-position:0% 50%}.monster-art.mv4{background-position:50% 50%}.monster-art.mv5{background-position:100% 50%}.monster-art.mv6{background-position:0% 100%}.monster-art.mv7{background-position:100% 100%}
-.monster-art.special-hit{transform:scale(.94) rotate(-3deg);filter:drop-shadow(0 0 22px #fff25f)}
+.monster-art{position:absolute;left:9%;top:10%;width:74%;height:62%;background-image:url("assets/redesign/monster-sheet.jpg");background-size:300% 300%;background-repeat:no-repeat;filter:hue-rotate(var(--mh,0deg)) saturate(var(--ms,1)) brightness(var(--mb,1)) drop-shadow(0 10px 5px #25383b33);transform:scaleX(var(--mf,1)) scale(var(--mz,1));transition:transform .18s,filter .18s}
+.monster-art.mv0{background-position:0% 0%;--mh:0deg}.monster-art.mv1{background-position:50% 0%;--mh:0deg}.monster-art.mv2{background-position:100% 0%;--mh:0deg}.monster-art.mv3{background-position:0% 50%;--mh:0deg}.monster-art.mv4{background-position:50% 50%;--mh:0deg}.monster-art.mv5{background-position:100% 50%;--mh:0deg}.monster-art.mv6{background-position:0% 100%;--mh:0deg}.monster-art.mv7{background-position:100% 100%;--mh:0deg}
+.monster-art.mv8{background-position:0% 0%;--mh:70deg;--ms:1.25;--mf:-1}.monster-art.mv9{background-position:50% 0%;--mh:125deg;--ms:1.35;--mz:.96}.monster-art.mv10{background-position:100% 0%;--mh:185deg;--ms:1.25;--mf:-1}.monster-art.mv11{background-position:0% 50%;--mh:235deg;--ms:1.2;--mz:1.04}
+.monster-art.mv12{background-position:50% 50%;--mh:285deg;--ms:1.35;--mf:-1}.monster-art.mv13{background-position:100% 50%;--mh:325deg;--ms:1.2;--mb:1.08}.monster-art.mv14{background-position:0% 100%;--mh:45deg;--ms:1.4;--mz:.94}.monster-art.mv15{background-position:100% 100%;--mh:95deg;--ms:1.3;--mf:-1}
+.monster-art.mv16{background-position:0% 0%;--mh:155deg;--ms:1.15;--mb:.93;--mz:1.05}.monster-art.mv17{background-position:50% 0%;--mh:215deg;--ms:1.45;--mf:-1;--mz:.93}.monster-art.mv18{background-position:100% 50%;--mh:265deg;--ms:1.5;--mb:.95}.monster-art.mv19{background-position:50% 100%;--mh:340deg;--ms:1.35;--mf:-1;--mz:1.03}
+.monster-art.special-hit{transform:scaleX(var(--mf,1)) scale(.94) rotate(-3deg);filter:hue-rotate(var(--mh,0deg)) saturate(1.5) drop-shadow(0 0 22px #fff25f)}
 .monster-nameplate{position:absolute;left:50%;bottom:24%;transform:translateX(-50%);background:#704119;color:#fff7cf;border:3px solid #f0c66d;border-radius:999px;padding:7px 18px;font-weight:1000;z-index:3}
 .monster-watercolor .monster-hp{position:absolute;left:7%;right:7%;bottom:12%;z-index:3}.monster-watercolor .hero-status{position:absolute;left:7%;right:7%;bottom:3%;z-index:3}
 @media(max-width:820px){.redesign-split{grid-template-columns:1fr!important}.illustration-stage,.monster-watercolor,.world-watercolor{min-height:420px}.master-status-bar{width:38%;right:1.5%}.master-status-chip{font-size:clamp(9px,1.4vw,15px)}}
@@ -596,7 +594,7 @@ body.inner-screen .finish-box{
 <script>
 const home=document.getElementById("home"),game=document.getElementById("game"),gameBody=document.getElementById("gameBody"),gameTitle=document.getElementById("gameTitle"),stars=document.getElementById("stars"),coins=document.getElementById("coins"),worldLv=document.getElementById("worldLv");
 const ABC="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const SAVE_KEY="abcAdventureSave",SAVE_BACKUP_KEY="abcAdventureSaveBackup",SAVE_PRE_RESTORE_KEY="abcAdventureSavePreRestore";
+const SAVE_KEY="abcAdventureSave",SAVE_BACKUP_KEY="abcAdventureSaveBackup";
 function validSaveObject(v){return !!v&&typeof v==="object"&&!Array.isArray(v)}
 function loadSavedProgress(){
  const fallback={stars:0,coins:0,worldLv:1};
@@ -614,7 +612,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.1.0-alphabet-practice";
+const APP_BUILD="2026.09.27-redesign-v2.2.0-monster20-clean-settings";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1005,17 +1003,22 @@ function finishRocket(){if(!beginFinishGuard("rocket"))return;markClear("rocket"
  let first=firstClearBonus("rocket",3,8);if(!first)earn(0,6);persist();
  gameBody.innerHTML='<div class="finish-box rocket-finish"><div class="reward-progress">'+rewardProgressText()+'</div>'+clearNextStep()+'<div class="planet-big">ABC</div><h2>ABC PLANETに とうちゃく！</h2><p>8もんクリア！ '+(first?'はじめてクリア！ スター +3・コイン +8':'クリアボーナス コイン +6')+'</p><p>マイワールドが育ったよ。ちがう練習もクリアしてみよう！</p><button class="back" onclick="startRocket()">もう一回 とぶ！</button> <button class="back" onclick="goHome()">ホーム</button></div>';
 }
-let monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8)};
+let monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8),monsterOrder:[]};
 function startMonster(){resetFinishGuard("monster");recordGameStart("monster");gameTitle.textContent="アルファベットモンスター";
- monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8)};
+ monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8),monsterOrder:shuffle(Array.from({length:20},(_,i)=>i)).slice(0,8)};
  nextMonster();
 }
 function nextMonster(){
  monster.round++;
  if(monster.round>monster.maxRounds){finishMonster();return}
  monster.locked=false;monster.target=monster.targets[monster.round-1];let choices=choicesWithTarget(monster.target,4);
- const names=["しずくスライム","もりのピコ","ほのおキツネ","ひかりビースト","こおりウルフ","いわゴーレム","よるのバット","しろふわゴースト"];
- let mi=(monster.round-1)%8;
+ const names=[
+ "しずくスライム","もりのピコ","ほのおキツネ","ひかりビースト","こおりウルフ",
+ "いわゴーレム","よるのバット","しろふわゴースト","にじいろプニ","サンダーキャット",
+ "みずうみドラゴン","はっぱタヌキ","マグマリザード","ほしぞらフクロウ","こおりペンギン",
+ "すなあらしモグラ","つきよオオカミ","きらめきユニコーン","どくキノコキング","そらとぶコアラ"
+ ];
+ let mi=monster.monsterOrder?.[monster.round-1] ?? ((monster.round-1)%20);
  gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
  later(()=>sayLetter(monster.target),450);
 }
@@ -1516,57 +1519,16 @@ function claimDaily(i){if(dailyClaimBusy)return;dailyClaimBusy=true;
 }
 function ensureSettings(){if(!save.settings)save.settings={sound:true,motion:true}}
 
-function openTeacherLearningReport(){
- enterGameScreen("学習レポート");
- let totalOK=0,totalNG=0;for(const L of ABC){let v=save.letterStats?.[L]||{ok:0,ng:0};totalOK+=v.ok||0;totalNG+=v.ng||0}
- let memoryStat=save.skillStats?.memory||{ok:0,ng:0},orderStat=save.skillStats?.order||{ok:0,ng:0},speakingStat=save.skillStats?.speaking||{ok:0,ng:0};
- let weak=weakLetters(8);
- let games=["karuta","memory","listen","rocket","monster","treasure","train","boss"];
- let names={karuta:"かるた",memory:"神経衰弱",listen:"聞いてタッチ",rocket:"ロケット",monster:"モンスター",treasure:"トレジャー",train:"トレイン",boss:"ボス"};
- gameBody.innerHTML='<button class="back utility-back" onclick="openSettings()">← せってい</button><div class="teacher-report"><div class="report-summary"><div><b>'+totalOK+'</b><span>音の正解</span></div><div><b>'+totalNG+'</b><span>音のまちがい</span></div><div><b>'+memoryStat.ok+'</b><span>記憶ペア成功</span></div><div><b>'+orderStat.ok+'</b><span>順番問題正解</span></div><div><b>'+speakingStat.ok+'</b><span>発声練習</span></div></div><div class="report-card skill-report"><h3>学習の4つの見方</h3><div class="skill-report-grid"><div><b>聞く</b><span>○ '+totalOK+'　△ '+totalNG+'</span></div><div><b>記憶</b><span>○ '+memoryStat.ok+'　△ '+memoryStat.ng+'</span></div><div><b>順番</b><span>○ '+orderStat.ok+'　△ '+orderStat.ng+'</span></div><div><b>発声</b><span>練習 '+speakingStat.ok+'回</span></div></div></div><div class="report-card"><h3>いま復習したい文字</h3><p>'+(weak.length?weak.join('・'):'まだ苦手文字の記録はありません。')+'</p></div><div class="report-card"><h3>A〜Z 学習記録</h3><div class="letter-report-grid">'+ABC.map(L=>{let v=save.letterStats?.[L]||{ok:0,ng:0},score=(v.ng||0)*3-(v.ok||0),cls=score>2?'needs-review':score>0?'watch':'';return '<div class="letter-report '+cls+'"><b>'+L+'</b><span>○ '+(v.ok||0)+'</span><span>△ '+(v.ng||0)+'</span></div>'}).join('')+'</div></div><div class="report-card"><h3>ゲーム利用</h3><div class="game-report">'+games.map(id=>'<div><b>'+names[id]+'</b><span>プレイ '+(save.gamePlays?.[id]||0)+'</span><span>クリア '+(save.clears?.[id]||0)+'</span></div>').join('')+'</div></div><p class="report-note">この記録はこのiPadのブラウザ内に保存されています。児童を評価する点数ではなく、次の練習を考えるための目安です。古い結果は少しずつ軽くなり、最近の学習をより強く反映します。</p></div>';
-}
-function hasPreRestoreSnapshot(){try{return !!localStorage.getItem(SAVE_PRE_RESTORE_KEY)}catch(e){return false}}
-function undoLastTeacherRestore(){
- let raw=null;try{raw=localStorage.getItem(SAVE_PRE_RESTORE_KEY)}catch(e){}
- if(!raw){showToast("戻せる復元記録はありません");return}
- if(!confirm("直前の記録復元を取り消して、復元前の状態にもどしますか？"))return;
- try{
-  let parsed=JSON.parse(raw);
-  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");
-  save=parsed;migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();
-  localStorage.removeItem(SAVE_PRE_RESTORE_KEY);
-  persist();goHome();setTimeout(()=>showToast("復元前の状態にもどしました"),80);
- }catch(e){showToast("復元前データを読み取れませんでした")}
-}
 function openSettings(){enterGameScreen("せってい");
  ensureSettings();
- gameBody.innerHTML='<div class="settings-page"><div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで A・B・C などの音を聞きます。<br>使用音声：録音済み A〜Z<br><b>'+recordedAudioStatus()+'</b></small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div><div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div><div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存され、1つ前の状態も予備データとして残します。</small></div><span class="saved-badge">自動保存</span></div></div><div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div><div class="settings-group teacher-note"><h3>先生へ</h3><p>Build: <span id="buildLabel"></span><br><b>授業用データ保存：ON</b><br>指定英字フォント：<span id="fontLabel">確認中</span></p><p>児童の通常画面から、セーブデータを消すボタンは置いていません。誤操作でこれまでの記録が消えないためです。</p><button onclick="openAlphabetSoundCheck()">A〜Z 音声チェック</button> <button onclick="openTeacherLearningReport()">学習レポート</button> <button onclick="copySaveForTeacher()">記録データをコピー</button> <button onclick="restoreSaveForTeacher()">記録データを復元</button>'+(hasPreRestoreSnapshot()?' <button onclick="undoLastTeacherRestore()">直前の復元を取り消す</button>':'')+'</div></div>';
- let bl=document.getElementById("buildLabel");if(bl)bl.textContent=APP_BUILD;let fl=document.getElementById("fontLabel");if(fl)fl.textContent=approvedFontReady()?"NHHandwriting":"端末未読込";
+ gameBody.innerHTML='<div class="settings-page">'+
+ '<div class="settings-group"><h3>おんせい</h3><div class="setting-row"><div><b>アルファベットの音</b><small>ゲームで使う録音済みA〜Z音声です。ABCずかんでも1文字ずつ確認できます。<br><b>'+recordedAudioStatus()+'</b></small></div><div class="setting-actions"><button class="sound-test" onclick="save.settings.sound?sayLetter(\'A\'):showToast(\'アルファベットの音をONにしてね\')">Aを聞く</button><button class="sound-test" onclick="save.settings.sound?playMNCheck():showToast(\'アルファベットの音をONにしてね\')">M / Nを聞きくらべ</button><button class="toggle '+(save.settings.sound?'on':'')+'" onclick="toggleSetting(\'sound\')">'+(save.settings.sound?'ON':'OFF')+'</button></div></div></div>'+
+ '<div class="settings-group"><h3>うごき</h3><div class="setting-row"><div><b>アニメーション</b><small>ロケットや列車などの動きを表示します。</small></div><button class="toggle '+(save.settings.motion?'on':'')+'" onclick="toggleSetting(\'motion\')">'+(save.settings.motion?'ON':'OFF')+'</button></div></div>'+
+ '<div class="settings-group"><h3>ABCのれんしゅう</h3><div class="setting-row"><div><b>A〜Zを見たり聞いたりする</b><small>大文字・小文字・発音をABCずかんで確認できます。</small></div><button onclick="openBook()">ABCずかん</button></div></div>'+
+ '<div class="settings-group"><h3>データ</h3><div class="setting-row"><div><b>このiPadに自動で保存</b><small>スター・コイン・なかま・島などは、このiPadのブラウザに自動保存されます。</small></div><span class="saved-badge">自動保存</span></div></div>'+
+ '<div class="settings-group"><h3>もし画面の動きがおかしいとき</h3><div class="setting-row"><div><b>ホームへ安全にもどる</b><small>記録は消えません。</small></div><button onclick="goHome()">ホームへ</button></div></div>'+
+ '</div>';
  render();
-}
-async function copySaveForTeacher(){try{let t=JSON.stringify({...save,_export:{build:APP_BUILD,at:new Date().toISOString()}});if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(t);showToast("記録データをコピーしました")}else showToast("この環境ではコピーできません")}catch(e){showToast("コピーできませんでした")}}
-let soundAuditRun=0;
-function stopAlphabetSoundCheck(){soundAuditRun++;stopRecordedLetter();let s=document.getElementById("soundAuditStatus");if(s)s.textContent="停止しました"}
-function playAlphabetSoundCheck(){
- let run=++soundAuditRun,i=0,s=document.getElementById("soundAuditStatus");
- function next(){if(run!==soundAuditRun||i>=ABC.length){if(run===soundAuditRun&&s)s.textContent="A〜Z の確認が終わりました";return}let L=ABC[i++];if(s)s.textContent=L+" を再生中　"+i+" / 26";sayLetter(L);setTimeout(next,Math.ceil((ALPHABET_AUDIO[L]?.duration||1.3)*1000)+320)}
- next();
-}
-function openAlphabetSoundCheck(){
- enterGameScreen("A〜Z 音声チェック");
- gameBody.innerHTML='<button class="back utility-back" onclick="stopAlphabetSoundCheck();openSettings()">← せってい</button><div class="finish-box"><h2>A〜Z 音声チェック</h2><p>児童が聞くものと同じ共通音声です。1文字ずつ確認するか、26文字を順番に再生できます。</p><div class="sound-audit-actions"><button class="back" onclick="playAlphabetSoundCheck()">A〜Zを順番に聞く</button><button class="back" onclick="stopAlphabetSoundCheck()">停止</button></div><p id="soundAuditStatus">文字をタッチしても確認できます。</p><div class="sound-check-grid">'+ABC.map(x=>'<button class="sound-test" onclick="stopAlphabetSoundCheck();sayLetter(\''+x+'\')">'+x+'</button>').join("")+'</div></div>';
- normalizeButtons();
-}
-async function restoreSaveForTeacher(){
- let raw=prompt("以前コピーした記録データを貼り付けてください。\n※今の記録と入れかわります。");
- if(!raw)return;
- try{
-  let parsed=JSON.parse(raw);
-  if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("bad");if(parsed.stars!=null&&!Number.isFinite(Number(parsed.stars)))throw new Error("bad");if(parsed.coins!=null&&!Number.isFinite(Number(parsed.coins)))throw new Error("bad");if(parsed.worldLv!=null&&!Number.isFinite(Number(parsed.worldLv)))throw new Error("bad");
-  if(!confirm("この記録データに入れかえますか？"))return;
-  try{localStorage.setItem(SAVE_PRE_RESTORE_KEY,JSON.stringify(save))}catch(e){}
-  delete parsed._export;save=parsed;migrateSave();normalizeGuideState();selfCheck();syncWorldLevel();ensureEconomy();syncEarnedTitles();persist();goHome();setTimeout(()=>showToast("記録データを復元しました"),80);
- }catch(e){showToast("記録データを読み取れませんでした")}
 }
 function toggleSetting(k){ensureSettings();save.settings[k]=!save.settings[k];persist();if(k==="sound"&&save.settings.sound){primeRecordedAudio();setTimeout(()=>sayLetter("A"),80)}else if(k==="sound"){stopRecordedLetter()}openSettings()}
 function offerRecovery(){try{showToast("うまく動かないときは、ホームにもどってもう一度ためしてね")}catch(e){}}
