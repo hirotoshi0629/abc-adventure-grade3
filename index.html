@@ -185,7 +185,7 @@ button:disabled,[aria-disabled="true"]{cursor:default}
  .hero{min-height:250px}
  .home-extra{margin-bottom:8px}
 }
-<style>.sound-check-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.sound-check-grid button{font-family:"NHHandwriting",sans-serif;font-size:28px;min-height:58px}@media(max-width:600px){.sound-check-grid{grid-template-columns:repeat(4,1fr)}}
+.sound-check-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px}.sound-check-grid button{font-family:"NHHandwriting",sans-serif;font-size:28px;min-height:58px}@media(max-width:600px){.sound-check-grid{grid-template-columns:repeat(4,1fr)}}
 /* APPROVED MASTER IMAGE MODE — activates only when the exact approved master asset loads */
 .master-home{display:none;position:relative;width:min(100%,1536px);margin:0 auto;aspect-ratio:16/9;background:#dff5ff;overflow:hidden}
 .master-home.ready{display:block}
@@ -240,7 +240,7 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 @media (max-width:900px){
  body.inner-screen .rocket-game,body.inner-screen .monster-wrap,body.inner-screen .treasure-wrap,body.inner-screen .train-scene,body.inner-screen .boss-wrap{max-width:100%;overflow:hidden}
 }
-<style>.reward-progress{display:inline-block;margin:6px auto 12px;padding:8px 14px;border-radius:999px;background:#fff7d7;border:2px solid #d79a3a;font-weight:900;font-size:14px}
+.reward-progress{display:inline-block;margin:6px auto 12px;padding:8px 14px;border-radius:999px;background:#fff7d7;border:2px solid #d79a3a;font-weight:900;font-size:14px}
 /* LONG-TERM LOOP CLARITY */
 .progress-hub{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:900px;margin:8px auto 14px}
 .progress-hub>div{background:#fffdf3;border:2px solid #d6a354;border-radius:15px;padding:9px;text-align:center;font-weight:900}
@@ -250,10 +250,10 @@ body.inner-screen .sound-btn{min-height:44px;min-width:120px}
 
 .master-daily-progress{display:none!important;position:absolute;z-index:6;left:74.5%;top:34.25%;min-width:5.5%;padding:2px 6px;border-radius:999px;background:#fff8d9;border:2px solid #bd813d;text-align:center;font-weight:1000;color:#4b3421;font-size:clamp(9px,.9vw,13px);pointer-events:none}
 .long-goal{max-width:900px;margin:8px auto 14px;padding:10px 14px;border-radius:15px;background:#f3eaff;border:2px solid #9d76c8;text-align:center;font-weight:900}
-<style>
+
 @media (pointer:coarse){button,.master-hotspot{min-width:44px;min-height:44px}button{-webkit-tap-highlight-color:transparent}}
 button:focus-visible{outline:4px solid currentColor;outline-offset:3px}
-<style>.clear-next{max-width:620px;margin:8px auto 14px;padding:10px 14px;border:2px solid #6f9f52;border-radius:16px;background:#f3ffe9;text-align:center}.clear-next b,.clear-next span{display:block;margin-bottom:6px}<style>.sound-audit{display:grid;grid-template-columns:repeat(13,minmax(44px,1fr));gap:6px;margin-top:8px}@media(max-width:760px){.sound-audit{grid-template-columns:repeat(7,minmax(44px,1fr))}}<style>.sound-audit-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}<style>
+.clear-next{max-width:620px;margin:8px auto 14px;padding:10px 14px;border:2px solid #6f9f52;border-radius:16px;background:#f3ffe9;text-align:center}.clear-next b,.clear-next span{display:block;margin-bottom:6px}.sound-audit{display:grid;grid-template-columns:repeat(13,minmax(44px,1fr));gap:6px;margin-top:8px}@media(max-width:760px){.sound-audit{grid-template-columns:repeat(7,minmax(44px,1fr))}}.sound-audit-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
 .memory-compact{padding:0 8px}.memory-msg{margin:5px auto!important;padding:6px 10px!important;line-height:1.15!important}
 @media (orientation:landscape) and (max-height:820px){body.inner-screen .game-head{padding:6px 12px}.memory-board{max-width:min(68vw,520px);gap:6px}.memory-card{border-width:3px;border-radius:12px}.memory-msg{font-size:16px!important}}
 
@@ -612,7 +612,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.2.0-monster20-clean-settings";
+const APP_BUILD="2026.09.27-redesign-v2.2.1-css-cleanup";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
