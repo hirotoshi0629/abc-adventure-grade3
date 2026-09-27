@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-redesign-v2.2.2-ipad";
+const CACHE_NAME="abc-adventure-grade3-redesign-v2.2.3-ipad-css";
 const CORE=[
  "./",
  "./index.html",
