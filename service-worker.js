@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-boss-fit-v4";
+const CACHE_NAME="abc-adventure-grade3-boss-fit-v5";
 const CORE=[
  "./",
  "./index.html",
@@ -12,7 +12,7 @@ const CORE=[
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
  "./assets/fonts/NHHandwriting-Medium.otf?v=20260927-1",
- "./assets/boss-kids.png?v=20260927-2"
+ "./assets/boss-kids.png?v=20260928-1"
 ];
 self.addEventListener("install",event=>{
  event.waitUntil((async()=>{
