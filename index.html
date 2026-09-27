@@ -712,6 +712,25 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 .no-motion .master-hotspot.recommended-game{animation:none!important}
 @media(prefers-reduced-motion:reduce){.master-hotspot.recommended-game{animation:none!important}}
 
+
+/* 2026.09.27 final classroom polish */
+#gameBody button{touch-action:manipulation}
+#gameBody button:not(:disabled){cursor:pointer}
+.finish-box>.back,.finish-box>.start-btn{margin:5px 3px}
+.howto-chip{line-height:1.45}
+.review-mode-note{line-height:1.5}
+@media (pointer:coarse){
+ #gameBody button{min-height:48px}
+ .karuta-card,.memory-card,.listen-card,.rocket-letter,.monster-letter,.boss-letter{min-height:68px}
+}
+@media (orientation:landscape) and (min-width:900px) and (max-height:760px){
+ .finish-box{padding:14px!important;margin:8px auto!important}
+ .finish-box h2{margin:4px 0 8px!important}
+ .finish-box p{margin:7px 0!important}
+ .reward-progress,.clear-next{margin:7px auto!important}
+ .boss-phase-banner{margin:3px auto 6px!important;padding:5px 10px!important}
+}
+
 </style><link rel="preload" href="assets/audio/alphabet-sprite.mp3?v=20260926-3" as="audio" type="audio/mpeg">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4b8fe8">
@@ -795,7 +814,7 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-redesign-v2.4.0-guided-flow";
+const APP_BUILD="2026.09.27-redesign-v2.4.1-final-polish";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
 function appHealthCheck(){
@@ -1010,7 +1029,14 @@ function sayLetter(l){
  }catch(e){recordedAudioFailed=true;fallbackSayLetter(l)}
 }
 function playMNCheck(){sayLetter("M");later(()=>sayLetter("N"),Math.ceil(ALPHABET_AUDIO.M.duration*1000)+300)}
-function lockAnswerButtons(ms=500){document.querySelectorAll("#gameBody button").forEach(b=>{if(!b.classList.contains("sound-btn")&&!b.classList.contains("back"))b.disabled=true});later(()=>document.querySelectorAll("#gameBody button").forEach(b=>b.disabled=false),ms)}
+function lockAnswerButtons(ms=500){
+ const locked=[];
+ document.querySelectorAll("#gameBody button").forEach(b=>{
+  if(b.classList.contains("sound-btn")||b.classList.contains("back"))return;
+  locked.push([b,b.disabled]);b.disabled=true;
+ });
+ later(()=>locked.forEach(([b,wasDisabled])=>{if(b&&b.isConnected)b.disabled=wasDisabled}),ms)
+}
 let wrongTapUntil=0;
 function acceptWrongTap(el,ms=380){
  let now=Date.now();if(now<wrongTapUntil)return false;
@@ -1045,7 +1071,21 @@ function startListen(){gameTitle.textContent="聞いてタッチ！";
 }
 function setListenCount(n){listen.count=n;document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("selected"));document.getElementById("c"+n).classList.add("selected")}
 function setListenLevel(v){listen.level=v;startListen()}
-function beginListen(){resetFinishGuard("listen");recordGameStart("listen");listen.round=0;listen.correct=0;if(listen.level==="review"){let weak=weakLetters(10);listen.targets=weak.length?Array.from({length:listen.maxRounds},(_,i)=>weak[i%weak.length]):makeTargetDeck(listen.maxRounds)}else listen.targets=makeTargetDeck(listen.maxRounds);nextListen()}
+function makeReviewDeck(n){
+ let weak=weakLetters(6);if(!weak.length)return makeTargetDeck(n);
+ let out=[],bag=shuffle([...weak,...weak]);
+ while(out.length<Math.min(n,bag.length)){let x=bag.shift();if(out[out.length-1]===x){bag.push(x);continue}out.push(x)}
+ let fillers=shuffle(ABC.filter(x=>!weak.includes(x)));
+ while(out.length<n){let x=fillers.shift()||shuffle(ABC)[0];if(out[out.length-1]===x)continue;out.push(x)}
+ return out.slice(0,n)
+}
+function beginListen(){
+ resetFinishGuard("listen");recordGameStart("listen");listen.round=0;listen.correct=0;
+ if(listen.level==="review")listen.targets=makeReviewDeck(listen.maxRounds);
+ else if(listen.level==="similar"){let pool=shuffle([...new Set(similarGroups.flat())]);listen.targets=pool.slice(0,listen.maxRounds)}
+ else listen.targets=makeTargetDeck(listen.maxRounds);
+ nextListen()
+}
 function nextListen(){listen.locked=false;
  listen.round++;
  if(listen.round>listen.maxRounds){finishListen();return}
@@ -1059,7 +1099,7 @@ function nextListen(){listen.locked=false;
    a=choicesWithTarget(listen.target,listen.count,preferred);
  }else a=choicesWithTarget(listen.target,listen.count);
  gameBody.innerHTML='<div class="listen-status"><b>'+listen.round+' / '+listen.maxRounds+'</b><span>せいかい '+listen.correct+'</span></div><div class="message">よく聞いて、文字をタッチ！ <button class="sound-btn" onclick="sayLetter(listen.target)">もう一度聞く</button></div><div class="listen-cards '+(listen.count===6?'six':'four')+'">'+a.map(x=>'<button class="listen-card" onclick="answerListen(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="listenMsg" class="message"></div>';
- later(()=>sayLetter(listen.target),listen.level==="fast"?180:400);
+ later(()=>sayLetter(listen.target),listen.level==="fast"?260:400);
 }
 function answerListen(x,el){
  if(listen.locked)return;
