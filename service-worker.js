@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-boss-vector-pronunciation-spacing";
+const CACHE_NAME="abc-adventure-grade3-nh-handwriting-word-fix";
 const CORE=[
  "./",
  "./index.html",
@@ -11,6 +11,7 @@ const CORE=[
  "./assets/redesign/treasure.jpg",
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
+ "./assets/fonts/NHHandwriting-Medium.otf?v=20260927-1",
  "./assets/redesign/boss-dragon-hq.svg?v=20260927-3"
 ];
 self.addEventListener("install",event=>{
