@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-boss-original-v8";
+const CACHE_NAME="abc-adventure-grade3-word-art-v9";
 const CORE=[
  "./",
  "./index.html",
@@ -12,7 +12,8 @@ const CORE=[
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
  "./assets/fonts/NHHandwriting-Medium.otf?v=20260927-1",
- "./assets/boss-original.png?v=20260928-3"
+ "./assets/boss-original.png?v=20260928-3",
+ ..."apple ball cat dog egg fish game hat ink juice key lion milk nose orange pen queen rabbit sun tiger umbrella violin water box yellow zebra".split(" ").map(word=>"./assets/alphabet-words/"+word+".png")
 ];
 self.addEventListener("install",event=>{
  event.waitUntil((async()=>{

@@ -370,8 +370,9 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .alphabet-guide-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.alphabet-guide-head h3,.pronunciation-menu h3,.review-practice-panel h3{margin:0 0 6px;font-size:26px;color:#174b78}
 .pronounce-start{background:linear-gradient(#68dc7c,#38ad55)!important;color:white!important;border:3px solid #278a40!important;box-shadow:0 4px 0 #1e6e34!important;min-height:52px;padding:10px 20px}
 .alphabet-reference-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;max-width:1080px;margin:0 auto}
-.alphabet-reference-card{position:relative;min-height:145px;padding:10px 8px;border-radius:22px;background:linear-gradient(#fffef9,#edf8ff);border:3px solid #75b9e1;box-shadow:0 5px 0 #4c95bd;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;align-items:center}
+.alphabet-reference-card{position:relative;min-height:164px;padding:8px 7px;border-radius:22px;background:linear-gradient(#fffef9,#edf8ff);border:3px solid #75b9e1;box-shadow:0 5px 0 #4c95bd;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 48px auto auto;align-items:center;row-gap:1px}
 .alphabet-reference-card .upper{font-family:"NHHandwriting",sans-serif;font-size:55px;color:#163f73}.alphabet-reference-card .lower{font-family:"NHHandwriting",sans-serif;font-size:40px;color:#3987a9}
+.alphabet-reference-card .word-art{grid-column:1/3;justify-self:center;width:48px;height:48px;object-fit:contain;pointer-events:none}
 .alphabet-reference-card small{grid-column:1/3;font-family:"NHHandwriting",sans-serif;font-size:17px;color:#5c462c;font-weight:500}.alphabet-reference-card i{grid-column:1/3;font-size:12px;color:#39729d;font-style:normal}
 .alphabet-detail-screen,.speak-practice-screen{max-width:920px;margin:0 auto}.alphabet-detail-card,.speak-practice-card{padding:20px;border-radius:28px;background:linear-gradient(145deg,#fff9dc,#e6f7ff);border:4px solid #e0aa3c;box-shadow:0 8px 0 #9d6b2d44;text-align:center}
 .alphabet-pair{display:flex;justify-content:center;align-items:flex-end;gap:32px}.alphabet-pair strong{font-family:"NHHandwriting",sans-serif;font-size:150px;color:#133e75;line-height:.9}.alphabet-pair span{font-family:"NHHandwriting",sans-serif;font-size:95px;color:#3383a9;line-height:1}
@@ -382,7 +383,7 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .speak-big-letter{font-family:"NHHandwriting",sans-serif;font-size:clamp(130px,20vw,220px);line-height:.9;color:#173f74}.speak-small-letter{font-family:"NHHandwriting",sans-serif;font-size:72px;color:#3b8cac}.speak-practice-card>small{font-size:20px;font-weight:1000;color:#765122}
 .speaking-finish{background:linear-gradient(145deg,#fff9da,#e3f9df)}
 @media(max-width:850px){.alphabet-reference-grid{grid-template-columns:repeat(4,1fr)}.abc-book-mode-tabs{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.alphabet-reference-grid{grid-template-columns:repeat(3,1fr)}.alphabet-reference-card{min-height:125px}.alphabet-reference-card .upper{font-size:45px}.alphabet-reference-card .lower{font-size:34px}.pronunciation-menu-grid{grid-template-columns:1fr}.alphabet-guide-head{display:block}.alphabet-guide-head .pronounce-start{margin-top:10px}}
+@media(max-width:560px){.alphabet-reference-grid{grid-template-columns:repeat(3,1fr)}.alphabet-reference-card{min-height:150px}.alphabet-reference-card .upper{font-size:45px}.alphabet-reference-card .lower{font-size:34px}.alphabet-reference-card .word-art{width:42px;height:42px}.pronunciation-menu-grid{grid-template-columns:1fr}.alphabet-guide-head{display:block}.alphabet-guide-head .pronounce-start{margin-top:10px}}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -596,7 +597,8 @@ body.inner-screen .boss-letter{contain:layout paint}
  body.inner-screen .listen-cards{max-width:min(78vw,720px)!important;gap:9px!important}
  body.inner-screen .listen-card{font-size:clamp(48px,8vh,72px)!important}
  body.inner-screen .alphabet-reference-grid{grid-template-columns:repeat(6,1fr)!important;gap:8px!important}
- body.inner-screen .alphabet-reference-card{min-height:112px!important;padding:7px 6px!important}
+ body.inner-screen .alphabet-reference-card{min-height:150px!important;padding:6px 5px!important;grid-template-rows:auto 42px auto auto!important}
+ body.inner-screen .alphabet-reference-card .word-art{width:40px!important;height:40px!important}
  body.inner-screen .alphabet-reference-card .upper{font-size:44px!important}
  body.inner-screen .alphabet-reference-card .lower{font-size:31px!important}
  body.inner-screen .alphabet-guide-head{padding:10px 14px!important;margin-bottom:8px!important}
@@ -2241,7 +2243,7 @@ function renderBookMode(mode){
 function renderAlphabetReference(){
  gameBody.innerHTML=bookModeNav("letters")+
  '<div class="alphabet-guide-head"><div><h3>A〜Zを見て、聞いて、声に出そう！</h3><p>文字をタップすると、大きな文字と録音済みのお手本音声を確認できます。</p></div><button class="pronounce-start" onclick="startPronunciationPractice(\'all\')">見て発音する</button></div>'+
- '<div class="alphabet-reference-grid">'+ABC.map(L=>{let w=ALPHABET_WORDS[L];return '<button class="alphabet-reference-card" onclick="openAlphabetDetail(\''+L+'\')"><span class="upper">'+L+'</span><span class="lower">'+w[0]+'</span><small>'+w[1]+'</small><i>音を聞く・練習</i></button>'}).join("")+'</div>';
+ '<div class="alphabet-reference-grid">'+ABC.map(L=>{let w=ALPHABET_WORDS[L];return '<button class="alphabet-reference-card" onclick="openAlphabetDetail(\''+L+'\')"><span class="upper">'+L+'</span><span class="lower">'+w[0]+'</span><img class="word-art" src="./assets/alphabet-words/'+w[1]+'.png" alt="" loading="lazy" decoding="async"><small>'+w[1]+'</small><i>音を聞く・練習</i></button>'}).join("")+'</div>';
 }
 
 function openAlphabetDetail(L){
