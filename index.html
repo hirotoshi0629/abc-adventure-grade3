@@ -403,6 +403,15 @@ button:disabled{cursor:default;filter:saturate(.78)}
 
 .train-sequence span.train-answer-revealed,.train-overlay-seq span.train-answer-revealed{background:#d9f6ad!important;border-color:#59a44c!important;color:#245e37!important;box-shadow:0 4px 0 #78b95a;animation:trainAnswerPop .45s ease-out}
 @keyframes trainAnswerPop{0%{transform:scale(.55);opacity:.3}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+
+.rocket-watercolor.rocket-launching{animation:rocketLaunch 2.2s cubic-bezier(.2,.72,.22,1) forwards;z-index:8;box-shadow:0 0 0 6px rgba(255,237,125,.9),0 0 45px rgba(255,206,73,.95)!important}
+.rocket-watercolor.rocket-launching:after{content:"LAUNCH!";position:absolute;left:50%;bottom:18%;transform:translateX(-50%);z-index:20;color:#fff6a0;font-size:clamp(22px,4vw,42px);font-weight:1000;text-shadow:0 3px 0 #d45b39,0 0 14px #fff;animation:launchText .8s ease-out forwards}
+.rocket-watercolor.rocket-launching:before{content:"";position:absolute;left:50%;bottom:5%;width:105px;height:170px;transform:translateX(-50%);z-index:19;background:linear-gradient(#fff7a3,#ffd345 45%,#ff704f 70%,transparent);clip-path:polygon(35% 0,65% 0,100% 72%,58% 100%,50% 78%,42% 100%,0 72%);filter:blur(1px) drop-shadow(0 0 18px #fff09a);animation:launchFlame .18s infinite alternate}
+.rocket-launch-panel{animation:panelLaunch 2.2s ease-out forwards}
+@keyframes rocketLaunch{0%{transform:translateY(0) scale(1)}18%{transform:translateY(8px) scale(1.015)}35%{transform:translateY(-8px) scale(1.02)}100%{transform:translateY(-135%) scale(.78);opacity:.05}}
+@keyframes launchFlame{from{opacity:.75;transform:translateX(-50%) scaleY(.8)}to{opacity:1;transform:translateX(-50%) scaleY(1.12)}}
+@keyframes launchText{0%{opacity:0;transform:translate(-50%,12px) scale(.7)}35%{opacity:1;transform:translate(-50%,0) scale(1.08)}100%{opacity:0;transform:translate(-50%,-32px) scale(1.15)}}
+@keyframes panelLaunch{0%{opacity:1}60%{opacity:1}100%{opacity:.35}}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -2028,13 +2037,20 @@ function answerRocket(x,el){
    recordLetterResult(rocket.target,true);
    rocket.locked=true;el.classList.add("correct");lockAnswerButtons(450);rocket.correct++;earn(1,2);persist();showGameBurst(rocket.correct===rocket.maxRounds?"FULL POWER!":"POWER UP!","ロケットパワー "+rocket.correct+" / "+rocket.maxRounds,"power");
    document.getElementById("rocketMsg").textContent=rocket.correct===rocket.maxRounds?"フルパワー！":"パワーアップ！";
-   later(nextRocket,700);
+   if(rocket.correct===rocket.maxRounds){launchRocket();}else{later(nextRocket,700);}
  }else{
    if(!acceptWrongTap(el))return;
    recordLetterResult(rocket.target,false);persist();
    el.classList.add("listen-wrong");document.getElementById("rocketMsg").textContent="もう一度 音を聞いてみよう！";
    later(()=>el.classList.remove("listen-wrong"),400);sayLetter(rocket.target);
  }
+}
+function launchRocket(){
+ const stage=document.querySelector(".rocket-watercolor");
+ const panel=document.querySelector(".rocket-panel");
+ if(stage){stage.classList.add("rocket-launching");}
+ if(panel){panel.classList.add("rocket-launch-panel");}
+ later(nextRocket,2300);
 }
 function finishRocket(){if(!beginFinishGuard("rocket"))return;markClear("rocket");
  let first=firstClearBonus("rocket",3,8);if(!first)earn(0,6);persist();
