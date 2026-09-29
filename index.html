@@ -1354,6 +1354,84 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 .home a.game.mg-boss div.game-art.boss-art::before,.home a.game.mg-boss div.game-art.boss-art::after{content:none!important;display:none!important}
 .home a.game.mg-boss div.game-art.boss-art img.boss-home-image{display:block!important;visibility:visible!important;position:static!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;transform:none!important;margin:0!important;padding:0!important;opacity:1!important}
 .home a.game.mg-boss .boss-home-svg{display:none!important}
+</style><style id="adventure-map-kids-ui-v9">
+/* ぼうけんマップ：キッズ向けモバイルゲームUI */
+.adventure-intro{
+  position:relative;overflow:hidden;background:linear-gradient(135deg,#fff5a8 0%,#ffe181 52%,#ffc35b 100%)!important;
+  border:5px solid #fff!important;border-radius:24px!important;padding:18px 22px!important;
+  box-shadow:0 6px 0 #a96b2c, inset 0 0 0 3px rgba(255,255,255,.45)!important;
+}
+.adventure-intro:before{content:"★  ★  ★";position:absolute;right:18px;top:8px;color:#fff7ba;font-size:24px;letter-spacing:8px;transform:rotate(8deg)}
+.adventure-intro b{font-size:22px;color:#5a3a26}
+.adventure-intro span{display:block;margin-top:5px;color:#714827;font-weight:900}
+.adventure-intro .next-goal{display:inline-block;margin-top:10px;padding:7px 14px;border-radius:999px;background:#fff;border:3px solid #e1a63c;color:#9b5d25;font-size:15px}
+.adventure-map{
+  position:relative;isolation:isolate;overflow:hidden;max-width:940px!important;min-height:780px;
+  margin:22px auto!important;padding:38px 24px 42px!important;
+  border:7px solid #fff!important;border-radius:36px!important;
+  background:
+    radial-gradient(circle at 12% 13%,rgba(255,255,255,.86) 0 13px,transparent 14px),
+    radial-gradient(circle at 18% 12%,rgba(255,255,255,.75) 0 19px,transparent 20px),
+    radial-gradient(circle at 82% 22%,rgba(255,255,255,.78) 0 14px,transparent 15px),
+    linear-gradient(#7edcff 0 28%,#65c7e6 28% 29%,#9cde72 29% 100%)!important;
+  box-shadow:inset 0 0 0 8px #f7df99,inset 0 -40px 0 rgba(67,142,76,.16),0 8px 0 #83613b!important;
+}
+.adventure-map:before{
+  content:"";position:absolute;z-index:-1;left:50%;top:92px;bottom:52px;width:76px;transform:translateX(-50%);
+  border-radius:40px;background:#f1ca70;border:6px solid #fff1bd;
+  box-shadow:0 0 0 5px rgba(176,120,48,.25), inset 0 0 0 3px rgba(196,139,63,.2);
+}
+.adventure-map:after{
+  content:"ABC WORLD  •  ADVENTURE ROUTE";position:absolute;left:20px;right:20px;bottom:12px;
+  text-align:center;color:#397d55;font-size:12px;font-weight:1000;letter-spacing:2px;
+}
+.adventure-map .map-node{
+  z-index:2;display:flex;align-items:center;gap:16px;width:min(82%,650px)!important;min-height:105px!important;
+  margin:11px auto!important;padding:12px 22px 12px 112px!important;
+  border:5px solid #fff!important;border-radius:25px!important;background:linear-gradient(135deg,#fffdf0,#fff1bc)!important;
+  box-shadow:0 7px 0 #8a6036,0 0 0 4px #d59a45!important;cursor:pointer;
+  transition:transform .18s,filter .18s,box-shadow .18s;
+}
+.adventure-map .map-node:nth-of-type(4n+1){transform:translateX(-8%) rotate(-2deg)}
+.adventure-map .map-node:nth-of-type(4n+3){transform:translateX(8%) rotate(2deg)}
+.adventure-map .map-node:hover{transform:translateY(-4px) scale(1.02)!important;box-shadow:0 11px 0 #8a6036,0 0 0 4px #ffc94f!important}
+.adventure-map .map-node b{font-size:clamp(20px,3vw,29px)!important;color:#194c74;line-height:1.15}
+.adventure-map .map-node small{margin-top:5px!important;color:#76502c;font-size:14px}
+.adventure-map .map-node:after{
+  content:"GO!";position:absolute;right:15px;top:12px;padding:4px 9px;border-radius:999px;
+  background:#ffca45;color:#75451f;border:2px solid #fff;font-size:11px;font-weight:1000;box-shadow:0 2px 0 #a96b2c;
+}
+.adventure-map .map-node.done:after{content:"CLEAR";background:#7bdd71;color:#1f6534}
+.adventure-map .map-node.current:after{content:"NOW";background:#ff7b6b;color:#fff}
+.adventure-map .map-node.locked:after{content:"LOCK";background:#a6afb8;color:#fff}
+.adventure-map .map-node.locked{filter:grayscale(.7)!important;opacity:.68!important}
+.adventure-map .map-node.current{outline:6px solid rgba(255,213,63,.72)!important;animation:mapNodePulse 1.2s infinite alternate}
+.adventure-map .map-icon{
+  left:17px!important;top:50%!important;transform:translateY(-50%)!important;width:78px!important;height:78px!important;
+  border:5px solid #fff!important;box-shadow:0 4px 0 #80603d, inset 0 0 0 3px rgba(255,255,255,.5)!important;
+  font-size:27px!important;
+}
+.adventure-map .map-path{
+  position:relative;z-index:1;height:22px!important;line-height:22px!important;font-size:22px!important;
+  color:#b27a37!important;letter-spacing:13px!important;text-shadow:0 2px #fff3bc;
+}
+.adventure-map .map-path:after{content:"✦";display:block;margin-top:-25px;color:#ff9e42;font-size:17px;letter-spacing:0}
+.map-legend{
+  max-width:940px;margin:10px auto!important;border:4px solid #fff!important;border-radius:18px!important;
+  background:linear-gradient(90deg,#d9f5ff,#fff7bf)!important;color:#315b6e;padding:13px!important;
+  box-shadow:0 4px 0 rgba(95,126,137,.3)
+}
+@keyframes mapNodePulse{from{box-shadow:0 7px 0 #8a6036,0 0 0 4px #d59a45,0 0 0 0 rgba(255,214,51,.5)}to{box-shadow:0 7px 0 #8a6036,0 0 0 4px #ffc94f,0 0 0 12px rgba(255,214,51,0)}}
+@media(max-width:700px){
+ .adventure-map{min-height:720px;padding:28px 10px 38px!important;border-radius:26px!important}
+ .adventure-map:before{width:48px}
+ .adventure-map .map-node{width:91%!important;min-height:93px!important;padding-left:88px!important;gap:8px}
+ .adventure-map .map-node:nth-of-type(4n+1){transform:translateX(-2%) rotate(-1deg)}
+ .adventure-map .map-node:nth-of-type(4n+3){transform:translateX(2%) rotate(1deg)}
+ .adventure-map .map-icon{left:10px!important;width:64px!important;height:64px!important;font-size:22px!important}
+ .adventure-map .map-node b{font-size:19px!important}.adventure-map .map-node small{font-size:12px}
+ .adventure-map .map-node:after{right:8px;top:8px;font-size:9px}
+}
 </style></head><body><main class="app">
 <div id="home" class="home mobile-lobby">
 <header class="lobby-topbar">
@@ -2109,7 +2187,7 @@ const mapAreas=[
 function openAdventureMap(){enterGameScreen("ABCぼうけんマップ");ensureMilestoneShards();persist();
  
  let lv=save.worldLv||1,secret=secretState();
- gameBody.innerHTML='<div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>7つの練習は好きな場所から行けるよ。5種類クリアするとボスへの道がひらく！</span><strong class="next-goal">'+nextAdventureGoal()+'</strong></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div role="button" tabindex="0" onkeydown="activateMapKey(event)" class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\''+a[1]+'\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div><div class="map-recommend">'+recommendationButton()+'</div>';
+ gameBody.innerHTML='<div class="adventure-intro"><b>今いるところ：ワールド Lv.'+lv+'</b><span>7つの練習は好きな場所から行けるよ。5種類クリアするとボスへの道がひらく！</span><strong class="next-goal">'+nextAdventureGoal()+'</strong></div><div class="adventure-map">'+mapAreas.map((a,i)=>{let unlocked=a[1]==="secret"?secret.open:(i===0||lv>=a[2]);let current=unlocked&&(i===mapAreas.length-1||!(i+1===0||lv>=mapAreas[i+1][2]));return '<div role="button" tabindex="0" onkeydown="activateMapKey(event)" class="map-node n'+(i+1)+' '+(unlocked?'unlocked':'locked')+' '+((save.clears?.[a[1]]>0)?'done ':'')+(current?'current':'')+'" '+(a[1]==="secret"?'onclick="openSecretIsland()"':(unlocked&&a[1]?'onclick="openGame(\''+a[1]+'\')"':''))+'><div class="map-icon">'+mapIcon(i,unlocked)+'</div><b>'+(unlocked?a[0]:'？？？')+'</b><small>'+(unlocked?(a[1]?'ここから ちょうせん':'まだ先に何かあるみたい…'):'まだ きりの中')+'</small></div>'}).join('<div class="map-path">• • •</div>')+'</div><div class="map-legend">クリアしても、地図の先はぜんぶ見えないよ。ぼうけんを続けて確かめよう！</div><div class="map-recommend">'+recommendationButton()+'</div>';
 }
 function openSecretIsland(){ensureMilestoneShards();let s=secretState();enterGameScreen(s.open?"ひみつの島":"？？？");if(!s.open){gameBody.innerHTML='<div class="secret-locked"><div class="mystery-island">？？？</div><h2>まだ きりの中……</h2><p>天空のおしろの先に、島のかげが見える。</p><div class="secret-hints"><span>'+(s.boss?'✓ 天空から ふしぎな道が見えた':'・天空のおしろに 何かありそう')+'</span><span>'+(s.shards>=4?'✓ かけらが ひとつの形になりそう':'・ひみつのかけらが 関係していそう')+'</span><span>'+(s.buddies>=5?'✓ なかまたちが 道を見つけたみたい':'・なかまと進むと 何か起こるかも')+'</span><span>'+(s.light>=55?'✓ 島のひかりが 強くなった':'・マイワールドを もっと育ててみよう')+'</span></div><button class="back" onclick="openAdventureMap()">地図にもどる</button></div>';return}save.secretDiscovered=true;persist();let buddy=save.activeBuddy||"なかまたち";gameBody.innerHTML='<div class="secret-island-scene"><div class="secret-sky">A　?　B　?　C</div><div class="secret-land"><div class="secret-gate"><b>ABC</b></div><div class="secret-crystal">?</div></div><h2>ひみつの島を 発見！</h2><p>'+buddy+'と いっしょに、きりの向こうへたどり着いた！</p><div class="secret-message">島の奥には、まだ開かない大きな門がある……<br><b>THE ADVENTURE CONTINUES...</b></div><button class="back" onclick="openSecretChallenge()">島を たんけんする</button> <button class="back" onclick="openAdventureMap()">地図にもどる</button></div>'}
 let secretAnswerLocked=false;
