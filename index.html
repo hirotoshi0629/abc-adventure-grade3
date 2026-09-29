@@ -400,6 +400,9 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .reward-info{padding:25px 24px;border-radius:25px;align-self:center}.coin-wallet{background:linear-gradient(#fff,#fff7c9);border:5px solid #e0a43f;box-shadow:0 4px 0 #ba7930}.machine-btn{background:linear-gradient(#ffe97a,#ffbd3f);border:4px solid #ae682f;box-shadow:0 7px 0 #9b572d,0 0 0 5px rgba(255,224,93,.22);transition:.15s}.machine-btn:not(:disabled):hover{transform:translateY(-3px);filter:brightness(1.05)}.reward-preview span{border:3px solid #e2b04a;background:#fffdf0;box-shadow:0 3px 0 rgba(159,102,40,.16)}
 @keyframes gachaLamp{from{filter:brightness(.9)}to{filter:brightness(1.45);transform:scale(1.08)}}@keyframes gachaTwinkle{from{opacity:.55;transform:scale(.9) rotate(-8deg)}to{opacity:1;transform:scale(1.12) rotate(8deg)}}
 @media(max-width:800px){.reward-room{padding:28px 12px 22px}.reward-machine{transform:scale(.84);margin:-34px auto -20px}.reward-info{margin-top:-10px}}
+
+.train-sequence span.train-answer-revealed,.train-overlay-seq span.train-answer-revealed{background:#d9f6ad!important;border-color:#59a44c!important;color:#245e37!important;box-shadow:0 4px 0 #78b95a;animation:trainAnswerPop .45s ease-out}
+@keyframes trainAnswerPop{0%{transform:scale(.55);opacity:.3}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 </style>
 <style id="kidsGameTheme">
 :root{
@@ -2001,7 +2004,12 @@ async function startVoiceCapture(){
 }
 function stopVoiceCapture(){try{if(voicePractice.rec?.state==="recording")voicePractice.rec.stop()}catch(e){}}
 function playVoiceCapture(){if(!voicePractice.url)return;try{new Audio(voicePractice.url).play()}catch(e){}}
-function playVoiceModel(letter){sayLetter(letter);let b=document.getElementById("voiceDoneBtn");if(b)b.disabled=false;voiceStatus("自分の声とお手本をくらべたら、「できた！次へ」を押そう。")}
+function revealTrainAnswer(){
+ if(typeof train==="undefined"||!document.querySelector(".train-sequence"))return;
+ document.querySelectorAll(".train-sequence span,.train-overlay-seq span").forEach(el=>{if(el.textContent.trim()==="?"){el.textContent=train.target;el.classList.add("train-answer-revealed")}});
+ let msg=document.querySelector(".train-panel .message");if(msg)msg.textContent="せいかいは "+train.target+"！ よくできたね。";
+}
+function playVoiceModel(letter){sayLetter(letter);if(typeof train!=="undefined"&&document.querySelector(".train-sequence"))revealTrainAnswer();let b=document.getElementById("voiceDoneBtn");if(b)b.disabled=false;voiceStatus("自分の声とお手本をくらべたら、「できた！次へ」を押そう。")}
 function voiceControls(letter,doneFn){
  return '<div class="voice-practice"><div class="voice-buttons"><button class="voice-rec" onclick="startVoiceCapture()">● 録音する</button><button id="voiceStopBtn" onclick="stopVoiceCapture()" disabled>■ とめる</button><button id="voicePlayBtn" onclick="playVoiceCapture()" disabled>▶ 自分の声</button><button onclick="unlockVoiceModel()">声に出した！</button></div><div class="voice-check"><button id="voiceModelBtn" class="sound-btn" onclick="playVoiceModel(\''+letter+'\')" disabled>お手本を聞く</button><button id="voiceDoneBtn" class="voice-next" onclick="'+doneFn+'" disabled>できた！ 次へ</button></div><div id="voicePracticeMsg" class="voice-msg">まず、文字を見て声に出そう。録音しても、録音なしでもOK！</div></div>'
 }
@@ -2105,8 +2113,8 @@ function nextTrain(){
  gameBody.innerHTML='<div class="game-help">文字のじゅんばんを見る → ？に入る文字を声に出す → お手本で確認！</div><div class="train-scene redesign-split"><div class="illustration-stage train-watercolor"><div class="train-overlay-seq">'+train.shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div></div><div class="train-panel"><div class="listen-status"><b>STATION '+train.round+' / '+train.maxRounds+'</b><span>せいかい '+train.correct+'</span></div><div class="message">？に入るアルファベットを声に出そう！</div><div class="train-sequence">'+train.shown.map(x=>'<span>'+x+'</span>').join('<em>→</em>')+'</div>'+voiceControls(train.target,"completeTrainSpeak()")+'</div></div>';
 }
 function completeTrainSpeak(){
- if(train.locked)return;train.locked=true;train.correct++;recordSkillResult("speaking",true);recordSkillResult("order",true);earn(1,2);persist();showGameBurst("ALL ABOARD!","れっしゃ "+train.correct+" / "+train.maxRounds,"power");clearVoicePractice();
- later(nextTrain,650);
+ if(train.locked)return;revealTrainAnswer();train.locked=true;train.correct++;recordSkillResult("speaking",true);recordSkillResult("order",true);earn(1,2);persist();showGameBurst("ALL ABOARD!","れっしゃ "+train.correct+" / "+train.maxRounds,"power");clearVoicePractice();
+ later(nextTrain,1100);
 }
 function finishTrain(){if(!beginFinishGuard("train"))return;markClear("train");
  let first=firstClearBonus("train",4,10);if(!first)earn(0,8);persist();
