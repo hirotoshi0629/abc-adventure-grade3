@@ -710,6 +710,23 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 }
 .monster-nameplate{z-index:4!important}
 
+/* 2026.10.07 monster clarity + treasure visibility fix */
+.monster-watercolor{
+  background-image:url("assets/redesign/monster-battle.png?v=monster-fix-1");
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  border:4px solid #ffffff;
+  box-shadow:0 8px 0 rgba(62,73,120,.28);
+}
+.monster-watercolor .monster-art{display:none!important}
+.monster-watercolor:before{display:none!important}
+.treasure-reward{width:min(58%,340px);top:69%;}
+.treasure-letter-card{left:70%;top:57%;font-size:clamp(38px,5vw,60px);}
+@keyframes treasureLetterRise{0%{opacity:0;transform:translate(-50%,8px) scale(.16) rotate(-8deg)}35%{opacity:1;transform:translate(-50%,-18px) scale(.42) rotate(5deg)}65%{transform:translate(-50%,-54px) scale(.66) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-68px) scale(.68) rotate(-4deg)}}
+@keyframes treasureRewardRise{0%{opacity:0;transform:translate(-50%,10px) scale(.2) rotate(-5deg)}38%{opacity:1;transform:translate(-50%,-34px) scale(.58) rotate(4deg)}72%{transform:translate(-50%,-112px) scale(.94) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-126px) scale(.92) rotate(0deg)}}
+@media(max-width:820px){.treasure-reward{width:min(64%,320px)}.treasure-letter-card{left:72%;font-size:clamp(34px,8vw,56px)}}
+
 .boss-stage{position:relative;isolation:isolate;overflow:hidden}
 .boss-stage:before,.boss-stage:after{content:"";position:absolute;pointer-events:none;z-index:0}
 .boss-stage:before{inset:-20%;background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.10) 0 8deg,transparent 8deg 20deg);animation:bossAura 10s linear infinite}
