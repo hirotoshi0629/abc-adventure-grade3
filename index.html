@@ -2128,7 +2128,7 @@ function revealTreasureAnswer(){
 }
 function completeTreasureSpeak(){
  if(treasure.locked)return;revealTreasureAnswer();treasure.locked=true;treasure.found++;recordSkillResult("speaking",true);earn(1,3);persist();showGameBurst("TREASURE!","たから "+treasure.found+" / "+treasure.maxRounds,"treasure");clearVoicePractice();voiceStatus("できた！");
- later(nextTreasure,1400);
+ later(nextTreasure,1900);
 }
 function finishTreasure(){if(!beginFinishGuard("treasure"))return;markClear("treasure");
  let first=firstClearBonus("treasure",3,10);if(!first)earn(0,8);persist();
