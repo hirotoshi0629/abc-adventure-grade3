@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-word-art-v15";
+const CACHE_NAME="abc-adventure-grade3-word-art-v16";
 const CORE=[
  "./",
  "./index.html",
