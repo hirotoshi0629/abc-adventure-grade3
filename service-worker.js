@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-word-art-v19";
+const CACHE_NAME="abc-adventure-grade3-word-art-v20";
 const CORE=[
  "./",
  "./index.html",
@@ -9,6 +9,8 @@ const CORE=[
  "./assets/redesign/monster.jpg",
  "./assets/redesign/world.jpg",
  "./assets/redesign/treasure.jpg",
+ "./assets/redesign/treasure-closed.jpg?v=35ecbc2",
+ "./assets/redesign/treasure-lid-perspective.png?v=35ecbc2",
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
  "./assets/fonts/NHHandwriting-Medium.otf?v=20260927-1",

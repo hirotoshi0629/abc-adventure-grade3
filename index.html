@@ -342,7 +342,7 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .illustration-stage{position:relative;min-height:540px;border-radius:26px;border:6px solid #fff;box-shadow:0 8px 0 #8aa56c55;background-size:cover;background-position:center;overflow:hidden}
 .rocket-watercolor{background-image:url("assets/redesign/rocket.jpg")}
 .train-watercolor{background-image:url("assets/redesign/train.jpg")}
-.treasure-watercolor{background-image:url("assets/redesign/treasure-closed.jpg")}
+.treasure-watercolor{background-image:url("assets/redesign/treasure-closed.jpg?v=35ecbc2")}
 .world-watercolor{position:relative;max-width:1120px;min-height:600px;margin:14px auto;border:6px solid #fff;border-radius:28px;background:url("assets/redesign/world.jpg") center/cover no-repeat;box-shadow:0 8px 0 #9f784055;overflow:hidden}
 .illustration-badge,.world-level-badge,.world-buddy-badge,.world-whisper-card{position:absolute;background:rgba(255,253,239,.94);border:3px solid #c68a35;border-radius:16px;padding:8px 13px;font-weight:1000;color:#173b6a;box-shadow:0 3px 8px #0002}
 .illustration-badge{right:14px;top:14px}.world-level-badge{left:18px;top:18px}.world-buddy-badge{right:18px;top:18px}.world-whisper-card{left:50%;bottom:14px;transform:translateX(-50%);width:min(84%,680px);text-align:center}
@@ -2116,7 +2116,7 @@ function nextTreasure(){
  treasure.round++;
  if(treasure.round>treasure.maxRounds){finishTreasure();return}
  treasure.locked=false;treasure.target=treasure.targets[treasure.round-1];
- gameBody.innerHTML='<div class="game-help">宝箱に出た文字を見る → 声に出す → 自分の声とお手本をくらべよう！</div><div class="treasure-wrap redesign-split"><div class="illustration-stage treasure-watercolor"><div class="treasure-lid"><img class="treasure-lid-art" src="assets/redesign/treasure-lid-perspective.png" alt=""></div><div class="treasure-letter-card">'+treasure.target+'</div></div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="message"><b class="speak-letter">'+treasure.target+'</b><br>この文字を声に出してみよう！</div>'+voiceControls(treasure.target,"completeTreasureSpeak()")+'</div></div>';
+ gameBody.innerHTML='<div class="game-help">宝箱に出た文字を見る → 声に出す → 自分の声とお手本をくらべよう！</div><div class="treasure-wrap redesign-split"><div class="illustration-stage treasure-watercolor"><div class="treasure-lid"><img class="treasure-lid-art" src="assets/redesign/treasure-lid-perspective.png?v=35ecbc2" alt=""></div><div class="treasure-letter-card">'+treasure.target+'</div></div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="message"><b class="speak-letter">'+treasure.target+'</b><br>この文字を声に出してみよう！</div>'+voiceControls(treasure.target,"completeTreasureSpeak()")+'</div></div>';
 }
 function revealTreasureAnswer(){
  const stage=document.querySelector(".treasure-watercolor");
