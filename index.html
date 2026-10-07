@@ -354,9 +354,13 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .treasure-opening:after{content:"✦  ✦  ✦";position:absolute;left:50%;top:52%;transform:translateX(-50%);z-index:9;color:#fff6a2;font-size:26px;text-shadow:0 0 10px #fff;animation:treasureGlow .9s ease-out forwards}
 .treasure-letter-card{position:absolute;left:50%;top:68%;transform:translate(-50%,20px) scale(.22) rotate(-4deg);min-width:0;padding:7px 16px;text-align:center;background:#fffdf0;border:4px solid #e8b73d;border-radius:16px;box-shadow:0 6px 12px #51320f55;font-family:"NHHandwriting",sans-serif;font-size:clamp(42px,6vw,68px);color:#153b70;opacity:0;pointer-events:none}
 .treasure-letter-card.treasure-reveal{animation:treasureLetterRise 1.15s .32s cubic-bezier(.2,.8,.25,1) forwards}
+.treasure-reward{position:absolute;left:50%;top:67%;width:min(42%,250px);z-index:7;opacity:0;transform:translate(-50%,10px) scale(.2);pointer-events:none;filter:drop-shadow(0 8px 7px rgba(96,51,14,.35))}
+.treasure-reward-art{display:block;width:100%;height:auto}
+.treasure-reward.treasure-reveal{animation:treasureRewardRise 1.25s .38s cubic-bezier(.18,.82,.28,1) forwards}
 @keyframes treasureLidOpen{0%{transform:translate(-50%,0) perspective(620px) rotateX(0deg);opacity:1}100%{transform:translate(-50%,-92px) perspective(620px) rotateX(-72deg);opacity:.82}}
 @keyframes treasureGlow{0%{opacity:0;transform:translate(-50%,16px) scale(.5)}45%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-20px) scale(1.35)}}
 @keyframes treasureLetterRise{0%{opacity:0;transform:translate(-50%,8px) scale(.16) rotate(-8deg)}35%{opacity:1;transform:translate(-50%,-28px) scale(.48) rotate(5deg)}65%{transform:translate(-50%,-92px) scale(.76) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-112px) scale(.78) rotate(-4deg)}}
+@keyframes treasureRewardRise{0%{opacity:0;transform:translate(-50%,10px) scale(.2) rotate(-5deg)}38%{opacity:1;transform:translate(-50%,-34px) scale(.52) rotate(4deg)}72%{transform:translate(-50%,-116px) scale(.84) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-128px) scale(.78) rotate(0deg)}}
 .speak-letter,.boss-speak-letter{font-family:"NHHandwriting",sans-serif;font-size:clamp(72px,9vw,130px);color:#163d72;line-height:1}
 .voice-practice{margin:12px auto;padding:14px;border:3px solid #dfb35f;border-radius:20px;background:#fffdf4}.voice-buttons,.voice-check{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:8px 0}.voice-practice button{min-height:50px;padding:10px 15px;border-radius:15px;font-weight:1000}.voice-rec{background:#ff6f6f!important;color:#fff!important}.voice-next{background:#69c85c!important;color:#fff!important}.voice-msg{text-align:center;font-weight:900;color:#315179;padding:8px}
 .monster-watercolor{position:relative;min-height:540px;background:linear-gradient(180deg,#c9f0ff,#effbc9);overflow:hidden;border-radius:24px}
@@ -2116,13 +2120,15 @@ function nextTreasure(){
  treasure.round++;
  if(treasure.round>treasure.maxRounds){finishTreasure();return}
  treasure.locked=false;treasure.target=treasure.targets[treasure.round-1];
- gameBody.innerHTML='<div class="game-help">宝箱に出た文字を見る → 声に出す → 自分の声とお手本をくらべよう！</div><div class="treasure-wrap redesign-split"><div class="illustration-stage treasure-watercolor"><div class="treasure-lid"><img class="treasure-lid-art" src="assets/redesign/treasure-lid-perspective.png?v=35ecbc2" alt=""></div><div class="treasure-letter-card">'+treasure.target+'</div></div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="message"><b class="speak-letter">'+treasure.target+'</b><br>この文字を声に出してみよう！</div>'+voiceControls(treasure.target,"completeTreasureSpeak()")+'</div></div>';
+ gameBody.innerHTML='<div class="game-help">宝箱に出た文字を見る → 声に出す → 自分の声とお手本をくらべよう！</div><div class="treasure-wrap redesign-split"><div class="illustration-stage treasure-watercolor"><div class="treasure-lid"><img class="treasure-lid-art" src="assets/redesign/treasure-lid-perspective.png?v=35ecbc2" alt=""></div><div class="treasure-reward"><img class="treasure-reward-art" src="assets/redesign/treasure-reward.png?v=2c8a878" alt=""></div><div class="treasure-letter-card">'+treasure.target+'</div></div><div class="treasure-panel"><div class="listen-status"><b>MISSION '+treasure.round+' / '+treasure.maxRounds+'</b><span>たから '+treasure.found+'</span></div><div class="message"><b class="speak-letter">'+treasure.target+'</b><br>この文字を声に出してみよう！</div>'+voiceControls(treasure.target,"completeTreasureSpeak()")+'</div></div>';
 }
 function revealTreasureAnswer(){
  const stage=document.querySelector(".treasure-watercolor");
  const card=document.querySelector(".treasure-letter-card");
+ const reward=document.querySelector(".treasure-reward");
  if(stage)stage.classList.add("treasure-opening");
  if(card)card.classList.add("treasure-reveal");
+ if(reward)reward.classList.add("treasure-reveal");
  const msg=document.querySelector(".treasure-panel .message");
  if(msg)msg.innerHTML="<b class=\"speak-letter\">"+treasure.target+"</b><br>たからばこから文字が出てきたよ！";
 }
