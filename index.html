@@ -724,7 +724,8 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 .monster-watercolor .monster-art:before,.monster-watercolor .monster-art:after{display:none!important}
 .monster-watercolor .monster-battle-art{display:block!important;position:absolute!important;left:0!important;top:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;object-fit:cover!important;z-index:0!important}
 .monster-watercolor:before{display:none!important}
-.monster-battle-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:block}
+.monster-battle-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;display:block;filter:none!important;border-radius:20px}
+.monster-watercolor .monster-battle-art{filter:none!important}
 .monster-battle-art.mv0{filter:none}.monster-battle-art.mv1{filter:hue-rotate(32deg) saturate(1.18)}.monster-battle-art.mv2{filter:hue-rotate(68deg) saturate(1.2) brightness(1.04)}.monster-battle-art.mv3{filter:hue-rotate(106deg) saturate(1.25)}.monster-battle-art.mv4{filter:hue-rotate(142deg) saturate(1.12) brightness(.98)}
 .monster-battle-art.mv5{filter:hue-rotate(178deg) saturate(1.22)}.monster-battle-art.mv6{filter:hue-rotate(214deg) saturate(1.2) brightness(1.06)}.monster-battle-art.mv7{filter:hue-rotate(250deg) saturate(1.18)}.monster-battle-art.mv8{filter:hue-rotate(286deg) saturate(1.16) brightness(.96)}.monster-battle-art.mv9{filter:hue-rotate(322deg) saturate(1.25)}
 .monster-battle-art.mv10{filter:hue-rotate(18deg) saturate(1.35) brightness(1.05)}.monster-battle-art.mv11{filter:hue-rotate(54deg) saturate(1.3) brightness(.94)}.monster-battle-art.mv12{filter:hue-rotate(92deg) saturate(1.35)}.monster-battle-art.mv13{filter:hue-rotate(130deg) saturate(1.3) brightness(1.03)}.monster-battle-art.mv14{filter:hue-rotate(166deg) saturate(1.28)}
@@ -1552,7 +1553,7 @@ body.inner-screen #game.active{display:block!important;visibility:visible!import
 </a>
 <a class="game g5 mobile-game mg-monster" data-game="monster" href="?game=monster" onclick="return launchGameLink(event,'monster')" aria-label="アルファベットモンスターを開く">
   <span class="game-tag">BATTLE</span><div class="game-art image-art monster-art-home"></div>
-  <div class="game-copy"><h3>アルファベットモンスター</h3><small>20種類のモンスターとバトル！</small></div>
+  <div class="game-copy"><h3>アルファベットモンスター</h3><small>50種類のモンスターとバトル！</small></div>
 </a>
 <a class="game g6 mobile-game mg-treasure" data-game="treasure" href="?game=treasure" onclick="return launchGameLink(event,'treasure')" aria-label="ABCトレジャーハントを開く">
   <span class="game-tag">TREASURE</span><div class="game-art image-art treasure-art"></div>
@@ -2096,7 +2097,7 @@ function finishRocket(){if(!beginFinishGuard("rocket"))return;markClear("rocket"
 }
 let monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8),monsterOrder:[]};
 function startMonster(){resetFinishGuard("monster");recordGameStart("monster");gameTitle.textContent="アルファベットモンスター";
- monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8),monsterOrder:shuffle(Array.from({length:20},(_,i)=>i)).slice(0,8)};
+ monster={round:0,maxRounds:8,target:"",hp:5,combo:0,bestCombo:0,power:0,locked:false,targets:makeTargetDeck(8),monsterOrder:shuffle(Array.from({length:50},(_,i)=>i)).slice(0,8)};
  nextMonster();
 }
 function nextMonster(){
@@ -2104,13 +2105,21 @@ function nextMonster(){
  if(monster.round>monster.maxRounds){finishMonster();return}
  monster.locked=false;monster.target=monster.targets[monster.round-1];let choices=choicesWithTarget(monster.target,4);
  const names=[
- "しずくスライム","もりのピコ","ほのおキツネ","ひかりビースト","こおりウルフ",
- "いわゴーレム","よるのバット","しろふわゴースト","にじいろプニ","サンダーキャット",
- "みずうみドラゴン","はっぱタヌキ","マグマリザード","ほしぞらフクロウ","こおりペンギン",
- "すなあらしモグラ","つきよオオカミ","きらめきユニコーン","どくキノコキング","そらとぶコアラ"
+ "しずくスライム","もりのヤク","ほのおドラゴン","ゆきのイエティ","きのこのもりびと",
+ "うみのタコ","いわゴーレム","ひのたまくん","ふわふわくも","よるのバット",
+ "きのこちゃん","サボテンぼうや","こおりペンギン","はちみつビー","みずいろアクア",
+ "きらめきユニコーン","もこもこモンスター","あおねこキツネ","ちびドラゴン","ピコロボット",
+ "しろふわゴースト","にじいろバード","クリスタルくん","はっぱのこ","キャンディプニ",
+ "おれんじギツネ","ほしぞらフクロウ","うみのサメ","ひつじラム","てんとうむし",
+ "おほしさまスター","かめのトータ","むらさきタコ","もりのシカ","こおりのハクチョウ",
+ "ぱっくんプラント","くまのモコ","くらげぷるん","しろひつじ","マグマゴーレム",
+ "ちょうちょフェアリー","そらうみドラゴン","しましまアライグマ","ゆきだるま","にじいろカメレオン",
+ "とげとげフグ","まほうネコ","そらのグリフォン","のんびりカタツムリ","きばぞうマンモス"
  ];
- let mi=monster.monsterOrder?.[monster.round-1] ?? ((monster.round-1)%20);
- gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><img class="monster-battle-art mv'+mi+'" src="assets/redesign/monster-battle.jpg" alt="'+names[mi]+'"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
+ let mi=monster.monsterOrder?.[monster.round-1] ?? ((monster.round-1)%50);
+ let monsterNo=String(mi+1).padStart(2,"0");
+ let monsterImage="assets/redesign/monsters-50/monster-"+monsterNo+".jpg";
+ gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><img class="monster-battle-art" src="'+monsterImage+'" alt="'+names[mi]+'"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
  later(()=>sayLetter(monster.target),450);
 }
 function answerMonster(x,el){
@@ -2672,4 +2681,3 @@ if("serviceWorker" in navigator){
 }
 </script>
 </body></html>
-

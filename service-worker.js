@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-word-art-v32";
+const CACHE_NAME="abc-adventure-grade3-word-art-v33";
 const CORE=[
  "./",
  "./index.html",
@@ -7,6 +7,7 @@ const CORE=[
  "./assets/audio/alphabet-sprite.mp3?v=20260926-3",
  "./assets/redesign/monster-sheet.jpg",
  "./assets/redesign/monster-battle.jpg",
+ ...Array.from({length:50},(_,i)=>"./assets/redesign/monsters-50/monster-"+String(i+1).padStart(2,"0")+".jpg"),
  "./assets/redesign/monster.jpg",
  "./assets/redesign/world.jpg",
  "./assets/redesign/treasure.jpg",
@@ -61,4 +62,3 @@ self.addEventListener("fetch",event=>{
   }
  })());
 });
-
