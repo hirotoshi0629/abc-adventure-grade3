@@ -354,7 +354,7 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .treasure-opening:after{content:"✦  ✦  ✦";position:absolute;left:50%;top:52%;transform:translateX(-50%);z-index:9;color:#fff6a2;font-size:26px;text-shadow:0 0 10px #fff;animation:treasureGlow .9s ease-out forwards}
 .treasure-letter-card{position:absolute;left:50%;top:68%;transform:translate(-50%,20px) scale(.22) rotate(-4deg);min-width:0;padding:7px 16px;text-align:center;background:#fffdf0;border:4px solid #e8b73d;border-radius:16px;box-shadow:0 6px 12px #51320f55;font-family:"NHHandwriting",sans-serif;font-size:clamp(42px,6vw,68px);color:#153b70;opacity:0;pointer-events:none}
 .treasure-letter-card.treasure-reveal{animation:treasureLetterRise 1.15s .32s cubic-bezier(.2,.8,.25,1) forwards}
-@keyframes treasureLidOpen{0%{transform:translate(-50%,0) perspective(620px) rotateX(0deg)}100%{transform:translate(-50%,-82px) perspective(620px) rotateX(-72deg);opacity:.12}}
+@keyframes treasureLidOpen{0%{transform:translate(-50%,0) perspective(620px) rotateX(0deg);opacity:1}100%{transform:translate(-50%,-92px) perspective(620px) rotateX(-72deg);opacity:.82}}
 @keyframes treasureGlow{0%{opacity:0;transform:translate(-50%,16px) scale(.5)}45%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-20px) scale(1.35)}}
 @keyframes treasureLetterRise{0%{opacity:0;transform:translate(-50%,8px) scale(.16) rotate(-8deg)}35%{opacity:1;transform:translate(-50%,-28px) scale(.48) rotate(5deg)}65%{transform:translate(-50%,-92px) scale(.76) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-112px) scale(.78) rotate(-4deg)}}
 .speak-letter,.boss-speak-letter{font-family:"NHHandwriting",sans-serif;font-size:clamp(72px,9vw,130px);color:#163d72;line-height:1}
