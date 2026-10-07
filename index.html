@@ -713,7 +713,7 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 /* 2026.10.07 monster clarity + treasure visibility fix */
 .monster-watercolor{
   height:clamp(420px,52vh,540px)!important;
-  background-image:url("assets/redesign/monster-battle.jpg?v=monster-fix-2");
+  background-image:url("assets/redesign/monster-battle.jpg");
   background-position:center;
   background-size:cover;
   background-repeat:no-repeat;
@@ -2106,7 +2106,7 @@ function nextMonster(){
  "すなあらしモグラ","つきよオオカミ","きらめきユニコーン","どくキノコキング","そらとぶコアラ"
  ];
  let mi=monster.monsterOrder?.[monster.round-1] ?? ((monster.round-1)%20);
- gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><img class="monster-battle-art" src="assets/redesign/monster-battle.jpg?v=monster-fix-2" alt=""><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><img class="monster-battle-art" src="assets/redesign/monster-battle.jpg" alt=""><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
  later(()=>sayLetter(monster.target),450);
 }
 function answerMonster(x,el){
