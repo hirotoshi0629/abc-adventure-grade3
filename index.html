@@ -712,7 +712,8 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 
 /* 2026.10.07 monster clarity + treasure visibility fix */
 .monster-watercolor{
-  background-image:url("assets/redesign/monster-battle.jpg?v=monster-fix-2");
+  height:clamp(420px,52vh,540px)!important;
+  background-image:url("assets/redesign/monster-battle.jpg");
   background-position:center;
   background-size:cover;
   background-repeat:no-repeat;
@@ -720,7 +721,11 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
   box-shadow:0 8px 0 rgba(62,73,120,.28);
 }
 .monster-watercolor .monster-art{display:none!important}
+.monster-watercolor .monster-art:before,.monster-watercolor .monster-art:after{display:none!important}
+.monster-watercolor .monster-battle-art{display:block!important;position:absolute!important;left:0!important;top:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;object-fit:cover!important;z-index:0!important}
 .monster-watercolor:before{display:none!important}
+.monster-battle-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:block}
+.monster-watercolor .battle-top{position:relative;z-index:4}
 .treasure-reward{width:min(58%,340px);top:69%;}
 .treasure-letter-card{left:70%;top:57%;font-size:clamp(38px,5vw,60px);}
 @keyframes treasureLetterRise{0%{opacity:0;transform:translate(-50%,8px) scale(.16) rotate(-8deg)}35%{opacity:1;transform:translate(-50%,-18px) scale(.42) rotate(5deg)}65%{transform:translate(-50%,-54px) scale(.66) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-68px) scale(.68) rotate(-4deg)}}
@@ -2101,7 +2106,7 @@ function nextMonster(){
  "すなあらしモグラ","つきよオオカミ","きらめきユニコーン","どくキノコキング","そらとぶコアラ"
  ];
  let mi=monster.monsterOrder?.[monster.round-1] ?? ((monster.round-1)%20);
- gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
+ gameBody.innerHTML='<div class="game-help">モンスターの声を聞く → 同じ文字をえらぶ → れんぞく正解をねらおう！</div><div class="monster-wrap redesign-split"><div class="battle-stage monster-watercolor"><img class="monster-battle-art" src="assets/redesign/monster-battle.jpg" alt=""><div class="battle-top"><span>STAGE '+monster.round+' / '+monster.maxRounds+'</span><span>れんぞく '+monster.combo+'</span></div><div class="monster-art mv'+mi+'"></div><div class="monster-nameplate">'+names[mi]+'</div><div class="monster-hp"><span>MONSTER HP</span><div class="hpbar"><i style="width:'+Math.max(10,100-(monster.round-1)*12)+'%"></i></div></div><div class="hero-status"><span>あなたのHP '+Array.from({length:5},(_,i)=>i<monster.hp?"●":"○").join(" ")+'</span><span>ひっさつパワー '+monster.power+'/3</span></div></div><div class="battle-panel"><div class="message">モンスターが さけんだ文字はどれ？ <button class="sound-btn" onclick="sayLetter(monster.target)">もう一度聞く</button></div><div class="monster-choices">'+choices.map(x=>'<button class="monster-letter" onclick="answerMonster(\''+x+'\',this)">'+x+'</button>').join("")+'</div><div id="monsterMsg" class="message">3れんぞく正解で ひっさつわざ！</div></div></div>';
  later(()=>sayLetter(monster.target),450);
 }
 function answerMonster(x,el){
@@ -2663,3 +2668,4 @@ if("serviceWorker" in navigator){
 }
 </script>
 </body></html>
+
