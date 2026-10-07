@@ -712,6 +712,7 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 
 /* 2026.10.07 monster clarity + treasure visibility fix */
 .monster-watercolor{
+  height:clamp(420px,52vh,540px)!important;
   background-image:url("assets/redesign/monster-battle.jpg?v=monster-fix-2");
   background-position:center;
   background-size:cover;
@@ -721,7 +722,7 @@ body.burst-flash .game-body{animation:burstFlash .24s ease}
 }
 .monster-watercolor .monster-art{display:none!important}
 .monster-watercolor .monster-art:before,.monster-watercolor .monster-art:after{display:none!important}
-.monster-watercolor .monster-battle-art{display:block!important;inset:0;width:auto;height:auto;object-fit:cover;z-index:0}
+.monster-watercolor .monster-battle-art{display:block!important;position:absolute!important;left:0!important;top:0!important;right:0!important;bottom:0!important;width:100%!important;height:100%!important;object-fit:cover!important;z-index:0!important}
 .monster-watercolor:before{display:none!important}
 .monster-battle-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:block}
 .monster-watercolor .battle-top{position:relative;z-index:4}
