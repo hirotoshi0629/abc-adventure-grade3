@@ -3,8 +3,10 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <!-- ZERO-COST POLICY: static GitHub Pages only; no metered APIs or paid backends. -->
 <title>ABCアドベンチャー</title>
+<link rel="preload" href="assets/fonts/NHHandwriting-Medium.otf?v=20261007-fontfix" as="font" type="font/otf" crossorigin>
 <style>
-@font-face{font-family:"NHHandwriting";src:url("assets/fonts/NHHandwriting-Medium.otf?v=20260927-1") format("opentype"),local("NHHandwriting Medium"),local("NHHandwriting-Medium"),local("NHHandwriting");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"NHHandwriting";src:url("assets/fonts/NHHandwriting-Medium.otf?v=20261007-fontfix") format("opentype");font-weight:100 900;font-style:normal;font-display:block}
+:where(.letter,.card,.karuta-card,.memory-card,.listen-card,.rocket-letter,.monster-letter,.train-letter,.boss-letter,.book-letter,.big-letter,.hidden-letter,.treasure-letter-card,.speak-letter,.boss-speak-letter,.train-overlay-seq span,.train-sequence span,.rocket-stars,.rocket-orbit){font-family:"NHHandwriting","Hiragino Maru Gothic ProN","Arial Rounded MT Bold",sans-serif!important;font-synthesis:none}
 
 *{box-sizing:border-box}.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}html{-webkit-text-size-adjust:100%;touch-action:manipulation}body{margin:0;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#dff5ff;color:#33291f}
 button{font:inherit;touch-action:manipulation;min-height:44px;-webkit-tap-highlight-color:transparent;user-select:none}button:focus-visible{outline:5px solid #2479c9;outline-offset:3px}.app{max-width:1180px;margin:auto;min-height:100vh;background:linear-gradient(#9de2ff,#f8efb8 56%,#b9e985);padding:14px}
@@ -348,8 +350,8 @@ button:disabled{cursor:default;filter:saturate(.78)}
 .illustration-badge{right:14px;top:14px}.world-level-badge{left:18px;top:18px}.world-buddy-badge{right:18px;top:18px}.world-whisper-card{left:50%;bottom:14px;transform:translateX(-50%);width:min(84%,680px);text-align:center}
 .train-overlay-seq{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(255,250,231,.93);padding:10px 15px;border-radius:18px;border:3px solid #bd8235}
 .train-overlay-seq span,.train-sequence span{font-family:"NHHandwriting",sans-serif;font-size:clamp(34px,5vw,62px);font-weight:500}.train-overlay-seq em{font-style:normal;font-size:24px}
-.treasure-lid{position:absolute;left:50%;top:60%;width:min(70%,405px);z-index:8;transform:translate(-50%,0) perspective(620px) rotateX(0deg);transform-origin:center bottom;pointer-events:none;filter:drop-shadow(0 8px 7px rgba(65,36,20,.35));transition:filter .2s}
-.treasure-lid-art{display:block;width:100%;height:auto}
+.treasure-lid{position:absolute;left:50%;top:60%;width:min(54%,320px);max-width:100%;z-index:8;transform:translate(-50%,0) perspective(620px) rotateX(0deg);transform-origin:center bottom;pointer-events:none;filter:drop-shadow(0 8px 7px rgba(65,36,20,.35));transition:filter .2s}
+.treasure-lid-art{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
 .treasure-opening .treasure-lid{animation:treasureLidOpen .78s cubic-bezier(.2,.82,.3,1) forwards;filter:brightness(1.12) drop-shadow(0 8px 7px rgba(65,36,20,.35))}
 .treasure-opening:after{content:"✦  ✦  ✦";position:absolute;left:50%;top:52%;transform:translateX(-50%);z-index:9;color:#fff6a2;font-size:26px;text-shadow:0 0 10px #fff;animation:treasureGlow .9s ease-out forwards}
 .treasure-letter-card{position:absolute;left:50%;top:68%;z-index:10;transform:translate(-50%,20px) scale(.22) rotate(-4deg);min-width:0;padding:7px 16px;text-align:center;background:#fffdf0;border:4px solid #e8b73d;border-radius:16px;box-shadow:0 6px 12px #51320f55;font-family:"NHHandwriting",sans-serif;font-size:clamp(42px,6vw,68px);color:#153b70;opacity:0;pointer-events:none}
@@ -361,7 +363,7 @@ button:disabled{cursor:default;filter:saturate(.78)}
 @keyframes treasureGlow{0%{opacity:0;transform:translate(-50%,16px) scale(.5)}45%{opacity:1;transform:translate(-50%,0) scale(1.1)}100%{opacity:0;transform:translate(-50%,-20px) scale(1.35)}}
 @keyframes treasureLetterRise{0%{opacity:0;transform:translate(-50%,8px) scale(.16) rotate(-8deg)}35%{opacity:1;transform:translate(-50%,-28px) scale(.48) rotate(5deg)}65%{transform:translate(-50%,-92px) scale(.76) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-112px) scale(.78) rotate(-4deg)}}
 @keyframes treasureRewardRise{0%{opacity:0;transform:translate(-50%,10px) scale(.2) rotate(-5deg)}38%{opacity:1;transform:translate(-50%,-34px) scale(.52) rotate(4deg)}72%{transform:translate(-50%,-116px) scale(.84) rotate(-3deg)}100%{opacity:1;transform:translate(-50%,-128px) scale(.78) rotate(0deg)}}
-.speak-letter,.boss-speak-letter{font-family:"NHHandwriting",sans-serif;font-size:clamp(72px,9vw,130px);color:#163d72;line-height:1}
+.speak-letter,.boss-speak-letter{font-family:"NHHandwriting","Hiragino Maru Gothic ProN","Arial Rounded MT Bold",sans-serif;font-size:clamp(72px,9vw,130px);color:#163d72;line-height:1}
 .voice-practice{margin:12px auto;padding:14px;border:3px solid #dfb35f;border-radius:20px;background:#fffdf4}.voice-buttons,.voice-check{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:8px 0}.voice-practice button{min-height:50px;padding:10px 15px;border-radius:15px;font-weight:1000}.voice-rec{background:#ff6f6f!important;color:#fff!important}.voice-next{background:#69c85c!important;color:#fff!important}.voice-msg{text-align:center;font-weight:900;color:#315179;padding:8px}
 .monster-watercolor{position:relative;min-height:540px;background:linear-gradient(180deg,#c9f0ff,#effbc9);overflow:hidden;border-radius:24px}
 .monster-art{position:absolute;left:9%;top:10%;width:74%;height:62%;background-image:url("assets/redesign/monster-sheet.jpg");background-size:300% 300%;background-repeat:no-repeat;filter:hue-rotate(var(--mh,0deg)) saturate(var(--ms,1)) brightness(var(--mb,1)) drop-shadow(0 10px 5px #25383b33);transform:scaleX(var(--mf,1)) scale(var(--mz,1));transition:transform .18s,filter .18s}
@@ -1603,9 +1605,10 @@ function loadSavedProgress(){
  return fallback
 }
 let save=loadSavedProgress();
-const APP_BUILD="2026.09.27-nh-handwriting-word-fix";
+const APP_BUILD="2026.10.07-ipad-font-treasure-lid";
 const SAVE_VERSION=3;
 function approvedFontReady(){try{return document.fonts&&document.fonts.check('24px "NHHandwriting"')}catch(e){return false}}
+if(document.fonts){document.fonts.load('500 24px "NHHandwriting"').then(function(){document.documentElement.classList.add('font-ready')}).catch(function(){document.documentElement.classList.add('font-fallback')})}
 function appHealthCheck(){
  const requiredFns=["goHome","openGame","openAdventureMap","openBook","openEggs","openRewardMachine","openMyWorld","openTitles","openDaily","openSettings","sayLetter","persist"];
  const fnOK=requiredFns.every(n=>typeof window[n]==="function");
@@ -2682,4 +2685,3 @@ if("serviceWorker" in navigator){
 }
 </script>
 </body></html>
-
