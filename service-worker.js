@@ -1,4 +1,4 @@
-const CACHE_NAME="abc-adventure-grade3-word-art-v35";
+const CACHE_NAME="abc-adventure-grade3-word-art-v36";
 const CORE=[
  "./",
  "./index.html",
@@ -16,7 +16,7 @@ const CORE=[
  "./assets/redesign/treasure-reward.png?v=2c8a878",
  "./assets/redesign/rocket.jpg",
  "./assets/redesign/train.jpg",
- "./assets/fonts/NHHandwriting-Medium.otf?v=20260927-1",
+ "./assets/fonts/NHHandwriting-Medium.otf?v=20261007-fontfix",
  "./assets/boss-original.png?v=20261007-bossfix",
  ..."apple ball cat dog egg fish game hat ink juice key lion milk nose orange pen queen rabbit sun tiger umbrella violin water box yellow zebra".split(" ").map(word=>"./assets/alphabet-words/"+word+".png")
 ];
@@ -62,4 +62,3 @@ self.addEventListener("fetch",event=>{
   }
  })());
 });
-
